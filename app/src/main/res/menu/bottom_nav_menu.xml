@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/my_day"
+        android:id="@+id/page_my_day"
         android:icon="@drawable/flower_24px"
         android:title="@string/bottom_nav_my_day" />
     <item
