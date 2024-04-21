@@ -39,26 +39,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean onItemSelectedListener(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.page_my_day -> {
-                showFragment(myDayFragment);
-                return true;
-            }
-            case R.id.page_statistics -> {
-                showFragment(statisticsFragment);
-                return true;
-            }
-            case R.id.page_categories -> {
-                showFragment(categoriesFragment);
-                return true;
-            }
-            case R.id.page_profile -> {
-                showFragment(profileFragment);
-                return true;
-            }
-            default ->
-                    throw new IllegalArgumentException("item not implemented : " + menuItem.getItemId());
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.page_my_day) {
+            showFragment(myDayFragment);
+            return true;
+        } else if (itemId == R.id.page_statistics) {
+            showFragment(statisticsFragment);
+            return true;
+        } else if (itemId == R.id.page_categories) {
+            showFragment(categoriesFragment);
+            return true;
+        } else if (itemId == R.id.page_profile) {
+            showFragment(profileFragment);
+            return true;
         }
+        return false;
     }
 
     private void showFragment(Fragment fragment) {
