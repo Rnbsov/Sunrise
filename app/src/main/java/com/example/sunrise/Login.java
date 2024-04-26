@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
 
@@ -28,6 +29,17 @@ public class Login extends AppCompatActivity {
     TextView registerScreen;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in already, and if so open MainActivity
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
