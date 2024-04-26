@@ -1,9 +1,11 @@
 package com.example.sunrise;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Register extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button registerBtn;
+    TextView loginScreen;
     private FirebaseAuth mAuth;
     private static final String TAG = "RegisterActivity";
 
@@ -44,6 +47,13 @@ public class Register extends AppCompatActivity {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         registerBtn = findViewById(R.id.register_btn);
+        loginScreen = findViewById(R.id.login_now);
+
+        loginScreen.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        });
 
         registerBtn.setOnClickListener(v -> {
             String email, password;
