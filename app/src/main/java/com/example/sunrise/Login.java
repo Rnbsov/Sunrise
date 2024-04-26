@@ -59,6 +59,13 @@ public class Login extends AppCompatActivity {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         loginBtn = findViewById(R.id.login_btn);
+        registerScreen = findViewById(R.id.register_now);
+
+        registerScreen.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Register.class);
+            startActivity(intent);
+            finish();
+        });
 
         loginBtn.setOnClickListener(v -> {
             String email, password;
