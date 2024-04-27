@@ -99,7 +99,7 @@ public class Login extends AppCompatActivity {
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
 
                                 // If sign in fails, display a message to the user.
-                                String errorMessage = task.getException().getMessage();
+                                String errorMessage = task.getException().getLocalizedMessage();
                                 showToast(errorMessage != null ? errorMessage : getString(R.string.authentication_failed));
                             }
                         }

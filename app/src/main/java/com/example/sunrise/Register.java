@@ -84,7 +84,7 @@ public class Register extends AppCompatActivity {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
                                 // If sign in fails, display a message to the user.
-                                String errorMessage = task.getException().getMessage();
+                                String errorMessage = task.getException().getLocalizedMessage();
                                 showToast(errorMessage != null ? errorMessage : getString(R.string.authentication_failed));
                             }
                         }
