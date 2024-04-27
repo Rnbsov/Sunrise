@@ -18,4 +18,5 @@
     <string name="click_to_login">Click to Login</string>
     <string name="click_to_register">Click to register</string>
     <string name="sign_out">Sign out</string>
+    <string name="authentication_failed">Authentication failed</string>
 </resources>

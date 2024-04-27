@@ -96,10 +96,11 @@ public class Login extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             } else {
-                                // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                Toast.makeText(Login.this, "Authentication failed",
-                                        Toast.LENGTH_SHORT).show();
+
+                                // If sign in fails, display a message to the user.
+                                String errorMessage = task.getException().getMessage();
+                                showToast(errorMessage != null ? errorMessage : getString(R.string.authentication_failed));
                             }
                         }
                     });
