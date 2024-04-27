@@ -86,6 +86,11 @@ public class Register extends AppCompatActivity {
                                 // Get newly created user and fill it with default data
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 createDefaultUserProfile(user);
+
+                                // Send user to MainActivity
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
 

@@ -92,6 +92,8 @@ public class Login extends AppCompatActivity {
                                 Log.d(TAG, "signInWithEmail:success");
                                 Toast.makeText(Login.this, "Login success",
                                         Toast.LENGTH_SHORT).show();
+
+                                // Send user to MainActivity
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                                 finish();
