@@ -11,4 +11,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="fab_description">create new task</string>
+
+    <!-- Authentication -->
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="click_to_login">Click to Login</string>
+    <string name="click_to_register">Click to register</string>
+    <string name="sign_out">Sign out</string>
+    <string name="authentication_failed">Authentication failed</string>
 </resources>
