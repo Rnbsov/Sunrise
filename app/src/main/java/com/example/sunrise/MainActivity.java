@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting listener for item pressed in bottom navigation bar
         bottomNavView.setOnItemSelectedListener(this::onItemSelectedListener);
+
+        // Setting default page when app is opened
+        bottomNavView.setSelectedItemId(R.id.page_my_day);
     }
 
     private boolean onItemSelectedListener(MenuItem menuItem) {
