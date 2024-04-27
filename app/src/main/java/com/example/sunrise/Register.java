@@ -1,6 +1,7 @@
 package com.example.sunrise;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class Register extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
@@ -80,6 +82,10 @@ public class Register extends AppCompatActivity {
                                 Log.d(TAG, "createUserWithEmail:success");
                                 Toast.makeText(Register.this, "Account created!",
                                         Toast.LENGTH_SHORT).show();
+
+                                // Get newly created user and fill it with default data
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                createDefaultUserProfile(user);
                             } else {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
@@ -90,6 +96,31 @@ public class Register extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    /**
+     * Sets default profile information for a newly registered user in the app.
+     * This method sets a default display name and avatar for the user.
+     *
+     * @param user The FirebaseUser object representing the newly registered user.
+     */
+    private void createDefaultUserProfile(FirebaseUser user) {
+        // Create a UserProfileChangeRequest to set default display name and avatar
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("Stranger")
+                .setPhotoUri(Uri.parse("https://ibb.co.com/gVn0DQ1"))
+                .build();
+
+        // Update the user's profile with the default information
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                        }
+                    }
+                });
     }
 
     private void showToast(String message) {
