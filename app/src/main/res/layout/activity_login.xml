@@ -25,8 +25,9 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
-            android:layout_width="match_parent"
+            android:layout_width="380dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:hint="@string/email" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,8 +38,9 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
-            android:layout_width="match_parent"
+            android:layout_width="380dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:hint="@string/password" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,6 +48,7 @@
         android:id="@+id/login_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/login" />
 
     <TextView
