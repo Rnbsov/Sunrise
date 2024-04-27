@@ -75,10 +75,12 @@ public class Login extends AppCompatActivity {
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             if (TextUtils.isEmpty(password)) {
                 Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             mAuth.signInWithEmailAndPassword(email, password)
