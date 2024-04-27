@@ -25,7 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Register extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button registerBtn;
-    TextView loginScreen;
+    TextView loginScreenLink;
     private FirebaseAuth mAuth;
     private static final String TAG = "RegisterActivity";
 
@@ -47,9 +47,9 @@ public class Register extends AppCompatActivity {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         registerBtn = findViewById(R.id.register_btn);
-        loginScreen = findViewById(R.id.login_now);
+        loginScreenLink = findViewById(R.id.login_now);
 
-        loginScreen.setOnClickListener(v -> {
+        loginScreenLink.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
             finish();

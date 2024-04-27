@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPassword;
     Button loginBtn;
-    TextView registerScreen;
+    TextView registerScreenLink;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
 
@@ -59,9 +59,9 @@ public class Login extends AppCompatActivity {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         loginBtn = findViewById(R.id.login_btn);
-        registerScreen = findViewById(R.id.register_now);
+        registerScreenLink = findViewById(R.id.register_now);
 
-        registerScreen.setOnClickListener(v -> {
+        registerScreenLink.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Register.class);
             startActivity(intent);
             finish();
