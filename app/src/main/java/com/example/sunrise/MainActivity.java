@@ -4,13 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.sunrise.fragments.CategoriesFragment;
 import com.example.sunrise.fragments.MyDayFragment;
 import com.example.sunrise.fragments.ProfileFragment;
 import com.example.sunrise.fragments.StatisticsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupBottomMenu();
+        setupFabButton();
     }
 
     private void setupBottomMenu() {
@@ -65,6 +75,35 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragments_container, fragment)
                 .commit();
+    }
+
+    private void setupFabButton() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+        fab.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+            View bottomSheetContentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.create_task_bottom_sheet, null);
+            bottomSheetDialog.setContentView(bottomSheetContentView);
+            bottomSheetDialog.show();
+
+            TextInputLayout textInputLayout = bottomSheetContentView.findViewById(R.id.textFieldLayout);
+            TextInputEditText editText = bottomSheetContentView.findViewById(R.id.title);
+            Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
+
+            createBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
+                        textInputLayout.setError("Please type title");
+                    } else {
+                        // TO-DO Firebase save task to db
+
+                        bottomSheetDialog.dismiss();
+                    }
+                }
+            });
+
+        });
     }
 
 }
