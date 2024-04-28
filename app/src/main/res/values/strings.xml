@@ -21,4 +21,14 @@
     <string name="click_to_register">Click to register</string>
     <string name="sign_out">Sign out</string>
     <string name="authentication_failed">Authentication failed</string>
+
+    <!-- Create Task -->
+    <string name="title">Title</string>
+    <string name="new_task">New Task</string>
+    <string name="priority">Priority</string>
+    <string name="create">Create</string>
+    <string name="priority_high">High</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_regular">Regular</string>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/priority_high"
+        android:icon="@drawable/flag_24px"
+        android:title="@string/priority_high" />
+    <item
+        android:id="@+id/priority_medium"
+        android:icon="@drawable/flag_24px"
+        android:title="@string/priority_medium" />
+    <item
+        android:id="@+id/priority_low"
+        android:icon="@drawable/flag_24px"
+        android:title="@string/priority_low" />
+    <item
+        android:id="@+id/priority_regular"
+        android:icon="@drawable/flag_24px"
+        android:title="@string/priority_regular" />
+</menu>
