@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private ProfileFragment profileFragment;
     private Chip priorityChip;
     private BottomSheetDialog bottomSheetDialog;
+    TextInputEditText editTitle;
+    TextInputLayout titleInputLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,12 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void showTaskCreationDialog(View v) {
         bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
-        View bottomSheetContentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.create_task_bottom_sheet, null);
+            View bottomSheetContentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.create_task_bottom_sheet, null);
         bottomSheetDialog.setContentView(bottomSheetContentView);
         bottomSheetDialog.show();
 
-        TextInputLayout textInputLayout = bottomSheetContentView.findViewById(R.id.textFieldLayout);
-        TextInputEditText editText = bottomSheetContentView.findViewById(R.id.title);
+        titleInputLayout = bottomSheetContentView.findViewById(R.id.titleInputLayout);
+        editTitle = bottomSheetContentView.findViewById(R.id.title);
         Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
 
         priorityChip = bottomSheetContentView.findViewById(R.id.priority);
@@ -114,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createTask(View view) {
-        String title = Objects.requireNonNull(((TextInputEditText) findViewById(R.id.title)).getText()).toString();
+        String title = Objects.requireNonNull(editTitle.getText()).toString();
         String priority = getPriorityValue(priorityChip.getText().toString());
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         if (title.isEmpty()) {
-            ((TextInputLayout) findViewById(R.id.textFieldLayout)).setError("Please type title");
+            titleInputLayout.setError("Please type title");
             return;
         }
 
