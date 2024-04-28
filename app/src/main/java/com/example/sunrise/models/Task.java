@@ -10,15 +10,20 @@ public class Task {
     private String title;
     private String priority;
     private String taskId;
+    private long createdAt;
+    private long updatedAt;
 
     public Task() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Task(String title, String priority) {
+    public Task(String title, String priority, long createdAt) {
         this.title = title;
         this.priority = priority;
+        this.createdAt = createdAt;
+        this.updatedAt = createdAt; // Set updatedAt to the same value as createdAt initially
     }
+
 
     public String getPriority() {
         return priority;
@@ -44,10 +49,29 @@ public class Task {
         this.taskId = taskId;
     }
 
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     /**
      * Method to save the task to Firebase database
      */
     public void saveToFirebase() {
+        // Update the updatedAt timestamp before starting saving
+        this.updatedAt = System.currentTimeMillis();
+
         // Get reference to Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference tasksRef = database.getReference("Tasks");
