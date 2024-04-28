@@ -126,17 +126,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean onPriorityMenuItemClick(@NonNull MenuItem item) {
         int itemId = item.getItemId();
 
-        if (itemId == R.id.priority_1) {
-            priorityChip.setText(R.string.p1);
+        if (itemId == R.id.priority_high) {
+            priorityChip.setText(R.string.priority_high);
             return true;
-        } else if (itemId == R.id.priority_2) {
-            priorityChip.setText(R.string.p2);
+        } else if (itemId == R.id.priority_medium) {
+            priorityChip.setText(R.string.priority_medium);
             return true;
-        } else if (itemId == R.id.priority_3) {
-            priorityChip.setText(R.string.p3);
+        } else if (itemId == R.id.priority_low) {
+            priorityChip.setText(R.string.priority_low);
             return true;
-        } else if (itemId == R.id.priority_4) {
-            priorityChip.setText(R.string.p4);
+        } else if (itemId == R.id.priority_regular) {
+            priorityChip.setText(R.string.priority_regular);
             return true;
         } else {
             return false;
