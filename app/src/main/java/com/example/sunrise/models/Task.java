@@ -12,16 +12,18 @@ public class Task {
     private String taskId;
     private long createdAt;
     private long updatedAt;
+    private String createdByUserId;
 
     public Task() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Task(String title, String priority) {
+    public Task(String title, String priority, String createdByUserId) {
         this.title = title;
         this.priority = priority;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
+        this.createdByUserId = createdByUserId;
     }
 
 
@@ -84,5 +86,13 @@ public class Task {
         this.setTaskId(taskId); // Save this uniqueId to task object
 
         newTaskRef.setValue(this); // Save the task to Firebase database
+    }
+
+    public String getCreatedByUserId() {
+        return createdByUserId;
+    }
+
+    public void setCreatedByUserId(String createdByUserId) {
+        this.createdByUserId = createdByUserId;
     }
 }

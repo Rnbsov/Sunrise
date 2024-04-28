@@ -23,6 +23,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     String title = Objects.requireNonNull(editText.getText()).toString();
                     String priority = getPriorityValue(priorityChip.getText().toString());
+                    String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
                     // Title is required
                     if (title.isEmpty()) {
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Task task = new Task(title, priority);
+                    Task task = new Task(title, priority, userId);
 
                     // Save the task to Firebase database
                     task.saveToFirebase();
