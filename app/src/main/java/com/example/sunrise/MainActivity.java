@@ -1,13 +1,16 @@
 package com.example.sunrise;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 
 import com.example.sunrise.fragments.CategoriesFragment;
 import com.example.sunrise.fragments.MyDayFragment;
@@ -15,6 +18,7 @@ import com.example.sunrise.fragments.ProfileFragment;
 import com.example.sunrise.fragments.StatisticsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private StatisticsFragment statisticsFragment;
     private CategoriesFragment categoriesFragment;
     private ProfileFragment profileFragment;
+    private Chip priorityChip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,18 @@ public class MainActivity extends AppCompatActivity {
             TextInputEditText editText = bottomSheetContentView.findViewById(R.id.title);
             Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
 
+            priorityChip = bottomSheetContentView.findViewById(R.id.priority);
+
+            priorityChip.setOnClickListener(view -> {
+                PopupMenu popup = new PopupMenu(this, view);
+                popup.getMenuInflater().inflate(R.menu.priorities_menu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(this::onPriorityMenuItemClick);
+
+                popup.show();
+            });
+
+
             createBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -104,6 +121,26 @@ public class MainActivity extends AppCompatActivity {
             });
 
         });
+    }
+
+    private boolean onPriorityMenuItemClick(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.priority_1) {
+            priorityChip.setText(R.string.p1);
+            return true;
+        } else if (itemId == R.id.priority_2) {
+            priorityChip.setText(R.string.p2);
+            return true;
+        } else if (itemId == R.id.priority_3) {
+            priorityChip.setText(R.string.p3);
+            return true;
+        } else if (itemId == R.id.priority_4) {
+            priorityChip.setText(R.string.p4);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

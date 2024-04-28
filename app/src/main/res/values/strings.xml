@@ -27,4 +27,12 @@
     <string name="new_task">New Task</string>
     <string name="priority">Priority</string>
     <string name="create">Create</string>
+    <string name="priority_1">Priority 1</string>
+    <string name="priority_2">Priority 2</string>
+    <string name="priority_3">Priority 3</string>
+    <string name="priority_4">Priority 4</string>
+    <string name="p1">P1</string>
+    <string name="p2">P2</string>
+    <string name="p3">P3</string>
+    <string name="p4">P4</string>
 </resources>
