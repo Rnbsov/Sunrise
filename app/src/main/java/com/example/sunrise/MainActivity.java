@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     String title = Objects.requireNonNull(editText.getText()).toString();
                     String priority = getPriorityValue(priorityChip.getText().toString());
-                    long currentTime = System.currentTimeMillis();
 
                     // Title is required
                     if (title.isEmpty()) {
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Task task = new Task(title, priority, currentTime);
+                    Task task = new Task(title, priority);
 
                     // Save the task to Firebase database
                     task.saveToFirebase();

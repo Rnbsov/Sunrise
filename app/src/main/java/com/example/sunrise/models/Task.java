@@ -17,11 +17,11 @@ public class Task {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Task(String title, String priority, long createdAt) {
+    public Task(String title, String priority) {
         this.title = title;
         this.priority = priority;
-        this.createdAt = createdAt;
-        this.updatedAt = createdAt; // Set updatedAt to the same value as createdAt initially
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
     }
 
 
