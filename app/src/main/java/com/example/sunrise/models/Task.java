@@ -51,11 +51,6 @@ public class Task {
         // Get reference to Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference tasksRef = database.getReference("Tasks");
-        Log.d("FirebaseDatabase", "Instance: " + database.getReference());
-
-        Log.d("1", "1");
-        FirebaseDatabase.getInstance().getReference().child("taskss").setValue("dlsafjld");
-        Log.d("1", "1");
 
         // Generate a reference to a new child location under "tasks" with an client-side auto-generated key
         DatabaseReference newTaskRef = tasksRef.push();
