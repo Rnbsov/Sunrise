@@ -143,4 +143,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String getPriorityValue(String selectedPriority) {
+        // Check if the selected priority is the default one
+        if (selectedPriority.equals(getString(R.string.priority))) {
+            // If so, set the priority to the regular
+            return getString(R.string.priority_regular);
+        } else {
+            // Otherwise, return the selected priority
+            return selectedPriority;
+        }
+    }
+
+
 }
