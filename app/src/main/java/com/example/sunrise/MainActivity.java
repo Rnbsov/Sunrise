@@ -16,6 +16,7 @@ import com.example.sunrise.fragments.CategoriesFragment;
 import com.example.sunrise.fragments.MyDayFragment;
 import com.example.sunrise.fragments.ProfileFragment;
 import com.example.sunrise.fragments.StatisticsFragment;
+import com.example.sunrise.models.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -110,13 +111,22 @@ public class MainActivity extends AppCompatActivity {
             createBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
-                        textInputLayout.setError("Please type title");
-                    } else {
-                        // TO-DO Firebase save task to db
+                    String title = Objects.requireNonNull(editText.getText()).toString();
+                    String priority = getPriorityValue(priorityChip.getText().toString());
+                    long currentTime = System.currentTimeMillis();
 
-                        bottomSheetDialog.dismiss();
+                    // Title is required
+                    if (title.isEmpty()) {
+                        textInputLayout.setError("Please type title");
+                        return;
                     }
+
+                    Task task = new Task(title, priority, currentTime);
+
+                    // Save the task to Firebase database
+                    task.saveToFirebase();
+
+                    bottomSheetDialog.dismiss();
                 }
             });
 
