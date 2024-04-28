@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private CategoriesFragment categoriesFragment;
     private ProfileFragment profileFragment;
     private Chip priorityChip;
+    private BottomSheetDialog bottomSheetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,52 +87,46 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFabButton() {
         FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(this::showTaskCreationDialog);
+    }
 
-        fab.setOnClickListener(v -> {
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
-            View bottomSheetContentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.create_task_bottom_sheet, null);
-            bottomSheetDialog.setContentView(bottomSheetContentView);
-            bottomSheetDialog.show();
+    private void showTaskCreationDialog(View v) {
+        bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+        View bottomSheetContentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.create_task_bottom_sheet, null);
+        bottomSheetDialog.setContentView(bottomSheetContentView);
+        bottomSheetDialog.show();
 
-            TextInputLayout textInputLayout = bottomSheetContentView.findViewById(R.id.textFieldLayout);
-            TextInputEditText editText = bottomSheetContentView.findViewById(R.id.title);
-            Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
+        TextInputLayout textInputLayout = bottomSheetContentView.findViewById(R.id.textFieldLayout);
+        TextInputEditText editText = bottomSheetContentView.findViewById(R.id.title);
+        Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
 
-            priorityChip = bottomSheetContentView.findViewById(R.id.priority);
+        priorityChip = bottomSheetContentView.findViewById(R.id.priority);
+        priorityChip.setOnClickListener(this::showPriorityPopupMenu);
 
-            priorityChip.setOnClickListener(view -> {
-                PopupMenu popup = new PopupMenu(this, view);
-                popup.getMenuInflater().inflate(R.menu.priorities_menu, popup.getMenu());
+        createBtn.setOnClickListener(this::createTask);
+    }
 
-                popup.setOnMenuItemClickListener(this::onPriorityMenuItemClick);
+    private void showPriorityPopupMenu(View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.getMenuInflater().inflate(R.menu.priorities_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(this::onPriorityMenuItemClick);
+        popup.show();
+    }
 
-                popup.show();
-            });
+    private void createTask(View view) {
+        String title = Objects.requireNonNull(((TextInputEditText) findViewById(R.id.title)).getText()).toString();
+        String priority = getPriorityValue(priorityChip.getText().toString());
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
+        if (title.isEmpty()) {
+            ((TextInputLayout) findViewById(R.id.textFieldLayout)).setError("Please type title");
+            return;
+        }
 
-            createBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String title = Objects.requireNonNull(editText.getText()).toString();
-                    String priority = getPriorityValue(priorityChip.getText().toString());
-                    String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        Task task = new Task(title, priority, userId);
+        task.saveToFirebase();
 
-                    // Title is required
-                    if (title.isEmpty()) {
-                        textInputLayout.setError("Please type title");
-                        return;
-                    }
-
-                    Task task = new Task(title, priority, userId);
-
-                    // Save the task to Firebase database
-                    task.saveToFirebase();
-
-                    bottomSheetDialog.dismiss();
-                }
-            });
-
-        });
+        bottomSheetDialog.dismiss();
     }
 
     private boolean onPriorityMenuItemClick(@NonNull MenuItem item) {
