@@ -16,6 +16,7 @@ import com.example.sunrise.fragments.MyDayFragment;
 import com.example.sunrise.fragments.ProfileFragment;
 import com.example.sunrise.fragments.StatisticsFragment;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.TaskService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -125,8 +126,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Task task = new Task(title, priority, userId);
-        task.saveToFirebase();
 
+        // Initialize TaskService to interact with Firebase database
+        TaskService taskService = new TaskService();
+
+        // Save the newly created task to Firebase database
+        taskService.saveTask(task);
+
+        // Dismiss the bottom sheet dialog after task creation
         bottomSheetDialog.dismiss();
     }
 
