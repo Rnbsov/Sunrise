@@ -14,9 +14,11 @@ import com.example.sunrise.R;
 import com.example.sunrise.models.Task;
 import com.google.android.material.chip.Chip;
 
+import java.util.List;
+
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
-    private final Task[] localDataSet;
+    private final List<Task> localDataSet;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -55,7 +57,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public TasksAdapter(Task[] dataSet) {
+    public TasksAdapter(List<Task> dataSet) {
         localDataSet = dataSet;
     }
 
@@ -76,14 +78,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet[position].getTitle());
-        viewHolder.getPriorityChip().setText(localDataSet[position].getPriority());
+        viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
+        viewHolder.getPriorityChip().setText(localDataSet.get(position).getPriority());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return localDataSet.size();
     }
 }
 
