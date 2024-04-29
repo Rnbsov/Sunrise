@@ -64,27 +64,6 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    /**
-     * Method to save the task to Firebase database
-     */
-    public void saveToFirebase() {
-        // Update the updatedAt timestamp before starting saving
-        this.updatedAt = System.currentTimeMillis();
-
-        // Get reference to Firebase database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference tasksRef = database.getReference("Tasks");
-
-        // Generate a reference to a new child location under "tasks" with an client-side auto-generated key
-        DatabaseReference newTaskRef = tasksRef.push();
-
-        taskId = newTaskRef.getKey(); // Retrieve the unique ID
-
-        this.setTaskId(taskId); // Save this uniqueId to task object
-
-        newTaskRef.setValue(this); // Save the task to Firebase database
-    }
-
     public String getCreatedByUserId() {
         return createdByUserId;
     }
