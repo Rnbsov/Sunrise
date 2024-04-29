@@ -43,7 +43,7 @@
                         android:textSize="25sp" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/priority"
+                        android:id="@+id/priorityChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:chipIcon="@drawable/flag_24px" />
