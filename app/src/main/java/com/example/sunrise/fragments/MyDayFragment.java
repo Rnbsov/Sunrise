@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,14 @@ import android.widget.LinearLayout;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.TasksAdapter;
+import com.example.sunrise.models.Task;
+import com.example.sunrise.services.TaskService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +33,8 @@ import com.example.sunrise.adapters.TasksAdapter;
 public class MyDayFragment extends Fragment {
     private View fragment;
     private RecyclerView tasksList;
+    private TasksAdapter adapter;
+    private TaskService taskService;
 
     public MyDayFragment() {
         // Required empty public constructor
@@ -48,8 +59,34 @@ public class MyDayFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         tasksList.setLayoutManager(layoutManager);
 
-        // Setting custom adapter to recyclerView
-        TasksAdapter adapter = new TasksAdapter();
-        tasksList.setAdapter(adapter);
+        // Fetch tasks
+        taskService = new TaskService();
+
+        ValueEventListener tasksListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Task> taskList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Task task = snapshot.getValue(Task.class);
+                    taskList.add(task);
+                }
+                // Create adapter with dataset of fetched tasks
+                adapter = new TasksAdapter(taskList);
+                Log.d("MyDayFragment", "tasks" + taskList.toString());
+
+                // Setting custom adapter to recyclerView
+                tasksList.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+                Log.e("MyDayFragment", "Error fetching tasks", databaseError.toException());
+            }
+        };
+
+        // Call getTasks method from TaskService to register the listener
+        taskService.getTasks(tasksListener);
     }
+
 }
