@@ -10,6 +10,8 @@ public class Task {
     private long createdAt;
     private long updatedAt;
     private String createdByUserId;
+    private boolean isCompleted;
+    private long completedAt;
 
     public Task() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -70,5 +72,20 @@ public class Task {
 
     public void setCreatedByUserId(String createdByUserId) {
         this.createdByUserId = createdByUserId;
+    }
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
+
+    public long getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(long completedAt) {
+        this.completedAt = completedAt;
     }
 }
