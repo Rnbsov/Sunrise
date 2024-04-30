@@ -25,11 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MyDayFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MyDayFragment extends Fragment {
     private View fragment;
     private RecyclerView tasksList;
