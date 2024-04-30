@@ -59,6 +59,10 @@ public class MyDayFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         tasksList.setLayoutManager(layoutManager);
 
+        // Initialize adapter
+        adapter = new TasksAdapter(new ArrayList<>());
+        tasksList.setAdapter(adapter);
+
         // Fetch tasks
         taskService = new TaskService();
 
@@ -70,12 +74,9 @@ public class MyDayFragment extends Fragment {
                     Task task = snapshot.getValue(Task.class);
                     taskList.add(task);
                 }
-                // Create adapter with dataset of fetched tasks
-                adapter = new TasksAdapter(taskList);
-                Log.d("MyDayFragment", "tasks" + taskList.toString());
 
-                // Setting custom adapter to recyclerView
-                tasksList.setAdapter(adapter);
+                // Update data in the adapter using DiffUtil
+                adapter.updateData(taskList);
             }
 
             @Override
