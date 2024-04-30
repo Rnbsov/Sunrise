@@ -89,6 +89,17 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         return localDataSet.size();
     }
 
+    public void updateData(List<Task> newData) {
+        TasksListDiffCallback diffCallback = new TasksListDiffCallback(localDataSet, newData);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        localDataSet.clear();
+        localDataSet.addAll(newData);
+
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+
     private static class TasksListDiffCallback extends DiffUtil.Callback {
 
         private final List<Task> oldTasks;
