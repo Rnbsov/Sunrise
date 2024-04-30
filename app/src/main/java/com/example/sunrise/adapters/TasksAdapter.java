@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
@@ -86,6 +87,43 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return localDataSet.size();
+    }
+
+    private static class TasksListDiffCallback extends DiffUtil.Callback {
+
+        private final List<Task> oldTasks;
+        private final List<Task> newTasks;
+
+        public TasksListDiffCallback(List<Task> oldTasks, List<Task> newTasks) {
+            this.oldTasks = oldTasks;
+            this.newTasks = newTasks;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldTasks.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newTasks.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            String oldTaskId = oldTasks.get(oldItemPosition).getTaskId();
+            String newTaskId = newTasks.get(newItemPosition).getTaskId();
+            return oldTaskId.equals(newTaskId);
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            Task oldTask = oldTasks.get(oldItemPosition);
+            Task newTask = newTasks.get(newItemPosition);
+            return oldTask.getTitle().equals(newTask.getTitle())
+                    && oldTask.getPriority().equals(newTask.getPriority())
+                    && oldTask.getUpdatedAt() == (newTask.getUpdatedAt());
+        }
     }
 }
 
