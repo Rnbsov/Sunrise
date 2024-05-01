@@ -91,11 +91,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             priority = itemView.findViewById(R.id.priorityChip);
 
             completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                int position = getAdapterPosition();
+                if (onCheckboxClick != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Task updatedTask = localDataSet.get(position);
 
-                Task updatedTask = localDataSet.get(position);
-
-                onCheckboxClick.onCompleted(updatedTask, title, isChecked);
+                        onCheckboxClick.onCompleted(updatedTask, title, isChecked);
+                    }
+                }
             });
         }
 
