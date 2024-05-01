@@ -119,18 +119,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             completeCheckbox.setChecked(task.isCompleted());
             priority.setText(task.getPriority());
         }
-
-        public TextView getTextView() {
-            return title;
-        }
-
-        public CheckBox getCompleteCheckbox() {
-            return completeCheckbox;
-        }
-
-        public Chip getPriorityChip() {
-            return priority;
-        }
     }
 
     private static class TasksListDiffCallback extends DiffUtil.Callback {
