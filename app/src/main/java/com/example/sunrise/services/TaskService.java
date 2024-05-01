@@ -36,6 +36,21 @@ public class TaskService {
     }
 
     /**
+     * Method to update the task in Firebase database
+     */
+    public void updateTask(Task task) {
+        // Update the updatedAt timestamp before starting saving
+        task.setUpdatedAt(System.currentTimeMillis());
+
+        // Get the reference to the task's location in Firebase using its unique ID
+        DatabaseReference taskRef = tasksRef.child(task.getTaskId());
+
+        // Update the task at the specified location in Firebase
+        taskRef.setValue(task);
+    }
+
+
+    /**
      * Method to retrieve all tasks of currently logged-in user
      */
     public void getTasks(ValueEventListener listener) {
