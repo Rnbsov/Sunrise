@@ -83,6 +83,36 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         diffResult.dispatchUpdatesTo(this);
     }
 
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder)
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView title;
+        private final CheckBox completeCheckbox;
+        private final Chip priority;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            // TODO: Define click listener for the ViewHolder's View
+
+            title = itemView.findViewById(R.id.title);
+            completeCheckbox = itemView.findViewById(R.id.checkbox);
+            priority = itemView.findViewById(R.id.priorityChip);
+        }
+
+        public TextView getTextView() {
+            return title;
+        }
+
+        public CheckBox getCompleteCheckbox() {
+            return completeCheckbox;
+        }
+
+        public Chip getPriorityChip() {
+            return priority;
+        }
+    }
 
     private static class TasksListDiffCallback extends DiffUtil.Callback {
 
