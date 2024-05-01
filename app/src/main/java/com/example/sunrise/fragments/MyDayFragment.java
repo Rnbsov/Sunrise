@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.sunrise.R;
@@ -72,6 +71,9 @@ public class MyDayFragment extends Fragment {
                     taskList.add(task);
                 }
 
+                // Sort tasks based on completion status
+                sortTasksByCompletion(taskList);
+
                 // Update data in the adapter using DiffUtil
                 adapter.updateData(taskList);
             }
@@ -85,6 +87,27 @@ public class MyDayFragment extends Fragment {
 
         // Call getTasks method from TaskService to register the listener
         taskService.getTasks(tasksListener);
+    }
+
+    /**
+     * Sorts a list of tasks based on their completion status.
+     * <p>
+     * Completed tasks are sorted after uncompleted tasks. If both tasks have the same completion status,
+     * their order remains unchanged.
+     */
+    private void sortTasksByCompletion(List<Task> taskList) {
+        taskList.sort((task1, task2) -> {
+            // Completed tasks should come after uncompleted tasks
+            if (task1.isCompleted() && !task2.isCompleted()) {
+                // If task1 is completed and task2 is uncompleted, task2 should come first
+                return 1;
+            } else if (!task1.isCompleted() && task2.isCompleted()) {
+                // If task1 is uncompleted and task2 is completed, task1 should come first
+                return -1;
+            } else {
+                // Otherwise, maintain the original order
+                return 0;
+        }});
     }
 
     private void onCheckboxClickedListener(Task task, TextView title, boolean isChecked) {
@@ -112,3 +135,4 @@ public class MyDayFragment extends Fragment {
     }
 
 }
+

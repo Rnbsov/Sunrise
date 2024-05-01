@@ -64,20 +64,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     public void updateData(List<Task> newData) {
-        // Sorting so that uncompleted tasks go first to completed ones
-        newData.sort((task1, task2) -> {
-            if (task1.isCompleted() && !task2.isCompleted()) {
-                // If task1 is completed and task2 is uncompleted, task2 should come first
-                return 1;
-            } else if (!task1.isCompleted() && task2.isCompleted()) {
-                // If task1 is uncompleted and task2 is completed, task1 should come first
-                return -1;
-            } else {
-                // Otherwise, maintain the original order
-                return 0;
-            }
-        });
-
         TasksListDiffCallback diffCallback = new TasksListDiffCallback(localDataSet, newData);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
