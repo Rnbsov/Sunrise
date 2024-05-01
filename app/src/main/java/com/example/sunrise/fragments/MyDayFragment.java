@@ -59,9 +59,10 @@ public class MyDayFragment extends Fragment {
         adapter = new TasksAdapter(new ArrayList<>(), this::onCheckboxClickedListener);
         tasksList.setAdapter(adapter);
 
-        // Fetch tasks
+        // Initialize TaskService
         taskService = new TaskService();
 
+        // Fetch tasks
         ValueEventListener tasksListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -123,7 +124,6 @@ public class MyDayFragment extends Fragment {
         }
 
         // Save updated task to Firebase
-        TaskService taskService = new TaskService();
         taskService.updateTask(task);
 
         // Apply strikethrough style if the task is completed
