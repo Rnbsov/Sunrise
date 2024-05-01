@@ -1,5 +1,6 @@
 package com.example.sunrise.fragments;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.TasksAdapter;
@@ -55,7 +57,7 @@ public class MyDayFragment extends Fragment {
         tasksList.setLayoutManager(layoutManager);
 
         // Initialize adapter
-        adapter = new TasksAdapter(new ArrayList<>());
+        adapter = new TasksAdapter(new ArrayList<>(), this::onCheckboxClickedListener);
         tasksList.setAdapter(adapter);
 
         // Fetch tasks
@@ -83,6 +85,30 @@ public class MyDayFragment extends Fragment {
 
         // Call getTasks method from TaskService to register the listener
         taskService.getTasks(tasksListener);
+    }
+
+    private void onCheckboxClickedListener(Task task, TextView title, boolean isChecked) {
+            // Tick it
+            task.setCompleted(isChecked);
+
+            // Set completedAt
+            if (isChecked) {
+                task.setCompletedAt(System.currentTimeMillis()); // Set completion timestamp
+            } else {
+                task.setCompletedAt(0); // Reset completion timestamp
+            }
+
+            // Save updated task to Firebase
+            TaskService taskService = new TaskService();
+            taskService.updateTask(task);
+
+            // Apply strikethrough style if the task is completed
+            if (task.isCompleted()) {
+                title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                // If task is not completed, it shouldn't be applied strikethrough style
+                title.setPaintFlags(title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
     }
 
 }
