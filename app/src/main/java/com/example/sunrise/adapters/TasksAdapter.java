@@ -21,6 +21,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     private final List<Task> localDataSet;
     private final OnTaskCheckedChangeListener onCheckedChangeListener;
+    private final OnItemClickedListener onItemClickedListener;
 
     /**
      * Initialize the dataset of the Adapter
@@ -28,13 +29,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public TasksAdapter(List<Task> dataSet, OnTaskCheckedChangeListener onCheckedChangeListener) {
+    public TasksAdapter(List<Task> dataSet, OnTaskCheckedChangeListener onCheckedChangeListener, OnItemClickedListener onItemClickedListener) {
         this.localDataSet = dataSet;
         this.onCheckedChangeListener = onCheckedChangeListener;
-    }
-
-    public interface OnTaskCheckedChangeListener {
-        void onCompleted(Task task, TextView title, boolean isChecked);
+        this.onItemClickedListener = onItemClickedListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -45,7 +43,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.task_item_layout, viewGroup, false);
 
-        return new TaskViewHolder(localDataSet, view, onCheckedChangeListener);
+        return new TaskViewHolder(localDataSet, view, onCheckedChangeListener, onItemClickedListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -73,6 +71,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         diffResult.dispatchUpdatesTo(this);
     }
 
+    public interface OnTaskCheckedChangeListener {
+        void onCompleted(Task task, TextView title, boolean isChecked);
+    }
+
+    public interface OnItemClickedListener {
+        void itemClicked(Task task);
+    }
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
@@ -82,22 +88,28 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         private final CheckBox completeCheckbox;
         private final Chip priority;
 
-        public TaskViewHolder(List<Task> localDataSet, View itemView, OnTaskCheckedChangeListener onCheckboxClick) {
+        public TaskViewHolder(List<Task> localDataSet, View itemView, OnTaskCheckedChangeListener onCheckboxClick, OnItemClickedListener onItemClickedListener) {
             super(itemView);
-            // TODO: Define click listener for the ViewHolder's View
 
             title = itemView.findViewById(R.id.title);
             completeCheckbox = itemView.findViewById(R.id.checkbox);
             priority = itemView.findViewById(R.id.priorityChip);
 
+            // Setting on complete checkbox click listener
             completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (onCheckboxClick != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Task updatedTask = localDataSet.get(position);
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && onItemClickedListener != null) {
+                    Task updatedTask = localDataSet.get(position);
+                    onCheckboxClick.onCompleted(updatedTask, title, isChecked);
+                }
+            });
 
-                        onCheckboxClick.onCompleted(updatedTask, title, isChecked);
-                    }
+            // Setting on task click listener
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && onItemClickedListener != null) {
+                    Task clickedTask = localDataSet.get(position);
+                    onItemClickedListener.itemClicked(clickedTask);
                 }
             });
         }
