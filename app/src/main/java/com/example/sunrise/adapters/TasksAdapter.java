@@ -53,9 +53,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
-        viewHolder.getPriorityChip().setText(localDataSet.get(position).getPriority());
-        viewHolder.getCompleteCheckbox().setChecked(localDataSet.get(position).isCompleted());
+        Task task = localDataSet.get(position);
+        viewHolder.bind(task);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -112,6 +111,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
                 onCheckboxClick.onCompleted(updatedTask, title, isChecked);
             });
+        }
+
+        public void bind(Task task) {
+            title.setText(task.getTitle());
+            completeCheckbox.setChecked(task.isCompleted());
+            priority.setText(task.getPriority());
         }
 
         public TextView getTextView() {
