@@ -22,37 +22,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     private final List<Task> localDataSet;
 
     /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView title;
-        private final CheckBox completeCheckbox;
-        private final Chip priority;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            // TODO: Define click listener for the ViewHolder's View
-
-            title = itemView.findViewById(R.id.title);
-            completeCheckbox = itemView.findViewById(R.id.checkbox);
-            priority = itemView.findViewById(R.id.priorityChip);
-        }
-
-        public TextView getTextView() {
-            return title;
-        }
-
-        public CheckBox getCompleteCheckbox() {
-            return completeCheckbox;
-        }
-
-        public Chip getPriorityChip() {
-            return priority;
-        }
-    }
-
-    /**
      * Initialize the dataset of the Adapter
      *
      * @param dataSet String[] containing the data to populate views to be used
@@ -81,6 +50,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         // contents of the view with that element
         viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
         viewHolder.getPriorityChip().setText(localDataSet.get(position).getPriority());
+        viewHolder.getCompleteCheckbox().setChecked(localDataSet.get(position).isCompleted());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -90,6 +60,20 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     }
 
     public void updateData(List<Task> newData) {
+        // Sorting so that uncompleted tasks go first to completed ones
+        newData.sort((task1, task2) -> {
+            if (task1.isCompleted() && !task2.isCompleted()) {
+                // If task1 is completed and task2 is uncompleted, task2 should come first
+                return 1;
+            } else if (!task1.isCompleted() && task2.isCompleted()) {
+                // If task1 is uncompleted and task2 is completed, task1 should come first
+                return -1;
+            } else {
+                // Otherwise, maintain the original order
+                return 0;
+            }
+        });
+
         TasksListDiffCallback diffCallback = new TasksListDiffCallback(localDataSet, newData);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
@@ -133,7 +117,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             Task newTask = newTasks.get(newItemPosition);
             return oldTask.getTitle().equals(newTask.getTitle())
                     && oldTask.getPriority().equals(newTask.getPriority())
-                    && oldTask.getUpdatedAt() == (newTask.getUpdatedAt());
+                    && oldTask.isCompleted() == newTask.isCompleted()
+                    && oldTask.getCompletedAt() == newTask.getCompletedAt()
+                    && oldTask.getUpdatedAt() == newTask.getUpdatedAt();
         }
     }
 }
