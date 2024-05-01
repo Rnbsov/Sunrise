@@ -25,6 +25,17 @@ public class Task {
         this.createdByUserId = createdByUserId;
     }
 
+    public Task(Task task) {
+        this.title = task.title;
+        this.priority = task.priority;
+        this.createdAt = task.createdAt;
+        this.updatedAt = task.updatedAt;
+        this.createdByUserId = task.createdByUserId;
+        this.taskId = task.taskId;
+        this.isCompleted = task.isCompleted;
+        this.completedAt = task.completedAt;
+    }
+
 
     public String getPriority() {
         return priority;
@@ -73,6 +84,7 @@ public class Task {
     public void setCreatedByUserId(String createdByUserId) {
         this.createdByUserId = createdByUserId;
     }
+
     public boolean isCompleted() {
         return isCompleted;
     }
