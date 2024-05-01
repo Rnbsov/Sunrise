@@ -63,6 +63,10 @@ public class MyDayFragment extends Fragment {
         taskService = new TaskService();
 
         // Fetch tasks
+        fetchTasksFromDatabase();
+    }
+
+    private void fetchTasksFromDatabase() {
         ValueEventListener tasksListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
