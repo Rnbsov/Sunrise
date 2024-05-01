@@ -10,6 +10,8 @@ public class Task {
     private long createdAt;
     private long updatedAt;
     private String createdByUserId;
+    private boolean isCompleted;
+    private long completedAt;
 
     public Task() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -21,6 +23,17 @@ public class Task {
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
         this.createdByUserId = createdByUserId;
+    }
+
+    public Task(Task task) {
+        this.title = task.title;
+        this.priority = task.priority;
+        this.createdAt = task.createdAt;
+        this.updatedAt = task.updatedAt;
+        this.createdByUserId = task.createdByUserId;
+        this.taskId = task.taskId;
+        this.isCompleted = task.isCompleted;
+        this.completedAt = task.completedAt;
     }
 
 
@@ -64,32 +77,27 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    /**
-     * Method to save the task to Firebase database
-     */
-    public void saveToFirebase() {
-        // Update the updatedAt timestamp before starting saving
-        this.updatedAt = System.currentTimeMillis();
-
-        // Get reference to Firebase database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference tasksRef = database.getReference("Tasks");
-
-        // Generate a reference to a new child location under "tasks" with an client-side auto-generated key
-        DatabaseReference newTaskRef = tasksRef.push();
-
-        taskId = newTaskRef.getKey(); // Retrieve the unique ID
-
-        this.setTaskId(taskId); // Save this uniqueId to task object
-
-        newTaskRef.setValue(this); // Save the task to Firebase database
-    }
-
     public String getCreatedByUserId() {
         return createdByUserId;
     }
 
     public void setCreatedByUserId(String createdByUserId) {
         this.createdByUserId = createdByUserId;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
+
+    public long getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(long completedAt) {
+        this.completedAt = completedAt;
     }
 }
