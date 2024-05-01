@@ -1,6 +1,7 @@
 package com.example.sunrise.adapters;
 
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.TaskService;
 import com.google.android.material.chip.Chip;
 
 import java.util.List;
@@ -39,7 +41,39 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.task_item_layout, viewGroup, false);
 
-        return new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
+
+        // Set checkbox click listener
+        viewHolder.getCompleteCheckbox().setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int position = viewHolder.getAdapterPosition();
+
+            // Update task completion status
+            Task updatedTask = localDataSet.get(position);
+
+            // Tick it
+            updatedTask.setCompleted(isChecked);
+
+            // Set completedAt
+            if (isChecked) {
+                updatedTask.setCompletedAt(System.currentTimeMillis()); // Set completion timestamp
+            } else {
+                updatedTask.setCompletedAt(0); // Reset completion timestamp
+            }
+
+            // Save updated task to Firebase
+            TaskService taskService = new TaskService();
+            taskService.updateTask(updatedTask);
+
+            // Apply strikethrough style if the task is completed
+            if (localDataSet.get(position).isCompleted()) {
+                viewHolder.getTextView().setPaintFlags(viewHolder.getTextView().getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                // If task is not completed, it shouldn't be applied strikethrough style
+                viewHolder.getTextView().setPaintFlags(viewHolder.getTextView().getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
+        });
+
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
