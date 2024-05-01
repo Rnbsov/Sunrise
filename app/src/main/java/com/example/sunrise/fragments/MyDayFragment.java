@@ -107,31 +107,32 @@ public class MyDayFragment extends Fragment {
             } else {
                 // Otherwise, maintain the original order
                 return 0;
-        }});
+            }
+        });
     }
 
     private void onCheckboxClickedListener(Task task, TextView title, boolean isChecked) {
-            // Tick it
-            task.setCompleted(isChecked);
+        // Tick it
+        task.setCompleted(isChecked);
 
-            // Set completedAt
-            if (isChecked) {
-                task.setCompletedAt(System.currentTimeMillis()); // Set completion timestamp
-            } else {
-                task.setCompletedAt(0); // Reset completion timestamp
-            }
+        // Set completedAt
+        if (isChecked) {
+            task.setCompletedAt(System.currentTimeMillis()); // Set completion timestamp
+        } else {
+            task.setCompletedAt(0); // Reset completion timestamp
+        }
 
-            // Save updated task to Firebase
-            TaskService taskService = new TaskService();
-            taskService.updateTask(task);
+        // Save updated task to Firebase
+        TaskService taskService = new TaskService();
+        taskService.updateTask(task);
 
-            // Apply strikethrough style if the task is completed
-            if (task.isCompleted()) {
-                title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                // If task is not completed, it shouldn't be applied strikethrough style
-                title.setPaintFlags(title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            }
+        // Apply strikethrough style if the task is completed
+        if (task.isCompleted()) {
+            title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            // If task is not completed, it shouldn't be applied strikethrough style
+            title.setPaintFlags(title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
     }
 
 }
