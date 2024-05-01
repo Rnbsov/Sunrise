@@ -1,7 +1,6 @@
 package com.example.sunrise.adapters;
 
 
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.models.Task;
-import com.example.sunrise.services.TaskService;
 import com.google.android.material.chip.Chip;
 
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
-    private final List<Task> localDataSet;
+    private static List<Task> localDataSet;
+    private final onCheckboxClickedListener onCheckedChangeListener;
 
     /**
      * Initialize the dataset of the Adapter
@@ -29,8 +28,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public TasksAdapter(List<Task> dataSet) {
+    public TasksAdapter(List<Task> dataSet, onCheckboxClickedListener onCheckedChangeListener) {
         localDataSet = dataSet;
+        this.onCheckedChangeListener = onCheckedChangeListener;
+    }
+
+    public interface onCheckboxClickedListener {
+        void onCompleted(Task task, TextView title, boolean isChecked);
     }
 
     // Create new views (invoked by the layout manager)
@@ -41,45 +45,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.task_item_layout, viewGroup, false);
 
-        final ViewHolder viewHolder = new ViewHolder(view);
-
-        // Set checkbox click listener
-        viewHolder.getCompleteCheckbox().setOnCheckedChangeListener((buttonView, isChecked) -> {
-            int position = viewHolder.getAdapterPosition();
-
-            // Update task completion status
-            Task updatedTask = localDataSet.get(position);
-
-            // Tick it
-            updatedTask.setCompleted(isChecked);
-
-            // Set completedAt
-            if (isChecked) {
-                updatedTask.setCompletedAt(System.currentTimeMillis()); // Set completion timestamp
-            } else {
-                updatedTask.setCompletedAt(0); // Reset completion timestamp
-            }
-
-            // Save updated task to Firebase
-            TaskService taskService = new TaskService();
-            taskService.updateTask(updatedTask);
-
-            // Apply strikethrough style if the task is completed
-            if (localDataSet.get(position).isCompleted()) {
-                viewHolder.getTextView().setPaintFlags(viewHolder.getTextView().getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                // If task is not completed, it shouldn't be applied strikethrough style
-                viewHolder.getTextView().setPaintFlags(viewHolder.getTextView().getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            }
-        });
-
-        return viewHolder;
+        return new ViewHolder(view, onCheckedChangeListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
@@ -126,13 +97,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         private final CheckBox completeCheckbox;
         private final Chip priority;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, onCheckboxClickedListener onCheckboxClick) {
             super(itemView);
             // TODO: Define click listener for the ViewHolder's View
 
             title = itemView.findViewById(R.id.title);
             completeCheckbox = itemView.findViewById(R.id.checkbox);
             priority = itemView.findViewById(R.id.priorityChip);
+
+            completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                int position = getAdapterPosition();
+
+                Task updatedTask = localDataSet.get(position);
+
+                onCheckboxClick.onCompleted(updatedTask, title, isChecked);
+            });
         }
 
         public TextView getTextView() {
