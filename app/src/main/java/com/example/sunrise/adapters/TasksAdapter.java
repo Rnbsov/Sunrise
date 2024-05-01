@@ -19,7 +19,7 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
-    private static List<Task> localDataSet;
+    private final List<Task> localDataSet;
     private final OnTaskCheckedChangeListener onCheckedChangeListener;
 
     /**
@@ -29,7 +29,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      * by RecyclerView
      */
     public TasksAdapter(List<Task> dataSet, OnTaskCheckedChangeListener onCheckedChangeListener) {
-        localDataSet = dataSet;
+        this.localDataSet = dataSet;
         this.onCheckedChangeListener = onCheckedChangeListener;
     }
 
@@ -45,7 +45,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.task_item_layout, viewGroup, false);
 
-        return new TaskViewHolder(view, onCheckedChangeListener);
+        return new TaskViewHolder(localDataSet, view, onCheckedChangeListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -82,7 +82,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         private final CheckBox completeCheckbox;
         private final Chip priority;
 
-        public TaskViewHolder(View itemView, OnTaskCheckedChangeListener onCheckboxClick) {
+        public TaskViewHolder(List<Task> localDataSet, View itemView, OnTaskCheckedChangeListener onCheckboxClick) {
             super(itemView);
             // TODO: Define click listener for the ViewHolder's View
 
