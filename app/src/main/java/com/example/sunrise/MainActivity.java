@@ -1,9 +1,5 @@
 package com.example.sunrise;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -11,10 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
-import com.example.sunrise.fragments.CategoriesFragment;
-import com.example.sunrise.fragments.MyDayFragment;
-import com.example.sunrise.fragments.ProfileFragment;
-import com.example.sunrise.fragments.StatisticsFragment;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+
 import com.example.sunrise.models.Task;
 import com.example.sunrise.services.TaskService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,10 +26,6 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MyDayFragment myDayFragment;
-    private StatisticsFragment statisticsFragment;
-    private CategoriesFragment categoriesFragment;
-    private ProfileFragment profileFragment;
     private Chip priorityChip;
     private BottomSheetDialog bottomSheetDialog;
     TextInputEditText editTitle;
@@ -42,49 +35,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupBottomMenu();
+        setupNavigation();
         setupFabButton();
     }
 
-    private void setupBottomMenu() {
-        BottomNavigationView bottomNavView = findViewById(R.id.bottom_navigation);
+    private void setupNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragments_container);
 
-        // Initiating fragments instances
-        myDayFragment = new MyDayFragment();
-        statisticsFragment = new StatisticsFragment();
-        categoriesFragment = new CategoriesFragment();
-        profileFragment = new ProfileFragment();
+        assert navHostFragment != null : "navHostFragment should not be null";
 
-        // Setting listener for item pressed in bottom navigation bar
-        bottomNavView.setOnItemSelectedListener(this::onItemSelectedListener);
-
-        // Setting default page when app is opened
-        bottomNavView.setSelectedItemId(R.id.page_my_day);
-    }
-
-    private boolean onItemSelectedListener(MenuItem menuItem) {
-        int itemId = menuItem.getItemId();
-        if (itemId == R.id.page_my_day) {
-            showFragment(myDayFragment);
-            return true;
-        } else if (itemId == R.id.page_statistics) {
-            showFragment(statisticsFragment);
-            return true;
-        } else if (itemId == R.id.page_categories) {
-            showFragment(categoriesFragment);
-            return true;
-        } else if (itemId == R.id.page_profile) {
-            showFragment(profileFragment);
-            return true;
-        }
-        return false;
-    }
-
-    private void showFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragments_container, fragment)
-                .commit();
+        NavigationUI.setupWithNavController(bottomNavigationView,
+                navHostFragment.getNavController());
     }
 
     private void setupFabButton() {
