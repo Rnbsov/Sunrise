@@ -1,8 +1,5 @@
 package com.example.sunrise.models;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 public class Task {
     private String title;
     private String priority;
