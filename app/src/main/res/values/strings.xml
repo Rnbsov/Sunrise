@@ -31,8 +31,12 @@
     <string name="priority_medium">Medium</string>
     <string name="priority_low">Low</string>
     <string name="priority_regular">Regular</string>
+
+    <!-- Categories -->
     <string name="tags">Tags</string>
     <string name="completed">Completed</string>
     <string name="trash">Trash</string>
     <string name="scheduled">Scheduled</string>
+    <string name="create_new_tag">Create new tag</string>
+    <string name="button_to_create_new_tag">button to create new tag</string>
 </resources>
