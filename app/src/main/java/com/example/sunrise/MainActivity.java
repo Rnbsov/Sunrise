@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Chip priorityChip;
     private BottomSheetDialog bottomSheetDialog;
+    private BottomNavigationView bottomNavigationView;
+    private FloatingActionButton fab;
     TextInputEditText editTitle;
     TextInputLayout titleInputLayout;
 
@@ -38,12 +40,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupNavigation();
         setupFabButton();
+        setupNavigation();
     }
 
     private void setupNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragments_container);
 
         assert navHostFragment != null : "navHostFragment should not be null";
@@ -58,10 +60,30 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up BottomNavigationView with NavController
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+        // Set destination listener, to hide fab and bottom navigation bar when navigation anywhere except main pages
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int destinationId = destination.getId();
+            if (destinationId == R.id.page_my_day || destinationId == R.id.page_statistics || destinationId == R.id.page_categories || destinationId == R.id.page_profile) {
+                showBottomNavBarAndFab();
+            } else {
+                hideBottomNavBarAndFab();
+            }
+        });
+    }
+
+    private void hideBottomNavBarAndFab() {
+        bottomNavigationView.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
+    }
+
+    private void showBottomNavBarAndFab() {
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
     }
 
     private void setupFabButton() {
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(this::showTaskCreationDialog);
     }
 
