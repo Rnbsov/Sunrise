@@ -45,21 +45,6 @@ public class TagsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @NonNull
-    private static ColorStateList getColorStateList(int color) {
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled},
-                new int[]{android.R.attr.state_pressed}
-        };
-
-        int[] colors = new int[]{
-                color,
-                color // Set same color for both pressed and enabled states
-        };
-
-        return new ColorStateList(states, colors);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -141,6 +126,21 @@ public class TagsFragment extends Fragment {
         if (colorPickerDialog != null && colorPickerDialog.isShowing()) {
             colorPickerDialog.dismiss();
         }
+    }
+
+    @NonNull
+    private static ColorStateList getColorStateList(int color) {
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled},
+                new int[]{android.R.attr.state_pressed}
+        };
+
+        int[] colors = new int[]{
+                color,
+                color // Set same color for both pressed and enabled states
+        };
+
+        return new ColorStateList(states, colors);
     }
 
     private void createTag(View view) {
