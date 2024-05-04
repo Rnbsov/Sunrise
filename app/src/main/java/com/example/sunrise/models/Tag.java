@@ -2,7 +2,7 @@ package com.example.sunrise.models;
 
 public class Tag {
     private String title;
-    private String color;
+    private int color;
     private String tagId;
     private String createdByUserId;
     private long createdAt;
@@ -12,7 +12,7 @@ public class Tag {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Tag(String title, String color, String createdByUserId) {
+    public Tag(String title, int color, String createdByUserId) {
         this.title = title;
         this.color = color;
         this.createdByUserId = createdByUserId;
@@ -28,11 +28,11 @@ public class Tag {
         this.title = title;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
