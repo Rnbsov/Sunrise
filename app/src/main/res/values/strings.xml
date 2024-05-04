@@ -31,4 +31,8 @@
     <string name="priority_medium">Medium</string>
     <string name="priority_low">Low</string>
     <string name="priority_regular">Regular</string>
+    <string name="tags">Tags</string>
+    <string name="completed">Completed</string>
+    <string name="trash">Trash</string>
+    <string name="scheduled">Scheduled</string>
 </resources>
