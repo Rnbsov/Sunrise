@@ -21,12 +21,22 @@
         android:id="@+id/page_categories"
         android:name="com.example.sunrise.fragments.CategoriesFragment"
         android:label="@string/bottom_nav_categories"
-        tools:layout="@layout/fragment_categories" />
+        tools:layout="@layout/fragment_categories" >
+        <action
+            android:id="@+id/action_page_categories_to_tagsFragment"
+            app:destination="@id/tagsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/page_profile"
         android:name="com.example.sunrise.fragments.ProfileFragment"
         android:label="@string/bottom_nav_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/tagsFragment"
+        android:name="com.example.sunrise.TagsFragment"
+        android:label="fragment_tags"
+        tools:layout="@layout/fragment_tags" />
 
 </navigation>
