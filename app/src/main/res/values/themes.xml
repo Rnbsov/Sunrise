@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.Sunrise" parent="Base.Theme.Sunrise" />
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
 </resources>
