@@ -9,11 +9,14 @@ import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.sunrise.models.Task;
 import com.example.sunrise.services.TaskService;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -45,8 +48,16 @@ public class MainActivity extends AppCompatActivity {
 
         assert navHostFragment != null : "navHostFragment should not be null";
 
-        NavigationUI.setupWithNavController(bottomNavigationView,
-                navHostFragment.getNavController());
+        NavController navController = navHostFragment.getNavController();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.page_my_day, R.id.page_statistics, R.id.page_categories, R.id.page_profile).build();
+
+        // Set up Toolbar with NavController
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+
+        // Set up BottomNavigationView with NavController
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 
     private void setupFabButton() {
