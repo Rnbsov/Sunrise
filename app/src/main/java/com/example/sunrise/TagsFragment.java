@@ -1,22 +1,200 @@
 package com.example.sunrise;
 
+import android.app.AlertDialog;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.sunrise.adapters.ColorsAdapter;
+import com.example.sunrise.models.Tag;
+import com.example.sunrise.services.TagService;
+import com.example.sunrise.utils.GridSpacingItemDecoration;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class TagsFragment extends Fragment {
+    TextInputEditText editTagName;
+    TextInputLayout tagNameInputLayout;
+    private View fragment;
+    private Chip colorChip;
+    private BottomSheetDialog bottomSheetDialog;
+    private List<Integer> colors;
+    private AlertDialog colorPickerDialog;
+    private int selectedColor = Color.TRANSPARENT;
+
     public TagsFragment() {
         // Required empty public constructor
+    }
+
+    @NonNull
+    private static ColorStateList getColorStateList(int color) {
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled},
+                new int[]{android.R.attr.state_pressed}
+        };
+
+        int[] colors = new int[]{
+                color,
+                color // Set same color for both pressed and enabled states
+        };
+
+        return new ColorStateList(states, colors);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tags, container, false);
+        fragment = inflater.inflate(R.layout.fragment_tags, container, false);
+        return fragment;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setupExtendedFabButton();
+    }
+
+    private void setupExtendedFabButton() {
+        ExtendedFloatingActionButton extendedFab = fragment.findViewById(R.id.extendedFab);
+
+        extendedFab.setOnClickListener(this::showTagCreationDialog);
+    }
+
+    private void showTagCreationDialog(View v) {
+        bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetContentView = LayoutInflater.from(requireContext()).inflate(R.layout.create_tag_bottom_sheet, null);
+        bottomSheetDialog.setContentView(bottomSheetContentView);
+        bottomSheetDialog.show();
+
+        tagNameInputLayout = bottomSheetContentView.findViewById(R.id.tagNameInputLayout);
+        editTagName = bottomSheetContentView.findViewById(R.id.editTagName);
+        Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
+
+        colorChip = bottomSheetContentView.findViewById(R.id.color);
+        colorChip.setOnClickListener(this::showColorsDialog);
+
+        // Setting click listener on create button
+        createBtn.setOnClickListener(this::createTag);
+    }
+
+    private void showColorsDialog(View view) {
+        // Create AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_choose_color, null);
+        builder.setView(dialogView);
+
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view_colors);
+        recyclerView.setHasFixedSize(true);
+
+        // Set the spacing between items (adjust as needed)
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spacingInPixels));
+
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 5));
+
+        // Initialize colors
+        colors = generateColors();
+
+        ColorsAdapter adapter = new ColorsAdapter(colors, this::onColorSelected);
+
+        recyclerView.setAdapter(adapter);
+
+        colorPickerDialog = builder.create();
+        colorPickerDialog.show();
+    }
+
+    private void onColorSelected(int color) {
+        // Handle color selection here
+        // Creating color state list, cause there is no way around it
+        ColorStateList colorStateList = getColorStateList(color);
+
+        // Setting selected color for icon
+        colorChip.setChipIconTint(colorStateList);
+
+        // Setting selected color for text
+        colorChip.setTextColor(color);
+
+        selectedColor = color; // Save the selected color as class property
+
+        // Dismiss the AlertDialog after color selection
+        if (colorPickerDialog != null && colorPickerDialog.isShowing()) {
+            colorPickerDialog.dismiss();
+        }
+    }
+
+    private void createTag(View view) {
+        String tagName = Objects.requireNonNull(editTagName.getText()).toString();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        // Some validation
+        if (tagName.isEmpty()) {
+            tagNameInputLayout.setError("Please type title");
+            return;
+        }
+
+        int color;
+        if (selectedColor == Color.TRANSPARENT) {
+            // If the user didn't choose any color, select a random color from the array
+            Random random = new Random();
+            color = colors.get(random.nextInt(colors.size()));
+        } else {
+            color = selectedColor; // Use the selected color
+        }
+
+        Tag tag = new Tag(tagName, color, userId);
+
+        // Initialize TaskService to interact with Firebase database
+        TagService tagService = new TagService();
+
+        // Save the newly created task to Firebase database
+        tagService.saveTag(tag);
+
+        // Dismiss the bottom sheet dialog after task creation
+        bottomSheetDialog.dismiss();
+    }
+
+    private List<Integer> generateColors() {
+        List<Integer> colors = new ArrayList<>();
+
+        // Define hexadecimal colors
+        String[] hexValues = {
+
+                "#FFCCCC", // Pastel Red
+                "#FFE5CC", // Pastel Orange
+                "#FFF2CC", // Pastel Yellow
+                "#CCFFCC", // Pastel Green
+                "#CCE5FF", // Pastel Blue
+                "#FFCCFF"  // Pastel Purple
+        };
+
+        // Convert hexadecimal values to color integers and add them to the list
+        for (String hex : hexValues) {
+            int color = Color.parseColor(hex);
+            colors.add(color);
+        }
+
+        return colors;
+    }
+
 }
