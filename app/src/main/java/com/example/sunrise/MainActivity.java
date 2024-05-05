@@ -1,6 +1,8 @@
 package com.example.sunrise;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,17 +16,25 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.sunrise.models.Tag;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.TaskService;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     TextInputEditText editTitle;
     TextInputLayout titleInputLayout;
+    private ChipGroup tagChips;
+    private List<String> selectedChipIds;
+    TagService tagService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupFabButton();
         setupNavigation();
+
+        selectedChipIds = new ArrayList<String>();
+        tagService = new TagService();
     }
 
     private void setupNavigation() {
@@ -100,7 +117,59 @@ public class MainActivity extends AppCompatActivity {
         priorityChip = bottomSheetContentView.findViewById(R.id.priority);
         priorityChip.setOnClickListener(this::showPriorityPopupMenu);
 
+        // Tags row
+        tagChips = bottomSheetContentView.findViewById(R.id.tagChips);
+        populateTagChips();
+
         createBtn.setOnClickListener(this::createTask);
+    }
+
+    private void populateTagChips() {
+        tagService.getTags(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Tag> tagList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Tag tag = snapshot.getValue(Tag.class);
+                    tagList.add(tag);
+                }
+
+                for (Tag tag : tagList) {
+                    Chip tagChip = (Chip) LayoutInflater.from(MainActivity.this).inflate(R.layout.filter_tag_chip_layout, null);
+                    tagChip.setText(tag.getTitle());
+                    tagChip.setChipBackgroundColor(getColorStateListOutOfColor(tag.getColor()));
+
+                    tagChip.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                        if (isChecked) {
+                            selectedChipIds.add(tag.getTagId());
+                        } else {
+                            selectedChipIds.remove(tag.getTagId());
+                        }
+                    });
+
+                    tagChips.addView(tagChip);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("MainActivity", "fetch tags failed");
+            }
+        });
+    }
+
+    private ColorStateList getColorStateListOutOfColor(int color) {
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled},
+                new int[]{android.R.attr.state_pressed}
+        };
+
+        int[] colors = new int[]{
+                color,
+                color // Set same color for both pressed and enabled states
+        };
+
+        return new ColorStateList(states, colors);
     }
 
     private void showPriorityPopupMenu(View view) {
@@ -120,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Task task = new Task(title, priority, userId);
+        Task task = new Task(title, priority, selectedChipIds, userId);
 
         // Initialize TaskService to interact with Firebase database
         TaskService taskService = new TaskService();
