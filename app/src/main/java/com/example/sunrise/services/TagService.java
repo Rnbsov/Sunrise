@@ -1,12 +1,22 @@
 package com.example.sunrise.services;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.sunrise.models.Tag;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TagService {
@@ -61,5 +71,46 @@ public class TagService {
 
         // Add ValueEventListener to the query to listen for changes in Firebase data
         query.addValueEventListener(listener);
+    }
+
+    /**
+     * Method to retrieve tag titles for a list of tag IDs
+     */
+    public void retrieveTagColorsByTagIds(List<String> tagIds, TagColorsListener listener) {
+        // Create a map to store tag colors corresponding to their IDs
+        Map<String, Integer> tagColorsMap = new HashMap<>();
+
+        // Iterate through the list of tag IDs
+        for (String tagId : tagIds) {
+            DatabaseReference tagRef = tagsRef.child(tagId);
+            tagRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Retrieve the tag object
+                        int color = dataSnapshot.child("color").getValue(Integer.class);
+                        tagColorsMap.put(tagId, color);
+
+                        // Check if all tag titles are retrieved
+                        if (tagColorsMap.size() == tagIds.size()) {
+                            // Convert the map of tag colors to a list
+                            List<Integer> tagColors = new ArrayList<>(tagColorsMap.values());
+
+                            // Pass the list of tag colors to the listener
+                            listener.onTagColorsRetrieved(tagColors);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("TagService", "Failed to retrieve colors by ids");
+                }
+            });
+        }
+    }
+
+    public interface TagColorsListener {
+        void onTagColorsRetrieved(List<Integer> tagColors);
     }
 }
