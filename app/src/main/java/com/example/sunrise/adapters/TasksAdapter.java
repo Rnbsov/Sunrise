@@ -136,6 +136,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         }
 
         private void setupTagDots(List<String> tagsIds) {
+            // Hide all tag dots by default
+            firstTagDot.setVisibility(View.GONE);
+            secondTagDot.setVisibility(View.GONE);
+            thirdTagDot.setVisibility(View.GONE);
+
             if (tagsIds == null || tagsIds.isEmpty()) {
                 // If tagIds is null or empty, return early
                 return;
@@ -152,12 +157,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                     switch (i) {
                         case 0:
                             firstTagDot.setBackgroundColor(color);
+                            firstTagDot.setVisibility(View.VISIBLE);
                             break;
                         case 1:
                             secondTagDot.setBackgroundColor(color);
+                            secondTagDot.setVisibility(View.VISIBLE);
                             break;
                         case 2:
                             thirdTagDot.setBackgroundColor(color);
+                            thirdTagDot.setVisibility(View.VISIBLE);
                             break;
                     }
                 }
@@ -196,6 +204,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
             Task oldTask = oldTasks.get(oldItemPosition);
             Task newTask = newTasks.get(newItemPosition);
+
+            // Check if one item has tags and the other doesn't
+            if ((oldTask.getTags() == null && newTask.getTags() != null) ||
+                    (oldTask.getTags() != null && newTask.getTags() == null)) {
+                return false;
+            }
+
+            // If both items have tags, compare their values
+            if (oldTask.getTags() != null && !oldTask.getTags().equals(newTask.getTags())) {
+                return false;
+            }
+
             return oldTask.getTitle().equals(newTask.getTitle())
                     && oldTask.getPriority().equals(newTask.getPriority())
                     && oldTask.isCompleted() == newTask.isCompleted()
