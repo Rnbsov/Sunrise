@@ -31,6 +31,10 @@
         app:chipIcon="@drawable/flag_24px"
         />
 
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tagChips" />
 
     <Button
         android:id="@+id/create_btn"
