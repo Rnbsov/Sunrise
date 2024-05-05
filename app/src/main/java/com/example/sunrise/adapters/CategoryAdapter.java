@@ -3,6 +3,7 @@ package com.example.sunrise.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,44 +15,62 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int VIEW_TYPE_CATEGORY = 0;
+    private static final int VIEW_TYPE_ADD_BUTTON = 1;
 
     private final List<Category> localDataSet;
-    private final CategoryAdapter.OnCategoryClickListener OnCategoryClickListener;
+    private final CategoryAdapter.OnCategoryClickListener categoryClickListener;
 
-    public CategoryAdapter(List<Category> dataSet, CategoryAdapter.OnCategoryClickListener OnCategoryClickListener) {
+    public CategoryAdapter(List<Category> dataSet, CategoryAdapter.OnCategoryClickListener categoryClickListener) {
         this.localDataSet = dataSet;
-        this.OnCategoryClickListener = OnCategoryClickListener;
+        this.categoryClickListener = categoryClickListener;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == localDataSet.size() ? VIEW_TYPE_ADD_BUTTON : VIEW_TYPE_CATEGORY;
     }
 
     @NonNull
     @Override
-    public CategoryAdapter.CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item_layout, parent, false);
-        return new CategoryAdapter.CategoryViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        if (viewType == VIEW_TYPE_CATEGORY) {
+            View view = inflater.inflate(R.layout.category_item_layout, parent, false);
+            return new CategoryViewHolder(view);
+        } else {
+            View view = inflater.inflate(R.layout.category_add_button_layout, parent, false);
+            return new AddButtonViewHolder(view);
+        }
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull CategoryAdapter.CategoryViewHolder holder, int position) {
-        Category category = localDataSet.get(position);
-        ShapeableImageView icon = holder.getColorView();
-        TextView title = holder.getCategoryName();
-
-        icon.setBackgroundColor(category.getColor());
-        title.setText(category.getTitle());
-
-        holder.itemView.setOnClickListener(v -> OnCategoryClickListener.onCategoryClick(category));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof CategoryViewHolder) {
+            CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
+            Category category = localDataSet.get(position);
+            categoryViewHolder.bind(category);
+            categoryViewHolder.itemView.setOnClickListener(v -> categoryClickListener.onCategoryClick(category));
+        } else if (holder instanceof AddButtonViewHolder) {
+            AddButtonViewHolder addButtonViewHolder = (AddButtonViewHolder) holder;
+            addButtonViewHolder.getAddButton().setOnClickListener(v -> {
+                System.out.println("Add button clicked");
+            });
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.size();
+        // Add 1 for the Add category button
+        return localDataSet.size() + 1;
     }
 
     public void setCategories(List<Category> newCategories) {
-        localDataSet.clear(); // Clear the existing tags
+        localDataSet.clear(); // Clear the existing categories
         localDataSet.addAll(newCategories); // Add all new categories
         notifyDataSetChanged(); // Notify the adapter about the dataset change
     }
@@ -61,8 +80,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        ShapeableImageView icon;
-        TextView title;
+        private ShapeableImageView icon;
+        private TextView title;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,12 +89,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             title = itemView.findViewById(R.id.title);
         }
 
-        public ShapeableImageView getColorView() {
-            return icon;
+        public void bind(Category category) {
+            icon.setBackgroundColor(category.getColor());
+            title.setText(category.getTitle());
+        }
+    }
+
+    public static class AddButtonViewHolder extends RecyclerView.ViewHolder {
+        private final LinearLayout addButton;
+
+        public AddButtonViewHolder(@NonNull View itemView) {
+            super(itemView);
+            addButton = itemView.findViewById(R.id.add_button);
         }
 
-        public TextView getCategoryName() {
-            return title;
+        public LinearLayout getAddButton() {
+            return addButton;
         }
     }
 }
