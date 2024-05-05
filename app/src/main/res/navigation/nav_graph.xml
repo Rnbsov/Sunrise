@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/tagsFragment"
-        android:name="com.example.sunrise.TagsFragment"
+        android:name="com.example.sunrise.fragments.TagsFragment"
         android:label="Tags"
         tools:layout="@layout/fragment_tags" />
 

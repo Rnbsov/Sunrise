@@ -1,4 +1,4 @@
-package com.example.sunrise;
+package com.example.sunrise.fragments;
 
 import android.app.AlertDialog;
 import android.content.res.ColorStateList;
