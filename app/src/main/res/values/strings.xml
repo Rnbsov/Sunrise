@@ -41,4 +41,5 @@
     <string name="button_to_create_new_tag">button to create new tag</string>
     <string name="color">Color</string>
     <string name="colors">Colors</string>
+    <string name="default_tag">Default tag</string>
 </resources>

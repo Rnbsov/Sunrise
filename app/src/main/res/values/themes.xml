@@ -21,4 +21,9 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="RoundedSquareOverlay">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+
 </resources>
