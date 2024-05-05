@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.TagService;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
@@ -87,6 +89,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         private final TextView title;
         private final CheckBox completeCheckbox;
         private final Chip priority;
+        private final ShapeableImageView firstTagDot;
+        private final ShapeableImageView secondTagDot;
+        private final ShapeableImageView thirdTagDot;
+
 
         public TaskViewHolder(List<Task> localDataSet, View itemView, OnTaskCheckedChangeListener onCheckboxClick, OnItemClickedListener onItemClickedListener) {
             super(itemView);
@@ -94,6 +100,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             title = itemView.findViewById(R.id.title);
             completeCheckbox = itemView.findViewById(R.id.checkbox);
             priority = itemView.findViewById(R.id.priorityChip);
+
+            // finding imageViews for color dots of tags
+            firstTagDot = itemView.findViewById(R.id.tag_1);
+            secondTagDot = itemView.findViewById(R.id.tag_2);
+            thirdTagDot = itemView.findViewById(R.id.tag_3);
 
             // Setting on complete checkbox click listener
             completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -118,6 +129,39 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             title.setText(task.getTitle());
             completeCheckbox.setChecked(task.isCompleted());
             priority.setText(task.getPriority());
+
+            List<String> tagsIds = task.getTags();
+
+            setupTagDots(tagsIds);
+        }
+
+        private void setupTagDots(List<String> tagsIds) {
+            if (tagsIds == null || tagsIds.isEmpty()) {
+                // If tagIds is null or empty, return early
+                return;
+            }
+
+            TagService tagService = new TagService();
+
+            tagService.retrieveTagColorsByTagIds(tagsIds, tagColors -> {
+                // Loop through the first three colors and setting them to imageViews
+                for (int i = 0; i < Math.min(tagColors.size(), 3); i++) {
+                    int color = tagColors.get(i);
+
+                    // Set the color to imageView
+                    switch (i) {
+                        case 0:
+                            firstTagDot.setBackgroundColor(color);
+                            break;
+                        case 1:
+                            secondTagDot.setBackgroundColor(color);
+                            break;
+                        case 2:
+                            thirdTagDot.setBackgroundColor(color);
+                            break;
+                    }
+                }
+            });
         }
     }
 
