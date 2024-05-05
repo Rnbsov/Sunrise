@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/color"
-        app:chipIcon="@drawable/flag_24px" />
+        app:chipIcon="@drawable/palette_24px" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/colorsList"
