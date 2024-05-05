@@ -65,7 +65,7 @@
                             android:id="@+id/tag_1"
                             android:layout_width="10dp"
                             android:layout_height="10dp"
-                            app:shapeAppearance="@style/roundedImageView" />
+                            app:shapeAppearance="@style/starImageView" />
 
                         <Space
                             android:layout_width="8dp"
@@ -75,7 +75,7 @@
                             android:id="@+id/tag_2"
                             android:layout_width="10dp"
                             android:layout_height="10dp"
-                            app:shapeAppearance="@style/roundedImageView" />
+                            app:shapeAppearance="@style/starImageView" />
 
                         <Space
                             android:layout_width="8dp"
@@ -85,7 +85,7 @@
                             android:id="@+id/tag_3"
                             android:layout_width="10dp"
                             android:layout_height="10dp"
-                            app:shapeAppearance="@style/roundedImageView" />
+                            app:shapeAppearance="@style/starImageView" />
                     </LinearLayout>
 
                 </LinearLayout>
