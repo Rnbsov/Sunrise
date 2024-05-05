@@ -13,6 +13,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,6 +77,9 @@ public class TagsFragment extends Fragment {
         // Initialize adapter
         adapter = new TagsAdapter(new ArrayList<>(), this::OnTagClickListener);
         tagsList.setAdapter(adapter);
+
+        // Add decoration so there is divider line between items
+        tagsList.addItemDecoration(new DividerItemDecoration(tagsList.getContext(), DividerItemDecoration.VERTICAL));
 
         // Initialize TaskService
         tagService = new TagService();
