@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.adapters.ColorsAdapter;
+import com.example.sunrise.adapters.TagsAdapter;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.utils.GridSpacingItemDecoration;
@@ -25,6 +28,9 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +38,8 @@ import java.util.Objects;
 import java.util.Random;
 
 public class TagsFragment extends Fragment {
+    private TagsAdapter adapter;
+    private TagService tagService;
     TextInputEditText editTagName;
     TextInputLayout tagNameInputLayout;
     private View fragment;
@@ -58,7 +66,59 @@ public class TagsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         setupExtendedFabButton();
+
+        RecyclerView tagsList = fragment.findViewById(R.id.tags_list);
+
+        // Creating and setting linear layout manager to recyclerView
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        tagsList.setLayoutManager(layoutManager);
+
+        // Initialize adapter
+        adapter = new TagsAdapter(new ArrayList<>(), this::OnTagClickListener);
+        tagsList.setAdapter(adapter);
+
+        // Initialize TaskService
+        tagService = new TagService();
+
+        System.out.println("before fetchTags");
+        // Fetch tasks
+        fetchTagsFromDatabase();
     }
+
+    private void OnTagClickListener(Tag tag) {
+        System.out.println(tag.getColor() + tag.getTitle());
+    }
+
+        private void fetchTagsFromDatabase() {
+        System.out.println("inside fetchTags");
+            ValueEventListener tagsListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    List<Tag> tagList = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Tag task = snapshot.getValue(Tag.class);
+                        tagList.add(task);
+                    }
+
+                    Log.d("Firebase listener", "Firebase listener");
+                    for (Tag task : tagList) {
+                        System.out.println(task);
+                    }
+
+                    // Updating tagList in adapter
+                    adapter.setTags(tagList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle errors
+                    Log.e("TagsFragment", "Error fetching tags", databaseError.toException());
+                }
+            };
+
+            // Call getTasks method from TagService to register the listener
+            tagService.getTags(tagsListener);
+        }
 
     private void setupExtendedFabButton() {
         ExtendedFloatingActionButton extendedFab = fragment.findViewById(R.id.extendedFab);
