@@ -7,8 +7,8 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:backgroundTint="@color/material_dynamic_secondary10"
-    app:cardElevation="8dp"
-    app:cardCornerRadius="20dp">
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,10 +23,10 @@
 
             <CheckBox
                 android:id="@+id/checkbox"
-                android:scaleX="1.2"
-                android:scaleY="1.2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:scaleX="1.2"
+                android:scaleY="1.2" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -40,11 +40,56 @@
                     android:layout_height="wrap_content"
                     android:textSize="25sp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/priorityChip"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipIcon="@drawable/flag_24px" />
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/priorityChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipIcon="@drawable/flag_24px" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="wrap_content" />
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/tag_1"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            app:shapeAppearance="@style/roundedImageView" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="wrap_content" />
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/tag_2"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            app:shapeAppearance="@style/roundedImageView" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="wrap_content" />
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/tag_3"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            app:shapeAppearance="@style/roundedImageView" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
