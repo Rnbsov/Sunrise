@@ -39,10 +39,10 @@ import java.util.Objects;
 import java.util.Random;
 
 public class TagsFragment extends Fragment {
-    private TagsAdapter adapter;
-    private TagService tagService;
     TextInputEditText editTagName;
     TextInputLayout tagNameInputLayout;
+    private TagsAdapter adapter;
+    private TagService tagService;
     private View fragment;
     private Chip colorChip;
     private BottomSheetDialog bottomSheetDialog;
@@ -52,6 +52,21 @@ public class TagsFragment extends Fragment {
 
     public TagsFragment() {
         // Required empty public constructor
+    }
+
+    @NonNull
+    private static ColorStateList getColorStateList(int color) {
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled},
+                new int[]{android.R.attr.state_pressed}
+        };
+
+        int[] colors = new int[]{
+                color,
+                color // Set same color for both pressed and enabled states
+        };
+
+        return new ColorStateList(states, colors);
     }
 
     @Override
@@ -93,36 +108,36 @@ public class TagsFragment extends Fragment {
         System.out.println(tag.getColor() + tag.getTitle());
     }
 
-        private void fetchTagsFromDatabase() {
+    private void fetchTagsFromDatabase() {
         System.out.println("inside fetchTags");
-            ValueEventListener tagsListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    List<Tag> tagList = new ArrayList<>();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Tag task = snapshot.getValue(Tag.class);
-                        tagList.add(task);
-                    }
-
-                    Log.d("Firebase listener", "Firebase listener");
-                    for (Tag task : tagList) {
-                        System.out.println(task);
-                    }
-
-                    // Updating tagList in adapter
-                    adapter.setTags(tagList);
+        ValueEventListener tagsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Tag> tagList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Tag task = snapshot.getValue(Tag.class);
+                    tagList.add(task);
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Handle errors
-                    Log.e("TagsFragment", "Error fetching tags", databaseError.toException());
+                Log.d("Firebase listener", "Firebase listener");
+                for (Tag task : tagList) {
+                    System.out.println(task);
                 }
-            };
 
-            // Call getTasks method from TagService to register the listener
-            tagService.getTags(tagsListener);
-        }
+                // Updating tagList in adapter
+                adapter.setTags(tagList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+                Log.e("TagsFragment", "Error fetching tags", databaseError.toException());
+            }
+        };
+
+        // Call getTasks method from TagService to register the listener
+        tagService.getTags(tagsListener);
+    }
 
     private void setupExtendedFabButton() {
         ExtendedFloatingActionButton extendedFab = fragment.findViewById(R.id.extendedFab);
@@ -190,21 +205,6 @@ public class TagsFragment extends Fragment {
         if (colorPickerDialog != null && colorPickerDialog.isShowing()) {
             colorPickerDialog.dismiss();
         }
-    }
-
-    @NonNull
-    private static ColorStateList getColorStateList(int color) {
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled},
-                new int[]{android.R.attr.state_pressed}
-        };
-
-        int[] colors = new int[]{
-                color,
-                color // Set same color for both pressed and enabled states
-        };
-
-        return new ColorStateList(states, colors);
     }
 
     private void createTag(View view) {
