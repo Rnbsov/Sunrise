@@ -1,6 +1,6 @@
 package com.example.sunrise.fragments;
 
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,22 +12,18 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
-import com.example.sunrise.adapters.ColorsAdapter;
 import com.example.sunrise.adapters.TagsAdapter;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.TagService;
-import com.example.sunrise.utils.GridSpacingItemDecoration;
+import com.example.sunrise.utils.ColorPickerDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -49,15 +45,14 @@ public class TagsFragment extends Fragment {
     private View fragment;
     private Chip colorChip;
     private BottomSheetDialog bottomSheetDialog;
+    private Button createBtn;
     private List<Integer> colors;
-    private AlertDialog colorPickerDialog;
     private int selectedColor = Color.TRANSPARENT;
 
     public TagsFragment() {
         // Required empty public constructor
     }
 
-    @NonNull
     private static ColorStateList getColorStateList(int color) {
         int[][] states = new int[][]{
                 new int[]{android.R.attr.state_enabled},
@@ -148,46 +143,14 @@ public class TagsFragment extends Fragment {
         extendedFab.setOnClickListener(this::showTagCreationDialog);
     }
 
-    private void showTagCreationDialog(View v) {
-        bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetContentView = LayoutInflater.from(requireContext()).inflate(R.layout.create_tag_bottom_sheet, null);
-        bottomSheetDialog.setContentView(bottomSheetContentView);
-        bottomSheetDialog.show();
 
-        tagNameInputLayout = bottomSheetContentView.findViewById(R.id.tagNameInputLayout);
-        editTagName = bottomSheetContentView.findViewById(R.id.editTagName);
-        Button createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
-
-        colorChip = bottomSheetContentView.findViewById(R.id.color);
-        colorChip.setOnClickListener(this::showColorsDialog);
-
-        // Setting click listener on create button
-        createBtn.setOnClickListener(this::createTag);
-    }
 
     private void showColorsDialog(View view) {
-        // Create AlertDialog
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), R.style.MaterialAlertDialog_rounded);
-        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_choose_color, null);
-        builder.setView(dialogView);
-
-        RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view_colors);
-        recyclerView.setHasFixedSize(true);
-
-        // Set the spacing between items (adjust as needed)
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spacingInPixels));
-
-        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 5));
-
         // Initialize colors
-        colors = generateColors();
+        List<Integer> colors = generateColors();
 
-        ColorsAdapter adapter = new ColorsAdapter(colors, this::onColorSelected);
-
-        recyclerView.setAdapter(adapter);
-
-        colorPickerDialog = builder.create();
+        // Create and show color picker dialog
+        ColorPickerDialog colorPickerDialog = new ColorPickerDialog(requireContext(), colors, this::onColorSelected);
         colorPickerDialog.show();
     }
 
