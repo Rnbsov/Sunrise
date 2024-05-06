@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -194,25 +195,50 @@ public class CategoriesFragment extends Fragment {
     private void showTagsPopupMenu(View v) {
         PopupMenu popup = new PopupMenu(requireContext(), defaultTagChip);
 
-        TagService tagService = new TagService();
+        // Retrieve tags from the database
+        retrieveTagsFromDatabase(new TagService(), tagIdMap -> {
+            // Add tags to the popup menu
+            for (Map.Entry<Integer, String> entry : tagIdMap.entrySet()) {
+                popup.getMenu().add(0, entry.getKey(), 0, entry.getValue());
+            }
+
+            // Show popupMenu after all asynchronous stuff is done
+            popup.show();
+
+            popup.setOnMenuItemClickListener(item -> {
+                // Handle tag selection
+                int tagIdHashCode = item.getItemId();
+
+                String selectedTagId = tagIdMap.get(tagIdHashCode); // Retrieve tagId using hash code
+
+                // Store it like class var
+                this.selectedTagId = selectedTagId;
+
+                // Set selected tag's title to chip
+                defaultTagChip.setText(item.getTitle());
+                return true;
+            });
+        });
+    }
+
+    private void retrieveTagsFromDatabase(TagService tagService, TagsRetrievedCallback callback) {
         Map<Integer, String> tagIdMap = new HashMap<>(); // Map to store tag IDs and their hash codes
         tagService.getTags(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Add tags to the popup menu
+                // Add tags to the tagIdMap
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Tag tag = snapshot.getValue(Tag.class);
-                    String tagId = Objects.requireNonNull(tag).getTagId();
-                    String tagName = tag.getTitle();
-
-                    // Convert tagId to hashcode cause add method needs int
-                    int tagIdHashCode = tagId.hashCode();
-                    tagIdMap.put(tagIdHashCode, tagId); // Store the relationship between hash code and tagId
-                    popup.getMenu().add(0, tagIdHashCode, 0, tagName);
+                    if (tag != null) {
+                        String tagId = tag.getTagId();
+                        String tagName = tag.getTitle();
+                        int tagIdHashCode = tagId.hashCode();  // Convert tagId to hashcode cause PopupMenu add item method needs int as id
+                        tagIdMap.put(tagIdHashCode, tagName); // Store the relationship between hash code and tagId
+                    }
                 }
 
-                // Show popupMenu after all asynchronous stuff is done
-                popup.show();
+                // Invoke the callback with passed tagIdMap
+                callback.onTagsRetrieved(tagIdMap);
             }
 
             @Override
@@ -220,19 +246,10 @@ public class CategoriesFragment extends Fragment {
                 Log.e("CategoriesFragment", "Getting tags failed");
             }
         });
-        popup.setOnMenuItemClickListener(item -> {
-            // Handle tag selection
-            int tagIdHashCode = item.getItemId();
+    }
 
-            String selectedTagId = tagIdMap.get(tagIdHashCode); // Retrieve tagId using hash code
-
-            // Store it like class var
-            this.selectedTagId = selectedTagId;
-
-            // Set selected tag's title to chip
-            defaultTagChip.setText(item.getTitle());
-            return true;
-        });
+    interface TagsRetrievedCallback {
+        void onTagsRetrieved(Map<Integer, String> tagIdMap);
     }
 
     private void createCategory() {
