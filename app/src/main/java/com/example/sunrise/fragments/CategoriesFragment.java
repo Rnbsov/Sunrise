@@ -57,9 +57,9 @@ public class CategoriesFragment extends Fragment {
     private TextInputLayout titleInputLayout;
     private TextInputEditText editTitle;
     private Chip defaultTagChip;
-    private int selectedIconId; // Initialized to -1 to indicate no icon selected initially
+    private int selectedIconId = -1; // Initialized to -1 to indicate no icon selected initially ( sentinel value )
     private String selectedTagId;
-    private int selectedColor; // Initialized to -1 to indicate no color selected initially
+    private int selectedColor = -1; // Initialized to -1 to indicate no color selected initially ( sentinel value )
     private ColorPickerDialog colorPickerDialog;
     private IconPickerDialog iconPickerDialog;
     private List<Integer> colors;
