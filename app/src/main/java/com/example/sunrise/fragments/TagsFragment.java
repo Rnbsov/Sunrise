@@ -83,7 +83,7 @@ public class TagsFragment extends Fragment {
         setupExtendedFabButton();
 
         // Initialize colors
-        List<Integer> colors = generateColors();
+        colors = generateColors();
 
         RecyclerView tagsList = fragment.findViewById(R.id.tags_list);
 
@@ -208,7 +208,6 @@ public class TagsFragment extends Fragment {
 
         // Define hexadecimal colors
         String[] hexValues = {
-
                 "#FFCCCC", // Pastel Red
                 "#FFE5CC", // Pastel Orange
                 "#FFF2CC", // Pastel Yellow
