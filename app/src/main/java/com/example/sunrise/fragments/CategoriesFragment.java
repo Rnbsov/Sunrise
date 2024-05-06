@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +26,10 @@ import com.example.sunrise.R;
 import com.example.sunrise.adapters.CategoryAdapter;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
+import com.example.sunrise.models.Task;
+import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
+import com.example.sunrise.services.TaskService;
 import com.example.sunrise.utils.ColorPickerDialog;
 import com.example.sunrise.utils.IconPickerDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -33,6 +37,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -49,6 +54,7 @@ public class CategoriesFragment extends Fragment {
     private RecyclerView categoriesRecyclerView;
     private CategoryAdapter categoryAdapter;
     private View fragment;
+    BottomSheetDialog createCategoryBottomSheetDialog;
     private ShapeableImageView setIcon;
     private TextInputLayout titleInputLayout;
     private TextInputEditText editTitle;
@@ -120,10 +126,10 @@ public class CategoriesFragment extends Fragment {
         View fragmentRootView = requireView(); // Get the root view of the fragment
 
         // Setup bottom sheet dialog
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        createCategoryBottomSheetDialog = new BottomSheetDialog(context);
         View bottomSheetContentView = LayoutInflater.from(context).inflate(R.layout.create_category_bottom_sheet, (ViewGroup) fragmentRootView, false);
-        bottomSheetDialog.setContentView(bottomSheetContentView);
-        bottomSheetDialog.show();
+        createCategoryBottomSheetDialog.setContentView(bottomSheetContentView);
+        createCategoryBottomSheetDialog.show();
 
         // Find views
         setIcon = bottomSheetContentView.findViewById(R.id.set_icon);
@@ -230,6 +236,25 @@ public class CategoriesFragment extends Fragment {
     }
 
     private void createCategory() {
+        String title = Objects.requireNonNull(editTitle.getText()).toString();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        // Some checks before creating category
+        if (title.isEmpty()) {
+            titleInputLayout.setError("Please type title");
+            return;
+        }
+
+        Category category = new Category(title, selectedColor, selectedIconId, userId);
+
+        // Initialize Category to interact with Firebase database
+        CategoryService categoryService = new CategoryService();
+
+        // Save the newly created task to Firebase database
+        categoryService.saveCategory(category);
+
+        // Dismiss the bottom sheet dialog after category creation
+        createCategoryBottomSheetDialog.dismiss();
     }
 
     private List<Integer> generateColors() {
