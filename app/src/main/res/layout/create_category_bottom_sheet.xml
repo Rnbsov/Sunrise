@@ -17,7 +17,7 @@
 
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView"
+            android:id="@+id/set_icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:background="@android:color/darker_gray"
@@ -32,7 +32,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/titleInputLayout"
+                android:id="@+id/category_title_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title">
@@ -45,7 +45,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/defaultTag"
+                android:id="@+id/default_tag"
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
