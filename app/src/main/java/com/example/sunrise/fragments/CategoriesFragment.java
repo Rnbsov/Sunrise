@@ -18,13 +18,11 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.CategoryAdapter;
-import com.example.sunrise.adapters.TagsAdapter;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.CategoryService;
