@@ -31,8 +31,11 @@ public class ColorPickerDialog {
         builder.setView(dialogView);
 
         RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view_colors);
+
+        // Some optimization
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 5));
+        // Set the spacing between items
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(context.getResources().getDimensionPixelSize(R.dimen.grid_spacing)));
 
         ColorsAdapter adapter = new ColorsAdapter(colors, this::onColorSelected);
