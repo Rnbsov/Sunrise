@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,10 +25,8 @@ import com.example.sunrise.R;
 import com.example.sunrise.adapters.CategoryAdapter;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
-import com.example.sunrise.models.Task;
 import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
-import com.example.sunrise.services.TaskService;
 import com.example.sunrise.utils.ColorPickerDialog;
 import com.example.sunrise.utils.IconPickerDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -48,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class CategoriesFragment extends Fragment {
 
@@ -59,11 +57,13 @@ public class CategoriesFragment extends Fragment {
     private TextInputLayout titleInputLayout;
     private TextInputEditText editTitle;
     private Chip defaultTagChip;
-    private int selectedIconId;
+    private int selectedIconId; // Initialized to -1 to indicate no icon selected initially
     private String selectedTagId;
-    private int selectedColor;
+    private int selectedColor; // Initialized to -1 to indicate no color selected initially
     private ColorPickerDialog colorPickerDialog;
     private IconPickerDialog iconPickerDialog;
+    private List<Integer> colors;
+    private List<Integer> icons;
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -152,14 +152,14 @@ public class CategoriesFragment extends Fragment {
         Context context = requireContext();
 
         // Initialize colors
-        List<Integer> colors = generateColors();
+        colors = generateColors();
 
         // Create and show color picker dialog
         colorPickerDialog = new ColorPickerDialog(context, colors, this::onColorSelected);
         colorPickerDialog.show();
 
         // Initialize icons
-        List<Integer> icons = Arrays.asList(
+        icons = Arrays.asList(
                 R.drawable.label_24px,
                 R.drawable.palette_24px,
                 R.drawable.flower_24px
@@ -245,7 +245,11 @@ public class CategoriesFragment extends Fragment {
             return;
         }
 
-        Category category = new Category(title, selectedColor, selectedIconId, userId);
+        // If selected color and icon is not set, get a random color and icon
+        int categoryColor = selectedColor != -1 ? selectedColor : getRandomColor();
+        int categoryIcon = selectedIconId != -1 ? selectedIconId : getRandomIcon();
+
+        Category category = new Category(title, categoryColor, categoryIcon, userId);
 
         // Initialize Category to interact with Firebase database
         CategoryService categoryService = new CategoryService();
@@ -298,5 +302,15 @@ public class CategoriesFragment extends Fragment {
         Color.colorToHSV(color, hsv);
         hsv[2] *= factor; // Reduce brightness by the factor
         return Color.HSVToColor(hsv);
+    }
+
+    private int getRandomColor() {
+        Random random = new Random();
+        return colors.get(random.nextInt(colors.size()));
+    }
+
+    private int getRandomIcon() {
+        Random random = new Random();
+        return icons.get(random.nextInt(icons.size()));
     }
 }
