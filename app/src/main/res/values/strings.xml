@@ -44,4 +44,5 @@
     <string name="default_tag">Default tag</string>
     <string name="create_new_category">Create new category</string>
     <string name="create_category">Create category</string>
+    <string name="icons">Icons</string>
 </resources>
