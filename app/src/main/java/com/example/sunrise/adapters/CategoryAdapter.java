@@ -22,10 +22,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private final List<Category> localDataSet;
     private final CategoryAdapter.OnCategoryClickListener categoryClickListener;
+    private final OnCategoryAddClickListener categoryAddClickListener;
 
-    public CategoryAdapter(List<Category> dataSet, CategoryAdapter.OnCategoryClickListener categoryClickListener) {
+    public CategoryAdapter(List<Category> dataSet, CategoryAdapter.OnCategoryClickListener categoryClickListener, OnCategoryAddClickListener categoryAddClickListener) {
         this.localDataSet = dataSet;
         this.categoryClickListener = categoryClickListener;
+        this.categoryAddClickListener = categoryAddClickListener;
     }
 
     @Override
@@ -56,9 +58,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             categoryViewHolder.itemView.setOnClickListener(v -> categoryClickListener.onCategoryClick(category));
         } else if (holder instanceof AddButtonViewHolder) {
             AddButtonViewHolder addButtonViewHolder = (AddButtonViewHolder) holder;
-            addButtonViewHolder.getAddButton().setOnClickListener(v -> {
-                System.out.println("Add button clicked");
-            });
+            addButtonViewHolder.getAddButton().setOnClickListener(v -> categoryAddClickListener.onCategoryAddClick((v)));
         }
     }
 
@@ -77,6 +77,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface OnCategoryClickListener {
         void onCategoryClick(Category category);
+    }
+
+    public interface OnCategoryAddClickListener {
+        void onCategoryAddClick(View v);
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
