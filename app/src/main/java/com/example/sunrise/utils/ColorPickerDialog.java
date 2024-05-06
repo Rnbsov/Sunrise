@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.ColorsAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
@@ -26,9 +27,10 @@ public class ColorPickerDialog {
         this.colors = colors;
         this.colorSelectedListener = listener;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_color, null);
-        builder.setView(dialogView);
+        dialog = new MaterialAlertDialogBuilder(context)
+                .setView(dialogView)
+                .create();
 
         RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view_colors);
 
@@ -40,8 +42,6 @@ public class ColorPickerDialog {
 
         ColorsAdapter adapter = new ColorsAdapter(colors, this::onColorSelected);
         recyclerView.setAdapter(adapter);
-
-        dialog = builder.create();
     }
 
     public void show() {

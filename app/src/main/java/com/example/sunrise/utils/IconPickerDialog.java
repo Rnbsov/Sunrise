@@ -7,13 +7,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.IconsAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
 public class IconPickerDialog {
-    private AlertDialog dialog;
-    private List<Integer> icons;
-    private OnIconSelectedListener iconSelectedListener;
+    private final AlertDialog dialog;
+    private final List<Integer> icons;
+    private final OnIconSelectedListener iconSelectedListener;
 
     public interface OnIconSelectedListener {
         void onIconSelected(int iconResId);
@@ -23,9 +24,10 @@ public class IconPickerDialog {
         this.icons = icons;
         this.iconSelectedListener = listener;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_icon, null);
-        builder.setView(dialogView);
+        dialog = new MaterialAlertDialogBuilder(context)
+                .setView(dialogView)
+                .create();
 
         RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view_icons);
 
@@ -37,8 +39,6 @@ public class IconPickerDialog {
 
         IconsAdapter adapter = new IconsAdapter(icons, this::onIconSelected);
         recyclerView.setAdapter(adapter);
-
-        dialog = builder.create();
     }
 
     public void show() {
