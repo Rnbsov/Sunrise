@@ -12,12 +12,14 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sunrise.R;
 import com.example.sunrise.adapters.ColorsAdapter;
 import com.example.sunrise.adapters.TagsAdapter;
 import com.example.sunrise.models.Tag;
@@ -25,6 +27,7 @@ import com.example.sunrise.services.TagService;
 import com.example.sunrise.utils.GridSpacingItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -164,7 +167,7 @@ public class TagsFragment extends Fragment {
 
     private void showColorsDialog(View view) {
         // Create AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), R.style.MaterialAlertDialog_rounded);
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_choose_color, null);
         builder.setView(dialogView);
 
