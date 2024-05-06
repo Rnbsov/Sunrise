@@ -18,11 +18,13 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.CategoryAdapter;
+import com.example.sunrise.adapters.TagsAdapter;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.CategoryService;
@@ -52,6 +54,7 @@ public class CategoriesFragment extends Fragment {
     private RecyclerView categoriesRecyclerView;
     private CategoryAdapter categoryAdapter;
     private View fragment;
+    private CategoryService categoryService;
     BottomSheetDialog createCategoryBottomSheetDialog;
     private ShapeableImageView setIcon;
     private TextInputLayout titleInputLayout;
@@ -110,15 +113,36 @@ public class CategoriesFragment extends Fragment {
         // Set adapter to RecyclerView
         categoriesRecyclerView.setAdapter(categoryAdapter);
 
-        // Set categories to adapter
+        // Initialize CategoryService to interact with Firebase database
+        categoryService = new CategoryService();
 
-// Get the resource ID of the drawable
-        int drawableResourceId = R.drawable.account_circle_24px;
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Category 1", Color.RED, drawableResourceId, "lalalal"));
-        categories.add(new Category("Category 2", Color.BLUE, drawableResourceId, "lalalal"));
+        // Fetch categories
+        fetchCategoriesFromDatabase();
+    }
 
-        categoryAdapter.setCategories(categories);
+    private void fetchCategoriesFromDatabase() {
+        ValueEventListener categoriesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Category> categoryList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Category category = snapshot.getValue(Category.class);
+                    categoryList.add(category);
+                }
+
+                // Updating categoryList in adapter
+                categoryAdapter.setCategories(categoryList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+                Log.e("CategoriesFragment", "Error fetching categories", databaseError.toException());
+            }
+        };
+
+        // Call getCategories method from CategoryService to register the listener
+        categoryService.getCategories(categoriesListener);
     }
 
     private void onCategoryAddButtonClick(View v) {
@@ -256,9 +280,6 @@ public class CategoriesFragment extends Fragment {
         int categoryIcon = selectedIconId != -1 ? selectedIconId : getRandomIcon();
 
         Category category = new Category(title, categoryColor, categoryIcon, userId);
-
-        // Initialize Category to interact with Firebase database
-        CategoryService categoryService = new CategoryService();
 
         // Save the newly created task to Firebase database
         categoryService.saveCategory(category);
