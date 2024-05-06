@@ -141,11 +141,94 @@ public class CategoriesFragment extends Fragment {
     }
 
     private void onSetIconClick(View v) {
+        Context context = requireContext();
+
+        // Initialize colors
+        List<Integer> colors = generateColors();
+
+        // Create and show color picker dialog
+        colorPickerDialog = new ColorPickerDialog(context, colors, this::onColorSelected);
+        colorPickerDialog.show();
+
+        // Initialize icons
+        List<Integer> icons = Arrays.asList(
+                R.drawable.label_24px,
+                R.drawable.palette_24px,
+                R.drawable.flower_24px
+        );
+
+        // Create and show icon picker dialog
+        iconPickerDialog = new IconPickerDialog(context, icons, this::onIconSelected);
+        iconPickerDialog.show();
+    }
+
+    private void onColorSelected(int color) {
+        selectedColor = color; // Save the selected color as class property
+
+        // Adjust the brightness of the selected color to make it slightly darker
+        int darkerColor = darkenColor(color, 0.6f); //
+        setIcon.setBackgroundColor(darkerColor); // Set background color for imageView
+
+        ColorStateList colorStateList = getColorStateList(color);
+
+        setIcon.setImageTintList(colorStateList); // Set color for imageView icon
+
+        // Dismiss the AlertDialog after color selection
+        colorPickerDialog.dismiss();
+    }
+
+    private void onIconSelected(int iconResId) {
+        selectedIconId = iconResId;
+
+        setIcon.setImageResource(iconResId);
     }
 
     private void showTagsPopupMenu(View v) {
     }
 
     private void createCategory() {
+    }
+
+    private List<Integer> generateColors() {
+        List<Integer> colors = new ArrayList<>();
+
+        // Define hexadecimal colors
+        String[] hexValues = {
+                "#FFCCCC", // Pastel Red
+                "#FFE5CC", // Pastel Orange
+                "#FFF2CC", // Pastel Yellow
+                "#CCFFCC", // Pastel Green
+                "#CCE5FF", // Pastel Blue
+                "#FFCCFF"  // Pastel Purple
+        };
+
+        // Convert hexadecimal values to color integers and add them to the list
+        for (String hex : hexValues) {
+            int color = Color.parseColor(hex);
+            colors.add(color);
+        }
+
+        return colors;
+    }
+
+    private static ColorStateList getColorStateList(int color) {
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled},
+                new int[]{android.R.attr.state_pressed}
+        };
+
+        int[] colors = new int[]{
+                color,
+                color // Set same color for both pressed and enabled states
+        };
+
+        return new ColorStateList(states, colors);
+    }
+
+    private int darkenColor(int color, float factor) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= factor; // Reduce brightness by the factor
+        return Color.HSVToColor(hsv);
     }
 }
