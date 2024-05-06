@@ -47,6 +47,7 @@ public class TagsFragment extends Fragment {
     private BottomSheetDialog bottomSheetDialog;
     private Button createBtn;
     private List<Integer> colors;
+    private ColorPickerDialog colorPickerDialog;
     private int selectedColor = Color.TRANSPARENT;
 
     public TagsFragment() {
@@ -80,6 +81,9 @@ public class TagsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         setupExtendedFabButton();
+
+        // Initialize colors
+        List<Integer> colors = generateColors();
 
         RecyclerView tagsList = fragment.findViewById(R.id.tags_list);
 
@@ -146,11 +150,8 @@ public class TagsFragment extends Fragment {
 
 
     private void showColorsDialog(View view) {
-        // Initialize colors
-        List<Integer> colors = generateColors();
-
         // Create and show color picker dialog
-        ColorPickerDialog colorPickerDialog = new ColorPickerDialog(requireContext(), colors, this::onColorSelected);
+        colorPickerDialog = new ColorPickerDialog(requireContext(), colors, this::onColorSelected);
         colorPickerDialog.show();
     }
 
@@ -168,9 +169,7 @@ public class TagsFragment extends Fragment {
         selectedColor = color; // Save the selected color as class property
 
         // Dismiss the AlertDialog after color selection
-        if (colorPickerDialog != null && colorPickerDialog.isShowing()) {
             colorPickerDialog.dismiss();
-        }
     }
 
     private void createTag(View view) {
