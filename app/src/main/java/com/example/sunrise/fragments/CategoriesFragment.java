@@ -39,7 +39,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class CategoriesFragment extends Fragment {
@@ -71,7 +73,8 @@ public class CategoriesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragment = inflater.inflate(R.layout.fragment_categories, container, false);
-        return fragment;}
+        return fragment;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -109,8 +112,7 @@ public class CategoriesFragment extends Fragment {
         categories.add(new Category("Category 1", Color.RED, drawableResourceId, "lalalal"));
         categories.add(new Category("Category 2", Color.BLUE, drawableResourceId, "lalalal"));
 
-         categoryAdapter.setCategories(categories);
-
+        categoryAdapter.setCategories(categories);
     }
 
     private void onCategoryAddButtonClick(View v) {
@@ -184,6 +186,47 @@ public class CategoriesFragment extends Fragment {
     }
 
     private void showTagsPopupMenu(View v) {
+        PopupMenu popup = new PopupMenu(requireContext(), defaultTagChip);
+
+        TagService tagService = new TagService();
+        Map<Integer, String> tagIdMap = new HashMap<>(); // Map to store tag IDs and their hash codes
+        tagService.getTags(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Add tags to the popup menu
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Tag tag = snapshot.getValue(Tag.class);
+                    String tagId = Objects.requireNonNull(tag).getTagId();
+                    String tagName = tag.getTitle();
+
+                    // Convert tagId to hashcode cause add method needs int
+                    int tagIdHashCode = tagId.hashCode();
+                    tagIdMap.put(tagIdHashCode, tagId); // Store the relationship between hash code and tagId
+                    popup.getMenu().add(0, tagIdHashCode, 0, tagName);
+                }
+
+                // Show popupMenu after all asynchronous stuff is done
+                popup.show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CategoriesFragment", "Getting tags failed");
+            }
+        });
+        popup.setOnMenuItemClickListener(item -> {
+            // Handle tag selection
+            int tagIdHashCode = item.getItemId();
+
+            String selectedTagId = tagIdMap.get(tagIdHashCode); // Retrieve tagId using hash code
+
+            // Store it like class var
+            this.selectedTagId = selectedTagId;
+
+            // Set selected tag's title to chip
+            defaultTagChip.setText(item.getTitle());
+            return true;
+        });
     }
 
     private void createCategory() {
