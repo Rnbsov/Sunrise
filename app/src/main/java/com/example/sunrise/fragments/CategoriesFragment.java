@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -63,8 +62,8 @@ public class CategoriesFragment extends Fragment {
     private int selectedColor = -1; // Initialized to -1 to indicate no color selected initially ( sentinel value )
     private ColorPickerDialog colorPickerDialog;
     private IconPickerDialog iconPickerDialog;
-    private List<Integer> colors;
-    private List<Integer> icons;
+    private final List<Integer> colors = initializeColors(); // Initialize colors
+    private final List<Integer> icons = initializeIcons(); // Initialize icons
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -152,19 +151,9 @@ public class CategoriesFragment extends Fragment {
     private void onSetIconClick(View v) {
         Context context = requireContext();
 
-        // Initialize colors
-        colors = generateColors();
-
         // Create and show color picker dialog
         colorPickerDialog = new ColorPickerDialog(context, colors, this::onColorSelected);
         colorPickerDialog.show();
-
-        // Initialize icons
-        icons = Arrays.asList(
-                R.drawable.label_24px,
-                R.drawable.palette_24px,
-                R.drawable.flower_24px
-        );
 
         // Create and show icon picker dialog
         iconPickerDialog = new IconPickerDialog(context, icons, this::onIconSelected);
@@ -278,7 +267,7 @@ public class CategoriesFragment extends Fragment {
         createCategoryBottomSheetDialog.dismiss();
     }
 
-    private List<Integer> generateColors() {
+    private List<Integer> initializeColors() {
         List<Integer> colors = new ArrayList<>();
 
         // Define hexadecimal colors
@@ -298,6 +287,19 @@ public class CategoriesFragment extends Fragment {
         }
 
         return colors;
+    }
+
+    private List<Integer> initializeIcons() {
+        List<Integer> icons = new ArrayList<>();
+
+        // Initialize icons
+        icons = Arrays.asList(
+                R.drawable.label_24px,
+                R.drawable.palette_24px,
+                R.drawable.flower_24px
+        );
+
+        return icons;
     }
 
     private static ColorStateList getColorStateList(int color) {
