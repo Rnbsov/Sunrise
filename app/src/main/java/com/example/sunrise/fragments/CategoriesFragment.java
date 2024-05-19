@@ -101,13 +101,7 @@ public class CategoriesFragment extends Fragment {
         // Initialize RecyclerView and adapter
         categoriesRecyclerView = fragment.findViewById(R.id.categories_recycler_view);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        categoryAdapter = new CategoryAdapter(new ArrayList<>(), new CategoryAdapter.OnCategoryClickListener() {
-            @Override
-            public void onCategoryClick(Category category) {
-                // Handle category item click
-                Toast.makeText(requireContext(), "Clicked on category: " + category.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-        }, this::onCategoryAddButtonClick);
+        categoryAdapter = new CategoryAdapter(new ArrayList<>(), this::onCategoryClick, this::onCategoryAddButtonClick);
 
         // Set adapter to RecyclerView
         categoriesRecyclerView.setAdapter(categoryAdapter);
@@ -142,6 +136,20 @@ public class CategoriesFragment extends Fragment {
 
         // Call getCategories method from CategoryService to register the listener
         categoryService.getCategories(categoriesListener);
+    }
+
+    /**
+     * Handle category item click
+     *
+     * @param category clicked category object
+     */
+    private void onCategoryClick(Category category) {
+        Bundle bundle = new Bundle();
+        bundle.putString("categoryId", category.getCategoryId());
+        bundle.putString("categoryTitle", category.getTitle());
+
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_page_categories_to_categoryFragment, bundle);
     }
 
     private void onCategoryAddButtonClick(View v) {

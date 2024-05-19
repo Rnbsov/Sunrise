@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_page_categories_to_tagsFragment"
             app:destination="@id/tagsFragment" />
+        <action
+            android:id="@+id/action_page_categories_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
     </fragment>
 
     <fragment
@@ -43,6 +46,13 @@
         android:id="@+id/categoryFragment"
         android:name="com.example.sunrise.fragments.CategoryFragment"
         android:label="fragment_category"
-        tools:layout="@layout/fragment_category" />
+        tools:layout="@layout/fragment_category">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+        <argument
+            android:name="categoryTitle"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
