@@ -63,4 +63,17 @@ public class TaskService {
         // Add ValueEventListener to the query to listen for changes in Firebase data
         query.addValueEventListener(listener);
     }
+
+    /**
+     * Method to retrieve tasks by category Id
+     *
+     * @apiNote Does not check for createdByUserId of currently logged-in user, because category ids are quite unique
+     */
+    public void getTasksByCategoryId(String categoryId, ValueEventListener listener) {
+        // Create a query to filter tasks by categoryId
+        Query query = tasksRef.orderByChild("categoryId").equalTo(categoryId);
+
+        // Add ValueEventListener to the query to listen for changes in Firebase data
+        query.addValueEventListener(listener);
+    }
 }
