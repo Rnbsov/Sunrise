@@ -8,6 +8,7 @@ public class Task {
     private String priority;
     private String taskId;
     private List<String> tags;
+    private String categoryId;
     private long createdAt;
     private long updatedAt;
     private String createdByUserId;
@@ -30,7 +31,8 @@ public class Task {
     public Task(Task task) {
         this.title = task.title;
         this.priority = task.priority;
-        this.tags = new ArrayList<>(task.tags);;
+        this.tags = new ArrayList<>(task.tags);
+        this.categoryId = task.categoryId;
         this.createdAt = task.createdAt;
         this.updatedAt = task.updatedAt;
         this.createdByUserId = task.createdByUserId;
@@ -110,5 +112,13 @@ public class Task {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 }
