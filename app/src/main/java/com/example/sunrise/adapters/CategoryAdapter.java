@@ -1,5 +1,6 @@
 package com.example.sunrise.adapters;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.models.Category;
+import com.example.sunrise.utils.ColorUtils;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
@@ -94,8 +96,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public void bind(Category category) {
-            icon.setBackgroundColor(category.getColor());
-            title.setText(category.getTitle());
+            int color = category.getColor();
+            int iconResId = category.getIconResourceId();
+            String categoryTitle = category.getTitle();
+
+            // Set icon
+            icon.setImageResource(iconResId);
+
+            // Set icon background
+            icon.setBackgroundColor(ColorUtils.darkenColor(color, 0.6f));
+
+            // Set icon color
+            ColorStateList colorStateList = ColorStateList.valueOf(color);
+            icon.setImageTintList(colorStateList);
+
+            // Set category title
+            title.setText(categoryTitle);
         }
     }
 
