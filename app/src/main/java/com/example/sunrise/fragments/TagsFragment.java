@@ -54,20 +54,6 @@ public class TagsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private static ColorStateList getColorStateList(int color) {
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled},
-                new int[]{android.R.attr.state_pressed}
-        };
-
-        int[] colors = new int[]{
-                color,
-                color // Set same color for both pressed and enabled states
-        };
-
-        return new ColorStateList(states, colors);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -158,7 +144,7 @@ public class TagsFragment extends Fragment {
     private void onColorSelected(int color) {
         // Handle color selection here
         // Creating color state list, cause there is no way around it
-        ColorStateList colorStateList = getColorStateList(color);
+        ColorStateList colorStateList = ColorStateList.valueOf(color);
 
         // Setting selected color for icon
         colorChip.setChipIconTint(colorStateList);

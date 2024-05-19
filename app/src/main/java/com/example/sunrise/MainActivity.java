@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 for (Tag tag : tagList) {
                     Chip tagChip = (Chip) LayoutInflater.from(MainActivity.this).inflate(R.layout.filter_tag_chip_layout, null);
                     tagChip.setText(tag.getTitle());
-                    tagChip.setChipBackgroundColor(getColorStateListOutOfColor(tag.getColor()));
+                    tagChip.setChipBackgroundColor(ColorStateList.valueOf(tag.getColor()));
 
                     tagChip.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                         if (isChecked) {
@@ -156,20 +156,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity", "fetch tags failed");
             }
         });
-    }
-
-    private ColorStateList getColorStateListOutOfColor(int color) {
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled},
-                new int[]{android.R.attr.state_pressed}
-        };
-
-        int[] colors = new int[]{
-                color,
-                color // Set same color for both pressed and enabled states
-        };
-
-        return new ColorStateList(states, colors);
     }
 
     private void showPriorityPopupMenu(View view) {

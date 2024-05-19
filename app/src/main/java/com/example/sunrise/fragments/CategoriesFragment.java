@@ -189,7 +189,7 @@ public class CategoriesFragment extends Fragment {
         int darkerColor = darkenColor(color, 0.6f); //
         setIcon.setBackgroundColor(darkerColor); // Set background color for imageView
 
-        ColorStateList colorStateList = getColorStateList(color);
+        ColorStateList colorStateList = ColorStateList.valueOf(color);
 
         setIcon.setImageTintList(colorStateList); // Set color for imageView icon
 
@@ -319,20 +319,6 @@ public class CategoriesFragment extends Fragment {
         );
 
         return icons;
-    }
-
-    private static ColorStateList getColorStateList(int color) {
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled},
-                new int[]{android.R.attr.state_pressed}
-        };
-
-        int[] colors = new int[]{
-                color,
-                color // Set same color for both pressed and enabled states
-        };
-
-        return new ColorStateList(states, colors);
     }
 
     private int darkenColor(int color, float factor) {
