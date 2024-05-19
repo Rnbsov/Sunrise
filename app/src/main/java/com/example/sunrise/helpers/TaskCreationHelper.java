@@ -3,6 +3,7 @@ package com.example.sunrise.helpers;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -11,8 +12,10 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.R;
+import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.TaskService;
 import com.example.sunrise.utils.TaskUtils;
@@ -27,27 +30,33 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TaskCreationHelper {
     private final Context context;
     private final TaskService taskService;
     private final TagService tagService;
+    private final CategoryService categoryService;
     private BottomSheetDialog bottomSheetDialog;
     private TextInputEditText editTitle;
     private TextInputLayout titleInputLayout;
     private Chip priorityChip;
+    private Chip categoryChip;
     private ChipGroup tagChips;
     private final List<String> selectedChipIds;
+    private String selectedCategoryId;
 
     public TaskCreationHelper(Context context) {
         this.context = context;
         this.selectedChipIds = new ArrayList<>();
 
-        // Initialize TaskService and TagService to interact with Firebase database
+        // Initialize TaskService, TagService and CategoryService to interact with Firebase database
         this.taskService = new TaskService();
         this.tagService = new TagService();
+        this.categoryService = new CategoryService();
     }
 
     public void showTaskCreationDialog(View v) {
@@ -63,11 +72,75 @@ public class TaskCreationHelper {
         priorityChip = bottomSheetContentView.findViewById(R.id.priority);
         priorityChip.setOnClickListener(view -> TaskUtils.showPriorityPopupMenu(context, view, priorityChip));
 
+        categoryChip = bottomSheetContentView.findViewById(R.id.category);
+        categoryChip.setOnClickListener(view -> showCategoriesPopupMenu(view, categoryChip));
+
         // Tags row
         tagChips = bottomSheetContentView.findViewById(R.id.tagChips);
         populateTagChips();
 
         createBtn.setOnClickListener(this::createTask);
+    }
+
+    private void showCategoriesPopupMenu(View v, Chip categoryChip) {
+        PopupMenu popup = new PopupMenu(context, categoryChip);
+
+        // Retrieve categories from the database
+        retrieveCategoriesFromDatabase(categoryService, categoryIdMap -> {
+            // Add categories to the popup menu
+            for (Map.Entry<Integer, Pair<String, String>> entry : categoryIdMap.entrySet()) {
+                popup.getMenu().add(0, entry.getKey(), 0, entry.getValue().second);
+            }
+
+            // Show popupMenu after all asynchronous stuff is done
+            popup.show();
+
+            popup.setOnMenuItemClickListener(item -> {
+                // Handle category selection
+                int categoryIdHashCode = item.getItemId();
+
+                Pair<String, String> selectedCategoryInfo = categoryIdMap.get(categoryIdHashCode); // Retrieve Pair using hash code
+                assert selectedCategoryInfo != null;
+
+                // Store it like class var
+                this.selectedCategoryId = selectedCategoryInfo.first;
+
+                // Set selected category's title to chip
+                categoryChip.setText(selectedCategoryInfo.second);
+                return true;
+            });
+        });
+    }
+
+    private void retrieveCategoriesFromDatabase(CategoryService categoryService, TaskCreationHelper.CategoriesRetrievedCallback callback) {
+        Map<Integer, Pair<String, String>> categoryIdMap = new HashMap<>(); // Map to store category IDs and their hash codes
+        categoryService.getCategories(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Add categories to the categoryIdMap
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Category category = snapshot.getValue(Category.class);
+                    if (category != null) {
+                        String categoryId = category.getCategoryId();
+                        String categoryName = category.getTitle();
+                        int categoryIdHashCode = categoryId.hashCode();  // Convert categoryId to hashcode cause PopupMenu add item method needs int as id
+                        categoryIdMap.put(categoryIdHashCode, new Pair<>(categoryId, categoryName)); // Store the relationship between hash code and Pair of categoryId/categoryName
+                    }
+                }
+
+                // Invoke the callback with passed categoryIdMap
+                callback.onCategoriesRetrieved(categoryIdMap);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CategoriesFragment", "Getting tags failed");
+            }
+        });
+    }
+
+    interface CategoriesRetrievedCallback {
+        void onCategoriesRetrieved(Map<Integer, Pair<String, String>> tagIdMap);
     }
 
     private void populateTagChips() {
@@ -114,7 +187,7 @@ public class TaskCreationHelper {
             return;
         }
 
-        Task task = new Task(title, priority, selectedChipIds, userId);
+        Task task = new Task(title, priority, selectedChipIds, selectedCategoryId, userId);
 
         // Save the newly created task to Firebase database
         taskService.saveTask(task);
