@@ -39,4 +39,10 @@
         android:label="Tags"
         tools:layout="@layout/fragment_tags" />
 
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.example.sunrise.fragments.CategoryFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_category" />
+
 </navigation>
