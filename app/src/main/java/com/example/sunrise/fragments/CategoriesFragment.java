@@ -28,6 +28,7 @@ import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.utils.ColorPickerDialog;
+import com.example.sunrise.utils.ColorUtils;
 import com.example.sunrise.utils.IconPickerDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -186,7 +187,7 @@ public class CategoriesFragment extends Fragment {
         selectedColor = color; // Save the selected color as class property
 
         // Adjust the brightness of the selected color to make it slightly darker
-        int darkerColor = darkenColor(color, 0.6f); //
+        int darkerColor = ColorUtils.darkenColor(color, 0.6f); //
         setIcon.setBackgroundColor(darkerColor); // Set background color for imageView
 
         ColorStateList colorStateList = ColorStateList.valueOf(color);
@@ -319,13 +320,6 @@ public class CategoriesFragment extends Fragment {
         );
 
         return icons;
-    }
-
-    private int darkenColor(int color, float factor) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        hsv[2] *= factor; // Reduce brightness by the factor
-        return Color.HSVToColor(hsv);
     }
 
     private int getRandomColor() {
