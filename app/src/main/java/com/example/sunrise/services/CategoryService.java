@@ -1,6 +1,7 @@
 package com.example.sunrise.services;
 
 import com.example.sunrise.models.Category;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,6 +35,24 @@ public class CategoryService {
 
         newCategoryRef.setValue(category); // Save the category to Firebase database
     }
+
+    /**
+     * Method to save the category to Firebase database
+     */
+    public void saveCategory(Category category, OnCompleteListener<Void> listener) {
+        // Update the updatedAt timestamp before starting saving
+        category.setUpdatedAt(System.currentTimeMillis());
+
+        // Generate a reference to a new child location under "categories" with a client-side auto-generated key
+        DatabaseReference newCategoryRef = categoriesRef.push();
+
+        String categoryId = newCategoryRef.getKey(); // Retrieve the unique ID
+        category.setCategoryId(categoryId); // Save this unique ID to the category object
+
+        newCategoryRef.setValue(category)
+                .addOnCompleteListener(listener); // Save the category to Firebase database and invoke the listener
+    }
+
 
     /**
      * Method to update the category in Firebase database
