@@ -63,5 +63,16 @@ public class CategoryService {
         // Add ValueEventListener to the query to listen for changes in Firebase data
         query.addValueEventListener(listener);
     }
+
+    /**
+     * Method to retrieve a category by its Id
+     */
+    public void getCategoryById(String categoryId, ValueEventListener listener) {
+        // Create a query to retrieve the category with the specified ID
+        Query query = categoriesRef.child(categoryId);
+
+        // Add ValueEventListener to the query to listen for changes in Firebase data
+        query.addListenerForSingleValueEvent(listener);
+    }
 }
 
