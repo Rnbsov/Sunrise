@@ -33,7 +33,7 @@
             style="@style/Widget.Material3.Chip.Assist.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:text="@string/priority"
             app:chipIcon="@drawable/flag_24px" />
 
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTint="@color/material_dynamic_tertiary60"
-            android:text="Category"
+            android:text="@string/category"
             app:chipIcon="@drawable/category_24px" />
     </LinearLayout>
 
