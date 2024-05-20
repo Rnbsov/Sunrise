@@ -10,11 +10,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.R;
+import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.models.UserSettings;
 import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.TaskService;
+import com.example.sunrise.services.UserSettingsService;
 import com.example.sunrise.utils.TaskUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -35,23 +38,25 @@ public class TaskCreationHelper {
     private final TaskService taskService;
     private final TagService tagService;
     private final CategoryService categoryService;
+    private final UserSettingsService userSettingsService;
+    private final List<String> selectedChipIds;
     private BottomSheetDialog bottomSheetDialog;
     private TextInputEditText editTitle;
     private TextInputLayout titleInputLayout;
     private Chip priorityChip;
     private Chip categoryChip;
     private ChipGroup tagChips;
-    private final List<String> selectedChipIds;
     private String selectedCategoryId;
 
     public TaskCreationHelper(Context context) {
         this.context = context;
         this.selectedChipIds = new ArrayList<>();
 
-        // Initialize TaskService, TagService and CategoryService to interact with Firebase database
+        // Initialize services to interact with Firebase database
         this.taskService = new TaskService();
         this.tagService = new TagService();
         this.categoryService = new CategoryService();
+        this.userSettingsService = new UserSettingsService();
     }
 
     public void showTaskCreationDialog(View v) {
@@ -69,6 +74,9 @@ public class TaskCreationHelper {
 
         categoryChip = bottomSheetContentView.findViewById(R.id.category);
         categoryChip.setOnClickListener(view -> TaskUtils.showCategoriesPopupMenu(context, view, categoryChip, categoryService, this::onCategorySelected));
+
+        // Load and set default category
+        setDefaultCategory();
 
         // Tags row
         tagChips = bottomSheetContentView.findViewById(R.id.tagChips);
@@ -136,5 +144,41 @@ public class TaskCreationHelper {
 
         // Dismiss the bottom sheet dialog after task creation
         bottomSheetDialog.dismiss();
+    }
+
+    private void setDefaultCategory() {
+        userSettingsService.getUserSettings(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Since the user have only one UserSettings object, we can directly retrieve first entry
+                DataSnapshot snapshot = dataSnapshot.getChildren().iterator().next();
+                UserSettings userSettings = snapshot.getValue(UserSettings.class);
+                if (userSettings != null) {
+                    String defaultCategoryId = userSettings.getDefaultCategoryId();
+                    categoryService.getCategoryById(defaultCategoryId, new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Category category = dataSnapshot.getValue(Category.class);
+                            if (category != null) {
+                                selectedCategoryId = category.getCategoryId();
+                                categoryChip.setText(category.getTitle());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e("TaskCreationHelper", "Failed to load default category");
+                        }
+                    });
+                } else {
+                    Log.e("TaskCreationHelper", "UserSettings is null");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("TaskCreationHelper", "Failed to load user settings");
+            }
+        });
     }
 }
