@@ -87,7 +87,6 @@ public class TagsFragment extends Fragment {
         // Initialize TaskService
         tagService = new TagService();
 
-        System.out.println("before fetchTags");
         // Fetch tasks
         fetchTagsFromDatabase();
     }
@@ -97,7 +96,6 @@ public class TagsFragment extends Fragment {
     }
 
     private void fetchTagsFromDatabase() {
-        System.out.println("inside fetchTags");
         ValueEventListener tagsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -105,11 +103,6 @@ public class TagsFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Tag task = snapshot.getValue(Tag.class);
                     tagList.add(task);
-                }
-
-                Log.d("Firebase listener", "Firebase listener");
-                for (Tag task : tagList) {
-                    System.out.println(task);
                 }
 
                 // Updating tagList in adapter
