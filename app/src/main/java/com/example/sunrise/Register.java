@@ -16,6 +16,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.sunrise.models.Category;
+import com.example.sunrise.models.UserSettings;
+import com.example.sunrise.services.CategoryService;
+import com.example.sunrise.services.UserSettingsService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -87,6 +91,9 @@ public class Register extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 createDefaultUserProfile(user);
 
+                                // Create default category and save to UserSettings
+                                createDefaultCategory(user);
+
                                 // Send user to MainActivity
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
@@ -100,6 +107,37 @@ public class Register extends AppCompatActivity {
                             }
                         }
                     });
+        });
+    }
+
+    /**
+     * this method creates default category and saves it in UserSettings
+     */
+    private void createDefaultCategory(FirebaseUser user) {
+        CategoryService categoryService = new CategoryService();
+        UserSettingsService userSettingsService = new UserSettingsService();
+
+        // Create a default category
+        Category defaultCategory = new Category("Personal", -13057, 2131165345, user.getUid());
+
+        // Save the default category to Firebase
+        categoryService.saveCategory(defaultCategory, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // Retrieve the category Id after saving
+                    String defaultCategoryId = defaultCategory.getCategoryId();
+
+                    // Create a UserSettings object with the default category Id
+                    UserSettings userSettings = new UserSettings(user.getUid(), defaultCategoryId);
+
+                    // Save the UserSettings object
+                    userSettingsService.createUserSettings(userSettings);
+                } else {
+                    Log.e(TAG, "Failed to save default category: " + task.getException());
+                    showToast("Failed to create account. Please try again later.");
+                }
+            }
         });
     }
 
