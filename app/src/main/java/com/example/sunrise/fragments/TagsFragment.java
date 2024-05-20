@@ -71,6 +71,17 @@ public class TagsFragment extends Fragment {
         // Initialize colors
         colors = generateColors();
 
+        // Setup tags RecyclerView
+        setupRecyclerView();
+
+        // Initialize TaskService
+        tagService = new TagService();
+
+        // Fetch tasks
+        fetchTagsFromDatabase();
+    }
+
+    private void setupRecyclerView() {
         RecyclerView tagsList = fragment.findViewById(R.id.tags_list);
 
         // Creating and setting linear layout manager to recyclerView
@@ -83,12 +94,6 @@ public class TagsFragment extends Fragment {
 
         // Add decoration so there is divider line between items
         tagsList.addItemDecoration(new DividerItemDecoration(tagsList.getContext(), DividerItemDecoration.VERTICAL));
-
-        // Initialize TaskService
-        tagService = new TagService();
-
-        // Fetch tasks
-        fetchTagsFromDatabase();
     }
 
     private void OnTagClickListener(Tag tag) {
