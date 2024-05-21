@@ -76,7 +76,7 @@ public class TaskCreationHelper {
         categoryChip.setOnClickListener(view -> TaskUtils.showCategoriesPopupMenu(context, view, categoryChip, categoryService, this::onCategorySelected));
 
         // Load and set default category
-        setDefaultCategory();
+        loadDefaultCategory();
 
         // Tags row
         tagChips = bottomSheetContentView.findViewById(R.id.tagChips);
@@ -163,7 +163,13 @@ public class TaskCreationHelper {
         bottomSheetDialog.dismiss();
     }
 
-    private void setDefaultCategory() {
+    /**
+     * Loads the default category from user settings and sets it as the selected category chip.
+     * This method fetches the default categoryId from the user settings and then retrieves
+     * the corresponding category from the database to display its title on the category chip.
+     */
+    private void loadDefaultCategory() {
+        // Retrieve the default category id from user settings
         userSettingsService.getUserSettings(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -172,21 +178,9 @@ public class TaskCreationHelper {
                 UserSettings userSettings = snapshot.getValue(UserSettings.class);
                 if (userSettings != null) {
                     String defaultCategoryId = userSettings.getDefaultCategoryId();
-                    categoryService.getCategoryById(defaultCategoryId, new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Category category = dataSnapshot.getValue(Category.class);
-                            if (category != null) {
-                                selectedCategoryId = category.getCategoryId();
-                                categoryChip.setText(category.getTitle());
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Log.e("TaskCreationHelper", "Failed to load default category");
-                        }
-                    });
+                    // Once the default category id is obtained, set the default category
+                    setDefaultCategory(defaultCategoryId);
                 } else {
                     Log.e("TaskCreationHelper", "UserSettings is null");
                 }
@@ -195,6 +189,34 @@ public class TaskCreationHelper {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("TaskCreationHelper", "Failed to load user settings");
+            }
+        });
+    }
+
+    /**
+     * Sets the provided category id as the selected category chip.
+     * This method retrieves the category details from the database using the given category id
+     * and sets its title on the category chip along with saving default category id as {@link #selectedCategoryId}
+     *
+     * @param defaultCategoryId the ID of the default category to be set
+     */
+    private void setDefaultCategory(String defaultCategoryId) {
+        // Retrieve the category details from the database
+        categoryService.getCategoryById(defaultCategoryId, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Category category = dataSnapshot.getValue(Category.class);
+                if (category != null) {
+                    // Save default category id as class field
+                    selectedCategoryId = category.getCategoryId();
+                    // Set the title of the default category on the category chip
+                    categoryChip.setText(category.getTitle());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("TaskCreationHelper", "Failed to load default category");
             }
         });
     }
