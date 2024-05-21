@@ -56,50 +56,66 @@ public class CategoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Retrieve the categoryId from arguments
-        if (getArguments() != null) {
-            categoryId = getArguments().getString("categoryId");
-            categoryTitle = getArguments().getString("categoryTitle");
-        }
+        // Retrieve the category id and title from arguments
+        retrieveArguments();
 
         // Set action bar title to category title
-        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(categoryTitle);
+        setActionBarTitle();
 
         // Initialize TaskService to interact with Firebase database
         taskService = new TaskService();
 
+        // Setup RecyclerView
+        setupRecyclerView(view);
+
+        // Fetch tasks from the database
+        fetchTasksFromDatabase();
+
+        // Setup menu options
+        setupMenu();
+    }
+
+    /**
+     * This method retrieve categoryId and categoryTitle from arguments
+     * and save them as class properties {@code categoryId} and {@code categoryTitle}.
+     */
+    private void retrieveArguments() {
+        if (getArguments() != null) {
+            categoryId = getArguments().getString("categoryId");
+            categoryTitle = getArguments().getString("categoryTitle");
+        }
+    }
+
+    /**
+     * Sets up the action bar title to display the category title.
+     */
+    private void setActionBarTitle() {
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(categoryTitle);
+    }
+
+    /**
+     * Initializes the RecyclerView, TaskListenerHelper, and TasksAdapter,
+     * and sets up the RecyclerView with the adapter.
+     *
+     * @param view The root view of the fragment.
+     */
+    private void setupRecyclerView(View view) {
+        // Find view and set layout manager for it
+        tasksRecyclerView = view.findViewById(R.id.tasks_recycler_view);
+        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
         // Initialize TaskListenerHelper to help with responding task actions
         TaskListenerHelper taskListenerHelper = new TaskListenerHelper(requireContext());
 
-        tasksRecyclerView = view.findViewById(R.id.tasks_recycler_view);
-        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        // Create TaskAdapter and set it to recycler view
         taskAdapter = new TasksAdapter(new ArrayList<>(), taskListenerHelper::onCheckboxClickedListener, taskListenerHelper::onTaskClickListener);
         tasksRecyclerView.setAdapter(taskAdapter);
-
-        fetchTasksFromDatabase();
-
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.category_fragment_menu, menu);
-            }
-
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                int itemId = menuItem.getItemId();
-                if (itemId == R.id.edit_category) {
-                    Toast.makeText(requireActivity(), "Not implemented", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (itemId == R.id.delete_category) {
-                    Toast.makeText(requireActivity(), "Not implemented", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
-        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
+    /**
+     * Fetches tasks associated with the category from the Firebase database
+     * and updates the RecyclerView adapter with the retrieved tasks.
+     */
     private void fetchTasksFromDatabase() {
         ValueEventListener tasksListener = new ValueEventListener() {
 
@@ -123,5 +139,32 @@ public class CategoryFragment extends Fragment {
             }
         };
         taskService.getTasksByCategoryId(categoryId, tasksListener);
+    }
+
+
+    /**
+     * Sets up the menu options for the category fragment, such as editing or deleting the category.
+     */
+    private void setupMenu() {
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.category_fragment_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.edit_category) {
+                    Toast.makeText(requireActivity(), "Not implemented", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (itemId == R.id.delete_category) {
+                    Toast.makeText(requireActivity(), "Not implemented", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 }
