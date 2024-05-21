@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -286,7 +285,7 @@ public class CategoriesFragment extends Fragment {
         int categoryColor = selectedColor != -1 ? selectedColor : getRandomColor();
         int categoryIcon = selectedIconId != -1 ? selectedIconId : getRandomIcon();
 
-        Category category = new Category(title, categoryColor, categoryIcon, userId);
+        Category category = new Category(title, categoryColor, categoryIcon, selectedTagId, userId);
 
         // Save the newly created task to Firebase database
         categoryService.saveCategory(category);
