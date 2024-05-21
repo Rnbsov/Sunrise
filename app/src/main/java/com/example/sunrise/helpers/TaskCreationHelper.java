@@ -197,6 +197,7 @@ public class TaskCreationHelper {
      * Sets the provided category id as the selected category chip.
      * This method retrieves the category details from the database using the given category id
      * and sets its title on the category chip along with saving default category id as {@link #selectedCategoryId}
+     * also add category's default tag to {@link #selectedChipIds}
      *
      * @param defaultCategoryId the ID of the default category to be set
      */
@@ -211,6 +212,8 @@ public class TaskCreationHelper {
                     selectedCategoryId = category.getCategoryId();
                     // Set the title of the default category on the category chip
                     categoryChip.setText(category.getTitle());
+                    // Add category's default tag
+                    selectedChipIds.add(category.getDefaultTagId());
                 }
             }
 
