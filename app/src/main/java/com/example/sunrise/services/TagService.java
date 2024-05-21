@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.models.Tag;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +44,20 @@ public class TagService {
         tag.setTagId(tagId); // Save this unique ID to the tag object
 
         newTagRef.setValue(tag); // Save the tag to Firebase database
+    }
+
+    /**
+     * Method to save the category to Firebase database
+     */
+    public void saveTag(Tag tag, OnCompleteListener<Void> listener) {
+        // Generate a reference to a new child location under "Tags" with a client-side auto-generated key
+        DatabaseReference newTagRef = tagsRef.push();
+
+        String tagId = newTagRef.getKey(); // Retrieve the unique ID
+        tag.setTagId(tagId); // Save this unique ID to the tag object
+
+        newTagRef.setValue(tag)
+                .addOnCompleteListener(listener); // Save the tag to Firebase database and invoke the listener
     }
 
     /**

@@ -17,8 +17,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sunrise.models.Category;
+import com.example.sunrise.models.Tag;
 import com.example.sunrise.models.UserSettings;
 import com.example.sunrise.services.CategoryService;
+import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.UserSettingsService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,6 +35,7 @@ public class Register extends AppCompatActivity {
     Button registerBtn;
     TextView loginScreenLink;
     private FirebaseAuth mAuth;
+    private String defaultTagId;
     private static final String TAG = "RegisterActivity";
 
     @Override
@@ -110,6 +113,18 @@ public class Register extends AppCompatActivity {
         });
     }
 
+    private void createDefaultTag(FirebaseUser user) {
+        TagService tagService = new TagService();
+
+        // Create a default tag
+        Tag defaultTag = new Tag("personal", -13108, user.getUid());
+
+        tagService.saveTag(defaultTag, task -> {
+            // after tag saved to firebase save it as class property
+            defaultTagId = defaultTag.getTagId();
+        });
+    }
+
     /**
      * this method creates default category and saves it in UserSettings
      */
@@ -118,7 +133,7 @@ public class Register extends AppCompatActivity {
         UserSettingsService userSettingsService = new UserSettingsService();
 
         // Create a default category
-        Category defaultCategory = new Category("Personal", -13057, 2131165345, user.getUid());
+        Category defaultCategory = new Category("Personal", -13057, 2131165345, defaultTagId, user.getUid());
 
         // Save the default category to Firebase
         categoryService.saveCategory(defaultCategory, new OnCompleteListener<Void>() {
