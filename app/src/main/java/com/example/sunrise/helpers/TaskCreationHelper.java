@@ -104,19 +104,7 @@ public class TaskCreationHelper {
                 }
 
                 for (Tag tag : tagList) {
-                    Chip tagChip = (Chip) LayoutInflater.from(context).inflate(R.layout.filter_tag_chip_layout, null);
-                    tagChip.setText(tag.getTitle());
-                    tagChip.setChipBackgroundColor(ColorStateList.valueOf(tag.getColor()));
-
-                    tagChip.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                        if (isChecked) {
-                            selectedChipIds.add(tag.getTagId());
-                        } else {
-                            selectedChipIds.remove(tag.getTagId());
-                        }
-                    });
-
-                    tagChips.addView(tagChip);
+                    addTagChip(tag);
                 }
             }
 
@@ -125,6 +113,35 @@ public class TaskCreationHelper {
                 Log.e("MainActivity", "fetch tags failed");
             }
         });
+    }
+
+
+    /**
+     * Adds a tag chip to the {@link #tagChips} ChipGroup for the provided tag.
+     *
+     * @param tag the tag object containing the details to be displayed on the chip
+     */
+    private void addTagChip(Tag tag) {
+        // Inflate a new chip from the layout
+        Chip tagChip = (Chip) LayoutInflater.from(context).inflate(R.layout.filter_tag_chip_layout, null);
+
+        // Set title and background color of the chip
+        tagChip.setText(tag.getTitle());
+        tagChip.setChipBackgroundColor(ColorStateList.valueOf(tag.getColor()));
+
+        // Add a checked change listener to handle the selection state of the chip
+        tagChip.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                // If the chip is checked, add the tag's id to the list of selected chip ids
+                selectedChipIds.add(tag.getTagId());
+            } else {
+                // If the chip is unchecked, remove the tag's id from the list of selected chip ids
+                selectedChipIds.remove(tag.getTagId());
+            }
+        });
+
+        // Add the chip to the ChipGroup
+        tagChips.addView(tagChip);
     }
 
     private void createTask(View view) {
