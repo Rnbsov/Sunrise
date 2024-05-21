@@ -4,6 +4,7 @@ public class Category {
     private String title;
     private int color;
     private int iconResourceId;
+    private String defaultTagId;
     private String categoryId;
     private String createdByUserId;
     private long createdAt;
@@ -13,10 +14,11 @@ public class Category {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Category(String title, int color, int iconResourceId, String createdByUserId) {
+    public Category(String title, int color, int iconResourceId, String defaultTagId, String createdByUserId) {
         this.title = title;
         this.color = color;
         this.iconResourceId = iconResourceId;
+        this.defaultTagId = defaultTagId;
         this.createdByUserId = createdByUserId;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
@@ -76,5 +78,13 @@ public class Category {
 
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getDefaultTagId() {
+        return defaultTagId;
+    }
+
+    public void setDefaultTagId(String defaultTagId) {
+        this.defaultTagId = defaultTagId;
     }
 }
