@@ -17,8 +17,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fab;
-    private TaskCreationHelper taskCreationHelper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupFabButton();
         setupNavigation();
-        taskCreationHelper = new TaskCreationHelper(this);
     }
 
     private void setupNavigation() {
@@ -69,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFabButton() {
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(v -> taskCreationHelper.showTaskCreationDialog(v));
+        fab.setOnClickListener(v -> {
+            TaskCreationHelper taskCreationHelper = new TaskCreationHelper(MainActivity.this);
+            taskCreationHelper.showTaskCreationDialog(v);
+        });
     }
 }
