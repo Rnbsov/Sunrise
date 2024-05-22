@@ -3,9 +3,17 @@ package com.example.sunrise.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,29 +36,53 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // Initialize Firebase Auth object
         mAuth = FirebaseAuth.getInstance();
 
-        signOutBtn = view.findViewById(R.id.sign_out_btn);
+        setupMenu();
+    }
 
-        signOutBtn.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-
-            // Send user to Login activity
-            Intent intent = new Intent(getContext(), Login.class);
-            startActivity(intent);
-
-            // Finish the parent of fragments which is MainActivity
-            if (getActivity() != null) {
-                getActivity().finish();
+    /**
+     * Sets up the menu options for the profile fragment, such as sign out
+     */
+    private void setupMenu() {
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.profile_fragment_menu, menu);
             }
 
-            // Notify user about successful sign out
-            Toast.makeText(getContext(), "Sign out success", Toast.LENGTH_SHORT).show();
-        });
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
 
-        return view;
+                if (itemId == R.id.logout) {
+                    // handle logout
+                    FirebaseAuth.getInstance().signOut();
+
+                    // Send user to Login activity
+                    Intent intent = new Intent(getContext(), Login.class);
+                    startActivity(intent);
+
+                    // Finish the parent of fragments which is MainActivity
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
+
+                    // Notify user about successful sign out
+                    Toast.makeText(getContext(), "Sign out success", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 }
