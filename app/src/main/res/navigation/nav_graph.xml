@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_page_categories_to_categoryFragment"
             app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_page_categories_to_completedTasksFragment"
+            app:destination="@id/completedTasksFragment" />
     </fragment>
 
     <fragment
@@ -54,5 +57,11 @@
             android:name="categoryTitle"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/completedTasksFragment"
+        android:name="com.example.sunrise.fragments.CompletedTasksFragment"
+        android:label="fragment_completed_tasks"
+        tools:layout="@layout/fragment_completed_tasks" />
 
 </navigation>
