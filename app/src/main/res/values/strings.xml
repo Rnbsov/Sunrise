@@ -50,4 +50,7 @@
     <string name="delete">Delete</string>
     <string name="category">Category</string>
     <string name="save">Save</string>
+
+    <!-- Profile fragment -->
+    <string name="logout">Logout</string>
 </resources>
