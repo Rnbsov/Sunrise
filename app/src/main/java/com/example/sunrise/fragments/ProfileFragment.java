@@ -1,5 +1,7 @@
 package com.example.sunrise.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -65,24 +67,48 @@ public class ProfileFragment extends Fragment {
                 int itemId = menuItem.getItemId();
 
                 if (itemId == R.id.logout) {
-                    // handle logout
-                    FirebaseAuth.getInstance().signOut();
-
-                    // Send user to Login activity
-                    Intent intent = new Intent(getContext(), Login.class);
-                    startActivity(intent);
-
-                    // Finish the parent of fragments which is MainActivity
-                    if (getActivity() != null) {
-                        getActivity().finish();
-                    }
-
-                    // Notify user about successful sign out
-                    Toast.makeText(getContext(), "Sign out success", Toast.LENGTH_SHORT).show();
+                    showSignOutConfirmationDialog();
                     return true;
                 }
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    /**
+     * Shows an AlertDialog asking the user if they really want to sign out
+     */
+    private void showSignOutConfirmationDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        performSignOut();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /**
+     * Performs the sign-out process
+     */
+    private void performSignOut() {
+        // handle logout
+        FirebaseAuth.getInstance().signOut();
+
+        // Send user to Login activity
+        Intent intent = new Intent(getContext(), Login.class);
+        startActivity(intent);
+
+        // Finish the parent of fragments which is MainActivity
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+
+        // Notify user about successful sign out
+        Toast.makeText(getContext(), "Sign out success", Toast.LENGTH_SHORT).show();
     }
 }
