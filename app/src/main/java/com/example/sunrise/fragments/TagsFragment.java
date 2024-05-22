@@ -35,7 +35,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 public class TagsFragment extends Fragment {
     TextInputEditText editTagName;
@@ -46,7 +45,6 @@ public class TagsFragment extends Fragment {
     private Chip colorChip;
     private BottomSheetDialog bottomSheetDialog;
     private Button createBtn;
-    private List<Integer> colors;
     private ColorPickerDialog colorPickerDialog;
     private int selectedColor = Color.TRANSPARENT;
 
@@ -68,9 +66,6 @@ public class TagsFragment extends Fragment {
 
         // Setup fab
         setupExtendedFabButton();
-
-        // Initialize colors
-        colors = generateColors();
 
         // Setup tags RecyclerView
         setupRecyclerView();
@@ -136,7 +131,7 @@ public class TagsFragment extends Fragment {
 
     private void showColorsDialog(View view) {
         // Create and show color picker dialog
-        colorPickerDialog = new ColorPickerDialog(requireContext(), colors, this::onColorSelected);
+        colorPickerDialog = new ColorPickerDialog(requireContext(), this::onColorSelected);
         colorPickerDialog.show();
     }
 
@@ -169,9 +164,8 @@ public class TagsFragment extends Fragment {
 
         int color;
         if (selectedColor == Color.TRANSPARENT) {
-            // If the user didn't choose any color, select a random color from the array
-            Random random = new Random();
-            color = colors.get(random.nextInt(colors.size()));
+            // If the user didn't choose any color, select a random color
+            color = colorPickerDialog.getRandomColor();
         } else {
             color = selectedColor; // Use the selected color
         }
@@ -187,27 +181,4 @@ public class TagsFragment extends Fragment {
         // Dismiss the bottom sheet dialog after task creation
         bottomSheetDialog.dismiss();
     }
-
-    private List<Integer> generateColors() {
-        List<Integer> colors = new ArrayList<>();
-
-        // Define hexadecimal colors
-        String[] hexValues = {
-                "#FFCCCC", // Pastel Red
-                "#FFE5CC", // Pastel Orange
-                "#FFF2CC", // Pastel Yellow
-                "#CCFFCC", // Pastel Green
-                "#CCE5FF", // Pastel Blue
-                "#FFCCFF"  // Pastel Purple
-        };
-
-        // Convert hexadecimal values to color integers and add them to the list
-        for (String hex : hexValues) {
-            int color = Color.parseColor(hex);
-            colors.add(color);
-        }
-
-        return colors;
-    }
-
 }
