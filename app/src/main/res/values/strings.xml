@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Sunrise</string>
 
+    <!-- Exit dialog -->
+    <string name="dialog_exit_title">Exit</string>
+    <string name="dialog_exit_message">Are you sure you want to exit?</string>
+    <string name="dialog_exit_positive">Yes</string>
+    <string name="dialog_exit_negative">No</string>
+
     <string name="bottom_nav_my_day">My day</string>
     <string name="bottom_nav_statistics">Stats</string>
     <string name="bottom_nav_categories">Categories</string>

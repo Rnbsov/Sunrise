@@ -3,6 +3,7 @@ package com.example.sunrise;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -12,6 +13,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.sunrise.helpers.TaskCreationHelper;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupFabButton();
         setupNavigation();
+        setupOnBackPressed();
     }
 
     private void setupNavigation() {
@@ -70,5 +73,36 @@ public class MainActivity extends AppCompatActivity {
             TaskCreationHelper taskCreationHelper = new TaskCreationHelper(MainActivity.this);
             taskCreationHelper.showTaskCreationDialog(v);
         });
+    }
+
+    /**
+     * Makes it possible to ask user whether they really want to exit the app
+     */
+    private void setupOnBackPressed() {
+        // Register the OnBackPressedCallback
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showExitConfirmationDialog();
+            }
+        });
+    }
+
+    /**
+     * Shows a confirmation dialog asking the user if they want to exit the app.
+     * If the user selects "Yes", the app will be closed.
+     */
+    private void showExitConfirmationDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.dialog_exit_title)
+                .setMessage(R.string.dialog_exit_message)
+                .setPositiveButton(R.string.dialog_exit_positive, (dialog, which) -> {
+                    moveTaskToBack(true);
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(1);
+                })
+                .setNegativeButton(R.string.dialog_exit_negative, null)
+                .show();
     }
 }
