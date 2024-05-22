@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/edit_category"
+        android:icon="@drawable/edit_24px"
+        app:showAsAction="always"
+        android:contentDescription="@string/edit_category_button"
+        android:title="@string/edit_category" />
+    <item
+        android:id="@+id/delete_category"
+        android:icon="@drawable/flower_24px"
+        android:title="@string/delete" />
+
+</menu>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/add_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="15dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@color/material_dynamic_primary10"
+        android:contentDescription="@string/create_new_category"
+        android:scaleType="center"
+        app:shapeAppearanceOverlay="@style/RoundedSquareOverlay"
+        app:srcCompat="@drawable/category_add_24px"
+        app:tint="@color/material_dynamic_primary70" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:text="@string/create_category"
+        android:textSize="28sp" />
+
+</LinearLayout>

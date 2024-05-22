@@ -6,4 +6,34 @@
     </style>
 
     <style name="Theme.Sunrise" parent="Base.Theme.Sunrise" />
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="MaterialAlertDialog_rounded" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+    </style>
+
+    <style name="DialogCorners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+
+    <style name="convexStarImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">98%</item>
+
+    </style><style name="starImageView" parent="">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedSquareOverlay">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+
 </resources>

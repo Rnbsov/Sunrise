@@ -21,12 +21,47 @@
         android:id="@+id/page_categories"
         android:name="com.example.sunrise.fragments.CategoriesFragment"
         android:label="@string/bottom_nav_categories"
-        tools:layout="@layout/fragment_categories" />
+        tools:layout="@layout/fragment_categories" >
+        <action
+            android:id="@+id/action_page_categories_to_tagsFragment"
+            app:destination="@id/tagsFragment" />
+        <action
+            android:id="@+id/action_page_categories_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_page_categories_to_completedTasksFragment"
+            app:destination="@id/completedTasksFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/page_profile"
         android:name="com.example.sunrise.fragments.ProfileFragment"
         android:label="@string/bottom_nav_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/tagsFragment"
+        android:name="com.example.sunrise.fragments.TagsFragment"
+        android:label="Tags"
+        tools:layout="@layout/fragment_tags" />
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.example.sunrise.fragments.CategoryFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_category">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+        <argument
+            android:name="categoryTitle"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/completedTasksFragment"
+        android:name="com.example.sunrise.fragments.CompletedTasksFragment"
+        android:label="fragment_completed_tasks"
+        tools:layout="@layout/fragment_completed_tasks" />
 
 </navigation>
