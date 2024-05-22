@@ -56,6 +56,7 @@ public class CategoriesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         CardView tagsTile = fragment.findViewById(R.id.tags_tile);
+        CardView completedTasksTile = fragment.findViewById(R.id.completed_tile);
 
         tagsTile.setOnClickListener(v -> {
             // Get the NavController
@@ -63,6 +64,14 @@ public class CategoriesFragment extends Fragment {
 
             // Navigating to tagsFragment
             navController.navigate(R.id.action_page_categories_to_tagsFragment);
+        });
+
+        completedTasksTile.setOnClickListener(v -> {
+            // Get the NavController
+            NavController navController = Navigation.findNavController(view);
+
+            // Navigating to tagsFragment
+            navController.navigate(R.id.action_page_categories_to_completedTasksFragment);
         });
 
         // Setup RecyclerView
