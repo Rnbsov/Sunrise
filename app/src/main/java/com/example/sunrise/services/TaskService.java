@@ -1,12 +1,18 @@
 package com.example.sunrise.services;
 
+import androidx.annotation.NonNull;
+
 import com.example.sunrise.models.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TaskService {
@@ -75,5 +81,44 @@ public class TaskService {
 
         // Add ValueEventListener to the query to listen for changes in Firebase data
         query.addValueEventListener(listener);
+    }
+
+    /**
+     * Method to retrieve completed tasks
+     */
+    public void getCompletedTasks(CompletedTasksListener listener) {
+        // Get currently logged-in user Id
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        // Create a query to filter tasks by completion status
+        Query completedTasksQuery = tasksRef.orderByChild("isCompleted").equalTo(true);
+
+        // Add ValueEventListener to the query to listen for changes in Firebase data
+        completedTasksQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Task> completedTasks = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Task task = snapshot.getValue(Task.class);
+                    if (task != null && task.getCreatedByUserId().equals(userId)) {
+                        completedTasks.add(task);
+                    }
+                }
+
+                // Pass the filtered data to the listener
+                listener.onCompletedTasksLoaded(completedTasks);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onCancelled(databaseError);
+            }
+        });
+    }
+
+    public interface CompletedTasksListener {
+        void onCompletedTasksLoaded(List<Task> completedTasks);
+        void onCancelled(DatabaseError databaseError);
     }
 }
