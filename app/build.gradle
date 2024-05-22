@@ -11,7 +11,7 @@ android {
         applicationId "com.example.sunrise"
         minSdk 27
         targetSdk 33
-        versionCode 229
+        versionCode 230
         versionName "1.8.1 β"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

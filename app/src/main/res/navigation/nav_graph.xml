@@ -61,7 +61,7 @@
     <fragment
         android:id="@+id/completedTasksFragment"
         android:name="com.example.sunrise.fragments.CompletedTasksFragment"
-        android:label="fragment_completed_tasks"
+        android:label="Completed Tasks"
         tools:layout="@layout/fragment_completed_tasks" />
 
 </navigation>
