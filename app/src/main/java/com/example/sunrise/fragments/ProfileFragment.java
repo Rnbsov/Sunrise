@@ -1,9 +1,17 @@
 package com.example.sunrise.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,20 +20,18 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
-
 import com.example.sunrise.Login;
 import com.example.sunrise.R;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
+
+    private ShapeableImageView profilePicture;
+    private TextView usernameTextView;
+    private TextView userEmailTextView;
+    private FirebaseAuth mAuth;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -42,8 +48,39 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Setup appbar menu options
         setupMenu();
+
+        // Initialize Firebase Auth object
+        mAuth = FirebaseAuth.getInstance();
+
+        // Initialize views
+        profilePicture = view.findViewById(R.id.profile_picture);
+        usernameTextView = view.findViewById(R.id.username);
+        userEmailTextView = view.findViewById(R.id.user_email);
+
+        // Setup profile data
+        setupProfileData();
     }
+
+    /**
+     * Sets up the profile data by retrieving information from Firebase Auth and setting it to the views.
+     */
+    private void setupProfileData() {
+        Uri photoUrl = mAuth.getCurrentUser().getPhotoUrl();
+        String username = mAuth.getCurrentUser().getDisplayName();
+        String email = mAuth.getCurrentUser().getEmail();
+
+        // Set username and email
+        usernameTextView.setText(username);
+        userEmailTextView.setText(email);
+
+        // Load profile picture using Picasso
+        Picasso.get()
+                .load(photoUrl)
+                .into(profilePicture);
+    }
+
 
     /**
      * Sets up the menu options for the profile fragment, such as sign out
