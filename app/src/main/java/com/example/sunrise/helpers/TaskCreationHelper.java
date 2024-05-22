@@ -150,12 +150,15 @@ public class TaskCreationHelper {
         String priority = TaskUtils.getPriorityValue(priorityChip.getText().toString(), context.getString(R.string.priority), context.getString((R.string.priority_regular)));
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
+        // Check if the title is empty and show an error if it is
         if (title.isEmpty()) {
             titleInputLayout.setError("Please type title");
             return;
         }
 
+        // Check if the category is selected (i.e., selectedCategoryId is not null or empty)
         if (selectedCategoryId == null || selectedCategoryId.isEmpty()) {
+            // If no category is selected, show an error on the category chip
             categoryChip.setError("Please select a category");
             return;
         }

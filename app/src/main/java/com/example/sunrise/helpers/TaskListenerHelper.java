@@ -89,6 +89,7 @@ public class TaskListenerHelper {
         String priority = TaskUtils.getPriorityValue(priorityChip.getText().toString(), context.getString(R.string.priority), context.getString((R.string.priority_regular)));
 
         // Some checks before updating task
+        // Check if the title is empty and show an error if it is
         if (title.isEmpty()) {
             titleInputLayout.setError("Title cannot be empty");
             return;
