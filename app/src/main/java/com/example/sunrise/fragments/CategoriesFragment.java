@@ -65,13 +65,8 @@ public class CategoriesFragment extends Fragment {
             navController.navigate(R.id.action_page_categories_to_tagsFragment);
         });
 
-        // Initialize RecyclerView and adapter
-        categoriesRecyclerView = fragment.findViewById(R.id.categories_recycler_view);
-        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        categoryAdapter = new CategoryAdapter(new ArrayList<>(), this::onCategoryClick, this::onCategoryAddButtonClick);
-
-        // Set adapter to RecyclerView
-        categoriesRecyclerView.setAdapter(categoryAdapter);
+        // Setup RecyclerView
+        setupRecyclerView();
 
         // Initialize CategoryService to interact with Firebase database
         categoryService = new CategoryService();
@@ -81,6 +76,16 @@ public class CategoriesFragment extends Fragment {
 
         // Fetch categories
         fetchCategoriesFromDatabase();
+    }
+
+    private void setupRecyclerView() {
+        // Initialize RecyclerView and adapter
+        categoriesRecyclerView = fragment.findViewById(R.id.categories_recycler_view);
+        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        categoryAdapter = new CategoryAdapter(new ArrayList<>(), this::onCategoryClick, this::onCategoryAddButtonClick);
+
+        // Set adapter to RecyclerView
+        categoriesRecyclerView.setAdapter(categoryAdapter);
     }
 
     private void fetchCategoriesFromDatabase() {
