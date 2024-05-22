@@ -9,7 +9,10 @@ import com.example.sunrise.R;
 import com.example.sunrise.adapters.IconsAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class IconPickerDialog {
     private final AlertDialog dialog;
@@ -20,8 +23,9 @@ public class IconPickerDialog {
         void onIconSelected(int iconResId);
     }
 
-    public IconPickerDialog(Context context, List<Integer> icons, OnIconSelectedListener listener) {
-        this.icons = icons;
+    public IconPickerDialog(Context context, OnIconSelectedListener listener) {
+        // Initialize icons
+        this.icons = initializeIcons();
         this.iconSelectedListener = listener;
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_icon, null);
@@ -58,5 +62,23 @@ public class IconPickerDialog {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
+    }
+
+    private List<Integer> initializeIcons() {
+        List<Integer> icons = new ArrayList<>();
+
+        // Initialize icons
+        icons = Arrays.asList(
+                R.drawable.label_24px,
+                R.drawable.palette_24px,
+                R.drawable.flower_24px
+        );
+
+        return icons;
+    }
+
+    public int getRandomIcon() {
+        Random random = new Random();
+        return icons.get(random.nextInt(icons.size()));
     }
 }

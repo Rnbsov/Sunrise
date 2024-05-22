@@ -2,7 +2,6 @@ package com.example.sunrise.helpers;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,20 +29,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 public class CategoryCreationHelper {
 
     private final Context context;
     private final CategoryService categoryService;
-    private final List<Integer> colors;
-    private final List<Integer> icons;
     private BottomSheetDialog createCategoryBottomSheetDialog;
     private ShapeableImageView setIcon;
     private TextInputLayout titleInputLayout;
@@ -58,8 +51,6 @@ public class CategoryCreationHelper {
     public CategoryCreationHelper(Context context) {
         this.context = context;
         this.categoryService = new CategoryService();
-        this.colors = initializeColors(); // Initialize colors
-        this.icons = initializeIcons(); // Initialize icons
     }
 
     public void showCategoryCreationDialog(ViewGroup parent) {
@@ -88,11 +79,11 @@ public class CategoryCreationHelper {
 
     private void onSetIconClick(View v) {
         // Create and show color picker dialog
-        colorPickerDialog = new ColorPickerDialog(context, colors, this::onColorSelected);
+        colorPickerDialog = new ColorPickerDialog(context, this::onColorSelected);
         colorPickerDialog.show();
 
         // Create and show icon picker dialog
-        iconPickerDialog = new IconPickerDialog(context, icons, this::onIconSelected);
+        iconPickerDialog = new IconPickerDialog(context, this::onIconSelected);
         iconPickerDialog.show();
     }
 
@@ -181,8 +172,8 @@ public class CategoryCreationHelper {
         }
 
         // If selected color and icon is not set, get a random color and icon
-        int categoryColor = selectedColor != -1 ? selectedColor : getRandomColor();
-        int categoryIcon = selectedIconId != -1 ? selectedIconId : getRandomIcon();
+        int categoryColor = selectedColor != -1 ? selectedColor : colorPickerDialog.getRandomColor();
+        int categoryIcon = selectedIconId != -1 ? selectedIconId : iconPickerDialog.getRandomIcon();
 
         Category category = new Category(title, categoryColor, categoryIcon, selectedTagId, userId);
 
@@ -191,51 +182,6 @@ public class CategoryCreationHelper {
 
         // Dismiss the bottom sheet dialog after category creation
         createCategoryBottomSheetDialog.dismiss();
-    }
-
-    private List<Integer> initializeColors() {
-        List<Integer> colors = new ArrayList<>();
-
-        // Define hexadecimal colors
-        String[] hexValues = {
-                "#FFCCCC", // Pastel Red
-                "#FFE5CC", // Pastel Orange
-                "#FFF2CC", // Pastel Yellow
-                "#CCFFCC", // Pastel Green
-                "#CCE5FF", // Pastel Blue
-                "#FFCCFF"  // Pastel Purple
-        };
-
-        // Convert hexadecimal values to color integers and add them to the list
-        for (String hex : hexValues) {
-            int color = Color.parseColor(hex);
-            colors.add(color);
-        }
-
-        return colors;
-    }
-
-    private List<Integer> initializeIcons() {
-        List<Integer> icons = new ArrayList<>();
-
-        // Initialize icons
-        icons = Arrays.asList(
-                R.drawable.label_24px,
-                R.drawable.palette_24px,
-                R.drawable.flower_24px
-        );
-
-        return icons;
-    }
-
-    private int getRandomColor() {
-        Random random = new Random();
-        return colors.get(random.nextInt(colors.size()));
-    }
-
-    private int getRandomIcon() {
-        Random random = new Random();
-        return icons.get(random.nextInt(icons.size()));
     }
 
     interface TagsRetrievedCallback {
