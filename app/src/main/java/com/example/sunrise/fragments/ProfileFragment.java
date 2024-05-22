@@ -27,9 +27,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileFragment extends Fragment {
 
-    Button signOutBtn;
-    private FirebaseAuth mAuth;
-
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -44,9 +41,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Initialize Firebase Auth object
-        mAuth = FirebaseAuth.getInstance();
 
         setupMenu();
     }
