@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.TasksAdapter;
-import com.example.sunrise.helpers.TaskListenerHelper;
+import com.example.sunrise.helpers.TaskUpdateHelper;
 import com.example.sunrise.models.Task;
 import com.example.sunrise.services.TaskService;
 import com.google.firebase.database.DataSnapshot;
@@ -54,10 +54,10 @@ public class MyDayFragment extends Fragment {
         tasksList.setLayoutManager(layoutManager);
 
         // Initialize TaskListenerHelper to help with responding task actions
-        TaskListenerHelper taskListenerHelper = new TaskListenerHelper(requireContext());
+        TaskUpdateHelper taskUpdateHelper = new TaskUpdateHelper(requireContext());
 
         // Initialize adapter
-        adapter = new TasksAdapter(new ArrayList<>(), taskListenerHelper::onCheckboxClickedListener, taskListenerHelper::onTaskClickListener);
+        adapter = new TasksAdapter(new ArrayList<>(), taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
         tasksList.setAdapter(adapter);
 
         // Initialize TaskService

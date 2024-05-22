@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
-public class TaskListenerHelper {
+public class TaskUpdateHelper {
     private final Context context;
     private final TaskService taskService;
     private final CategoryService categoryService;
@@ -38,7 +38,7 @@ public class TaskListenerHelper {
     private Button saveBtn;
     private String selectedCategoryId;
 
-    public TaskListenerHelper(Context context) {
+    public TaskUpdateHelper(Context context) {
         this.context = context;
 
         // Initialize TaskService and Category to interact with Firebase database
