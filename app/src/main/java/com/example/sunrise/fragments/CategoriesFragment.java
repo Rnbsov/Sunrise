@@ -55,24 +55,8 @@ public class CategoriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        CardView tagsTile = fragment.findViewById(R.id.tags_tile);
-        CardView completedTasksTile = fragment.findViewById(R.id.completed_tile);
-
-        tagsTile.setOnClickListener(v -> {
-            // Get the NavController
-            NavController navController = Navigation.findNavController(view);
-
-            // Navigating to tagsFragment
-            navController.navigate(R.id.action_page_categories_to_tagsFragment);
-        });
-
-        completedTasksTile.setOnClickListener(v -> {
-            // Get the NavController
-            NavController navController = Navigation.findNavController(view);
-
-            // Navigating to tagsFragment
-            navController.navigate(R.id.action_page_categories_to_completedTasksFragment);
-        });
+        // Find tiles and set navigation forwarding
+        findTilesAndSetOnClickListeners();
 
         // Setup RecyclerView
         setupRecyclerView();
@@ -85,6 +69,17 @@ public class CategoriesFragment extends Fragment {
 
         // Fetch categories
         fetchCategoriesFromDatabase();
+    }
+
+    /**
+     * Method to find tiles and set navigation onClick listeners on them
+     */
+    private void findTilesAndSetOnClickListeners() {
+        CardView tagsTile = fragment.findViewById(R.id.tags_tile);
+        tagsTile.setOnClickListener(v -> navigateToTagsFragment());
+
+        CardView completedTasksTile = fragment.findViewById(R.id.completed_tile);
+        completedTasksTile.setOnClickListener(v -> navigateToCompletedTasksFragment());
     }
 
     private void setupRecyclerView() {
@@ -138,5 +133,21 @@ public class CategoriesFragment extends Fragment {
 
     private void onCategoryAddButtonClick(View v) {
         categoryCreationHelper.showCategoryCreationDialog((ViewGroup) requireView());
+    }
+
+    /**
+     * Method to navigate to TagsFragment
+     */
+    private void navigateToTagsFragment() {
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_page_categories_to_tagsFragment);
+    }
+
+    /**
+     * Method to navigate to CompletedTasksFragment
+     */
+    private void navigateToCompletedTasksFragment() {
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_page_categories_to_completedTasksFragment);
     }
 }
