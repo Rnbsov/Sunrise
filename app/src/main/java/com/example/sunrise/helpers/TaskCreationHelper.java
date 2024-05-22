@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +40,7 @@ public class TaskCreationHelper {
     private final TagService tagService;
     private final CategoryService categoryService;
     private final UserSettingsService userSettingsService;
-    private final List<String> selectedChipIds;
+    private List<String> selectedChipIds;
     private BottomSheetDialog bottomSheetDialog;
     private TextInputEditText editTitle;
     private TextInputLayout titleInputLayout;
@@ -153,6 +154,9 @@ public class TaskCreationHelper {
             titleInputLayout.setError("Please type title");
             return;
         }
+
+        // Remove duplicates if there is any
+        selectedChipIds = new ArrayList<>(new HashSet<>(selectedChipIds));
 
         Task task = new Task(title, priority, selectedChipIds, selectedCategoryId, userId);
 
