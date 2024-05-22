@@ -155,6 +155,11 @@ public class TaskCreationHelper {
             return;
         }
 
+        if (selectedCategoryId == null || selectedCategoryId.isEmpty()) {
+            categoryChip.setError("Please select a category");
+            return;
+        }
+
         // Remove duplicates if there is any
         selectedChipIds = new ArrayList<>(new HashSet<>(selectedChipIds));
 
