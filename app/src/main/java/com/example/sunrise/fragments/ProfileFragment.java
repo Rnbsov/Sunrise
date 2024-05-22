@@ -80,15 +80,10 @@ public class ProfileFragment extends Fragment {
      */
     private void showSignOutConfirmationDialog() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Sign Out")
-                .setMessage("Are you sure you want to sign out?")
-                .setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        performSignOut();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
+                .setTitle(getString(R.string.dialog_title_sign_out))
+                .setMessage(getString(R.string.dialog_message_sign_out))
+                .setPositiveButton(getString(R.string.button_sign_out), (dialog, which) -> performSignOut())
+                .setNegativeButton(getString(R.string.button_cancel), null)
                 .show();
     }
 
@@ -109,6 +104,6 @@ public class ProfileFragment extends Fragment {
         }
 
         // Notify user about successful sign out
-        Toast.makeText(getContext(), "Sign out success", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.sign_out_success_message), Toast.LENGTH_SHORT).show();
     }
 }
