@@ -90,24 +90,24 @@ public class TaskService {
         // Get currently logged-in user Id
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-        // Create a query to filter tasks by completion status
-        Query completedTasksQuery = tasksRef.orderByChild("isCompleted").equalTo(true);
+        // Create a query to filter tasks by createdByUserId
+        Query userTasksQuery = tasksRef.orderByChild("createdByUserId").equalTo(userId);
 
         // Add ValueEventListener to the query to listen for changes in Firebase data
-        completedTasksQuery.addValueEventListener(new ValueEventListener() {
+        userTasksQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Task> completedTasks = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Task task = snapshot.getValue(Task.class);
-                    if (task != null && task.getCreatedByUserId().equals(userId)) {
+                    // check if task is completed, and if so add it to completedTasks list
+                    if (task != null && task.isCompleted()) {
                         completedTasks.add(task);
                     }
                 }
 
                 // Pass the filtered data to the listener
                 listener.onCompletedTasksLoaded(completedTasks);
-
             }
 
             @Override
