@@ -40,6 +40,7 @@
 
     <!-- Categories -->
     <string name="tags">Tags</string>
+    <string name="completed_tile_label">Completed Tasks</string>
     <string name="completed">Completed</string>
     <string name="trash">Trash</string>
     <string name="scheduled">Scheduled</string>
