@@ -127,7 +127,22 @@ public class TagsFragment extends Fragment {
         extendedFab.setOnClickListener(this::showTagCreationDialog);
     }
 
+    private void showTagCreationDialog(View view) {
+        Context context = requireContext();
+        View fragmentRootView = requireView();
 
+        bottomSheetDialog = new BottomSheetDialog(context);
+        View bottomSheetContentView = LayoutInflater.from(context).inflate(R.layout.create_tag_bottom_sheet, (ViewGroup) fragmentRootView, false);
+        bottomSheetDialog.setContentView(bottomSheetContentView);
+        bottomSheetDialog.show();
+
+        editTagName = bottomSheetContentView.findViewById(R.id.editTagName);
+        createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
+        colorChip = bottomSheetContentView.findViewById(R.id.color);
+        colorChip.setOnClickListener(this::showColorsDialog);
+
+        createBtn.setOnClickListener(this::createTag);
+    }
 
     private void showColorsDialog(View view) {
         // Create and show color picker dialog
