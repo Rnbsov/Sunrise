@@ -92,8 +92,38 @@ public class TagsFragment extends Fragment {
         tagsList.addItemDecoration(new DividerItemDecoration(tagsList.getContext(), DividerItemDecoration.VERTICAL));
     }
 
+    private void showTagBottomSheet(Tag tag) {
+        Context context = requireContext();
+        View fragmentRootView = requireView();
+
+        bottomSheetDialog = new BottomSheetDialog(context);
+        View bottomSheetContentView = LayoutInflater.from(context).inflate(R.layout.create_tag_bottom_sheet, (ViewGroup) fragmentRootView, false);
+        bottomSheetDialog.setContentView(bottomSheetContentView);
+        bottomSheetDialog.show();
+
+        editTagName = bottomSheetContentView.findViewById(R.id.editTagName);
+        createBtn = bottomSheetContentView.findViewById(R.id.create_btn);
+        colorChip = bottomSheetContentView.findViewById(R.id.color);
+        colorChip.setOnClickListener(this::showColorsDialog);
+
+        if (tag != null) {
+            // Populate fields if a tag is provided
+            editTagName.setText(tag.getTitle());
+            int color = tag.getColor();
+            ColorStateList colorStateList = ColorStateList.valueOf(color);
+            colorChip.setChipIconTint(colorStateList);
+            colorChip.setTextColor(color);
+        }
+
+        createBtn.setOnClickListener(this::createTag);
+    }
+
     private void OnTagClickListener(Tag tag) {
-        System.out.println(tag.getColor() + tag.getTitle());
+        showTagBottomSheet(tag);
+    }
+
+    private void showTagCreationDialog(View v) {
+        showTagBottomSheet(null); // Pass null to indicate no tag is being edited
     }
 
     private void fetchTagsFromDatabase() {
