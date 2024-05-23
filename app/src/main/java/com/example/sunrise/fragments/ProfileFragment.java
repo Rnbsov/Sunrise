@@ -3,6 +3,7 @@ package com.example.sunrise.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -23,16 +24,19 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.Login;
+import android.Manifest;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.NavigationAdapter;
 import com.example.sunrise.navigation.ProfileNavigationRoutes;
@@ -60,6 +64,7 @@ public class ProfileFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> takePictureLauncher;
     private ActivityResultLauncher<String> pickImageLauncher;
+    private ActivityResultLauncher<String> requestCameraPermissionLauncher;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -96,6 +101,7 @@ public class ProfileFragment extends Fragment {
         // Initialize some contracts
         takePictureLauncher = registerForTakePictureContract();
         pickImageLauncher = registerForPickImageContract();
+        requestCameraPermissionLauncher = registerForCameraPermissionContract();
 
         // Set profile picture click listener
         profilePicture.setOnClickListener(v -> onAvatarClicked());
@@ -232,8 +238,12 @@ public class ProfileFragment extends Fragment {
         builder.setItems(options, (dialog, which) -> {
             switch (which) {
                 case 0:
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    takePictureLauncher.launch(takePictureIntent);
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+                    } else {
+                        launchCamera();
+                    }
                     break;
                 case 1:
                     pickImageLauncher.launch("image/*");
@@ -246,6 +256,14 @@ public class ProfileFragment extends Fragment {
 
         AlertDialog alertDialog = builder.show();
         alertDialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    /**
+     * Launches the camera to take a picture.
+     */
+    private void launchCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureLauncher.launch(takePictureIntent);
     }
 
     /**
@@ -287,6 +305,26 @@ public class ProfileFragment extends Fragment {
                         } catch (Exception ex) {
                             Log.e("ProfileFragment", Objects.requireNonNull(ex.getLocalizedMessage()));
                         }
+                    }
+                }
+        );
+    }
+
+    /**
+     * Registers the contract for requesting camera permission.
+     * If the permission is granted, it will proceed to launch the camera.
+     * If the permission is denied, it will show a toast message.
+     *
+     * @return The launcher for requesting camera permission.
+     */
+    private ActivityResultLauncher<String> registerForCameraPermissionContract() {
+        return registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        launchCamera();
+                    } else {
+                        Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
