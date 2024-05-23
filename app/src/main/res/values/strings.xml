@@ -59,5 +59,6 @@
     <string name="button_cancel">Cancel</string>
     <string name="sign_out_success_message">Sign out success</string>
     <string name="route_icon">Route icon</string>
+    <string name="by_rnbsov">by Rnbsov</string>
 
 </resources>
