@@ -57,4 +57,15 @@
     <string name="delete">Delete</string>
     <string name="category">Category</string>
     <string name="save">Save</string>
+
+    <!-- Profile fragment -->
+    <string name="logout">Logout</string>
+    <string name="dialog_title_sign_out">Sign Out</string>
+    <string name="dialog_message_sign_out">Are you sure you want to sign out?</string>
+    <string name="button_sign_out">Sign Out</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="sign_out_success_message">Sign out success</string>
+    <string name="route_icon">Route icon</string>
+    <string name="by_rnbsov">by Rnbsov</string>
+
 </resources>

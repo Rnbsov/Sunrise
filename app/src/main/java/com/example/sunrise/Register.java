@@ -166,7 +166,7 @@ public class Register extends AppCompatActivity {
         // Create a UserProfileChangeRequest to set default display name and avatar
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName("Stranger")
-                .setPhotoUri(Uri.parse("https://ibb.co.com/gVn0DQ1"))
+                .setPhotoUri(Uri.parse("https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b"))
                 .build();
 
         // Update the user's profile with the default information

@@ -15,6 +15,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         setupFabButton();
         setupNavigation();
         setupOnBackPressed();
+
+        // Enable disk persistence, so app can be used offline
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     private void setupNavigation() {
