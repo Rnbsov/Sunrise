@@ -1,9 +1,15 @@
 package com.example.sunrise.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
@@ -30,10 +38,18 @@ import com.example.sunrise.adapters.NavigationAdapter;
 import com.example.sunrise.navigation.ProfileNavigationRoutes;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
@@ -41,6 +57,9 @@ public class ProfileFragment extends Fragment {
     private TextView usernameTextView;
     private TextView userEmailTextView;
     private FirebaseAuth mAuth;
+
+    private ActivityResultLauncher<Intent> takePictureLauncher;
+    private ActivityResultLauncher<String> pickImageLauncher;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -73,6 +92,13 @@ public class ProfileFragment extends Fragment {
 
         // Setup navigation routes
         setupNavigationRoutes(view);
+
+        // Initialize some contracts
+        takePictureLauncher = registerForTakePictureContract();
+        pickImageLauncher = registerForPickImageContract();
+
+        // Set profile picture click listener
+        profilePicture.setOnClickListener(v -> onAvatarClicked());
     }
 
     /**
@@ -191,5 +217,122 @@ public class ProfileFragment extends Fragment {
 
         // Notify user about successful sign out
         Toast.makeText(getContext(), getString(R.string.sign_out_success_message), Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Handles the click event for the avatar. Displays a dialog with options to take a photo or choose from the gallery.
+     * Launches the appropriate activity based on the user's choice.
+     */
+    private void onAvatarClicked() {
+        String[] options = new String[]{"Take photo", "Choose from gallery", "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose your avatar");
+
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureLauncher.launch(takePictureIntent);
+                    break;
+                case 1:
+                    pickImageLauncher.launch("image/*");
+                    break;
+                default:
+                    // Cancel
+                    break;
+            }
+        });
+
+        AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    /**
+     * Registers the contract for taking a picture. Defines the behavior upon receiving the result.
+     * @return The launcher for taking a picture.
+     */
+    private ActivityResultLauncher<Intent> registerForTakePictureContract() {
+        return registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        if (bitmap != null) {
+                            profilePicture.setImageBitmap(bitmap);
+                            saveAvatarToFB(bitmap);
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
+     * Registers the contract for picking an image from the gallery. Defines the behavior upon receiving the result.
+     * @return The launcher for picking an image.
+     */
+    private ActivityResultLauncher<String> registerForPickImageContract() {
+        return registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                result -> {
+                    if (result != null) {
+                        try {
+                            InputStream is = getContext().getContentResolver().openInputStream(result);
+                            Bitmap bitmap = BitmapFactory.decodeStream(is);
+                            if (bitmap != null) {
+                                profilePicture.setImageBitmap(bitmap);
+                                saveAvatarToFB(bitmap);
+                            }
+                        } catch (Exception ex) {
+                            Log.e("ProfileFragment", Objects.requireNonNull(ex.getLocalizedMessage()));
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
+     * Saves the avatar image to Firebase Storage after converting it to a byte array.
+     * @param bitmap The bitmap representation of the avatar image.
+     */
+    private void saveAvatarToFB(Bitmap bitmap) {
+        String userUID = mAuth.getCurrentUser().getUid();
+        String storagePath = "avatars/" + userUID + "_avatar";
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(storagePath);
+
+        // Convert the Bitmap to a byte array
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        UploadTask uploadTask = storageReference.putBytes(byteArray);
+
+        // Upload the byte array to Firebase Storage
+        uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> updateProfilePicture(uri)))
+                .addOnFailureListener(e -> {
+                    System.out.println(e.getLocalizedMessage());
+                    Toast.makeText(requireContext(), "Failed to upload image to Firebase Storage.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    /**
+     * Updates the profile picture of the current user with the provided URI.
+     * @param uri The URI of the updated profile picture.
+     */
+    private void updateProfilePicture(Uri uri) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(uri)
+                .build();
+
+        currentUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(requireContext(), "Profile picture updated successfully.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to update profile picture.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
