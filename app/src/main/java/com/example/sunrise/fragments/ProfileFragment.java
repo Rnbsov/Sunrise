@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -343,7 +344,14 @@ public class ProfileFragment extends Fragment {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
-        UploadTask uploadTask = storageReference.putBytes(byteArray);
+
+        // Create metadata with cache control headers
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setCacheControl("public, max-age=7776000") // Cache avatar for three months
+                .build();
+
+        // Upload the byte array to Firebase Storage with metadata
+        UploadTask uploadTask = storageReference.putBytes(byteArray, metadata);
 
         // Upload the byte array to Firebase Storage
         uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> updateProfilePicture(uri)))
