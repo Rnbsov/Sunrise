@@ -7,6 +7,10 @@ android {
     namespace 'com.example.sunrise'
     compileSdk 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId "com.example.sunrise"
         minSdk 27
