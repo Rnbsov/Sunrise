@@ -102,9 +102,7 @@ public class ProfileFragment extends Fragment {
         List<ProfileNavigationRoutes> navigationItems = Arrays.asList(ProfileNavigationRoutes.values());
         NavigationAdapter<ProfileNavigationRoutes> adapter = new NavigationAdapter<>(navigationItems, item -> {
             switch (item) {
-                case Feedback -> {
-                    Toast.makeText(requireContext(), "Feedback click", Toast.LENGTH_LONG).show();
-                }
+                case Feedback -> handleFeedbackClick();
                 case Settings -> {
                     Toast.makeText(requireContext(), "Settings click", Toast.LENGTH_LONG).show();
                 }
@@ -115,6 +113,20 @@ public class ProfileFragment extends Fragment {
         });
 
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Handles the click event for the feedback route.
+     */
+    private void handleFeedbackClick() {
+        // Create an intent to open email application
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:contatornbsov@gmail.com"));
+        try {
+            startActivity(emailIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(requireContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
