@@ -19,12 +19,19 @@ import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.Login;
 import com.example.sunrise.R;
+import com.example.sunrise.adapters.NavigationAdapter;
+import com.example.sunrise.navigation.ProfileNavigationRoutes;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -61,6 +68,9 @@ public class ProfileFragment extends Fragment {
 
         // Setup profile data
         setupProfileData();
+
+        // Setup navigation routes
+        setupNavigationRoutes(view);
     }
 
     /**
@@ -79,6 +89,32 @@ public class ProfileFragment extends Fragment {
         Picasso.get()
                 .load(photoUrl)
                 .into(profilePicture);
+    }
+
+    /**
+     * Sets up the navigation routes in the RecyclerView.
+     */
+    private void setupNavigationRoutes(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.navigation_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setHasFixedSize(true); // Enable some optimization of recyclerView
+
+        List<ProfileNavigationRoutes> navigationItems = Arrays.asList(ProfileNavigationRoutes.values());
+        NavigationAdapter<ProfileNavigationRoutes> adapter = new NavigationAdapter<>(navigationItems, item -> {
+            switch (item) {
+                case Feedback -> {
+                    Toast.makeText(requireContext(), "Feedback click", Toast.LENGTH_LONG).show();
+                }
+                case Settings -> {
+                    Toast.makeText(requireContext(), "Settings click", Toast.LENGTH_LONG).show();
+                }
+                case About -> {
+                    Toast.makeText(requireContext(), "About click", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
     }
 
 
