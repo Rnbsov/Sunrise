@@ -37,7 +37,11 @@
         android:id="@+id/page_profile"
         android:name="com.example.sunrise.fragments.ProfileFragment"
         android:label="@string/bottom_nav_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_page_profile_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/tagsFragment"
@@ -63,5 +67,11 @@
         android:name="com.example.sunrise.fragments.CompletedTasksFragment"
         android:label="fragment_completed_tasks"
         tools:layout="@layout/fragment_completed_tasks" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.sunrise.fragments.AboutFragment"
+        android:label="About"
+        tools:layout="@layout/fragment_about" />
 
 </navigation>
