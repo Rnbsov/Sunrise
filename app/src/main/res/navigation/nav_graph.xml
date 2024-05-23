@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/tagsFragment"
         android:name="com.example.sunrise.fragments.TagsFragment"
-        android:label="Tags"
+        android:label="@string/tags"
         tools:layout="@layout/fragment_tags" />
 
     <fragment
@@ -65,7 +65,7 @@
     <fragment
         android:id="@+id/completedTasksFragment"
         android:name="com.example.sunrise.fragments.CompletedTasksFragment"
-        android:label="fragment_completed_tasks"
+        android:label="@string/completed_tile_label"
         tools:layout="@layout/fragment_completed_tasks" />
 
     <fragment
