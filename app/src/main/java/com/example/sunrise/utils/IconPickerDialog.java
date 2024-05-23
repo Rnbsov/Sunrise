@@ -9,14 +9,13 @@ import com.example.sunrise.R;
 import com.example.sunrise.adapters.IconsAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public class IconPickerDialog {
     private final AlertDialog dialog;
-    private final List<Integer> icons;
+    private final List<Icon> icons;
     private final OnIconSelectedListener iconSelectedListener;
 
     public interface OnIconSelectedListener {
@@ -25,7 +24,7 @@ public class IconPickerDialog {
 
     public IconPickerDialog(Context context, OnIconSelectedListener listener) {
         // Initialize icons
-        this.icons = initializeIcons();
+        this.icons = Arrays.asList(Icon.values());;
         this.iconSelectedListener = listener;
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_icon, null);
@@ -64,21 +63,25 @@ public class IconPickerDialog {
         }
     }
 
-    private List<Integer> initializeIcons() {
-        List<Integer> icons = new ArrayList<>();
-
-        // Initialize icons
-        icons = Arrays.asList(
-                R.drawable.label_24px,
-                R.drawable.palette_24px,
-                R.drawable.flower_24px
-        );
-
-        return icons;
+    public Icon getRandomIcon() {
+        Random random = new Random();
+        Icon randomIcon = icons.get(random.nextInt(icons.size()));
+        return randomIcon;
     }
 
-    public int getRandomIcon() {
-        Random random = new Random();
-        return icons.get(random.nextInt(icons.size()));
+    public enum Icon {
+        LABEL(R.drawable.label_24px),
+        PALETTE(R.drawable.palette_24px),
+        FLOWER(R.drawable.flower_24px);
+
+        private final int resId;
+
+        Icon(int resId) {
+            this.resId = resId;
+        }
+
+        public int getResId() {
+            return resId;
+        }
     }
 }
