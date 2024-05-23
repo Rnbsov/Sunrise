@@ -19,6 +19,8 @@ import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -106,9 +108,7 @@ public class ProfileFragment extends Fragment {
                 case Settings -> {
                     Toast.makeText(requireContext(), "Settings click", Toast.LENGTH_LONG).show();
                 }
-                case About -> {
-                    Toast.makeText(requireContext(), "About click", Toast.LENGTH_LONG).show();
-                }
+                case About -> navigateToAboutFragment();
             }
         });
 
@@ -129,6 +129,13 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to navigate to AboutFragment
+     */
+    private void navigateToAboutFragment() {
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_page_profile_to_aboutFragment);
+    }
 
     /**
      * Sets up the menu options for the profile fragment, such as sign out
