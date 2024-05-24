@@ -7,25 +7,25 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.IconsAdapter;
+import com.example.sunrise.constants.Icon;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public class IconPickerDialog {
     private final AlertDialog dialog;
-    private final List<Integer> icons;
+    private final List<Icon> icons;
     private final OnIconSelectedListener iconSelectedListener;
 
     public interface OnIconSelectedListener {
-        void onIconSelected(int iconResId);
+        void onIconSelected(Icon icon);
     }
 
     public IconPickerDialog(Context context, OnIconSelectedListener listener) {
         // Initialize icons
-        this.icons = initializeIcons();
+        this.icons = Arrays.asList(Icon.values());;
         this.iconSelectedListener = listener;
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_icon, null);
@@ -51,9 +51,9 @@ public class IconPickerDialog {
         }
     }
 
-    private void onIconSelected(int iconResId) {
+    private void onIconSelected(Icon icon) {
         if (iconSelectedListener != null) {
-            iconSelectedListener.onIconSelected(iconResId);
+            iconSelectedListener.onIconSelected(icon);
         }
         dismiss();
     }
@@ -64,21 +64,9 @@ public class IconPickerDialog {
         }
     }
 
-    private List<Integer> initializeIcons() {
-        List<Integer> icons = new ArrayList<>();
-
-        // Initialize icons
-        icons = Arrays.asList(
-                R.drawable.label_24px,
-                R.drawable.palette_24px,
-                R.drawable.flower_24px
-        );
-
-        return icons;
-    }
-
-    public int getRandomIcon() {
+    public Icon getRandomIcon() {
         Random random = new Random();
-        return icons.get(random.nextInt(icons.size()));
+        Icon randomIcon = icons.get(random.nextInt(icons.size()));
+        return randomIcon;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.sunrise.utils;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -11,24 +10,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.ColorsAdapter;
+import com.example.sunrise.constants.ColorsEnum;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public class ColorPickerDialog {
     private final AlertDialog dialog;
-    private final List<Integer> colors;
+    private final List<ColorsEnum> colors;
     private final OnColorSelectedListener colorSelectedListener;
 
     public interface OnColorSelectedListener {
-        void onColorSelected(int color);
+        void onColorSelected(ColorsEnum color);
     }
 
     public ColorPickerDialog(Context context, OnColorSelectedListener listener) {
         // Initialize colors
-        this.colors = initializeColors();
+        this.colors = Arrays.asList(ColorsEnum.values());
         this.colorSelectedListener = listener;
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_color, null);
@@ -54,7 +54,7 @@ public class ColorPickerDialog {
         }
     }
 
-    private void onColorSelected(int color) {
+    private void onColorSelected(ColorsEnum color) {
         if (colorSelectedListener != null) {
             colorSelectedListener.onColorSelected(color);
         }
@@ -67,29 +67,7 @@ public class ColorPickerDialog {
         }
     }
 
-    private List<Integer> initializeColors() {
-        List<Integer> colors = new ArrayList<>();
-
-        // Define hexadecimal colors
-        String[] hexValues = {
-                "#FFCCCC", // Pastel Red
-                "#FFE5CC", // Pastel Orange
-                "#FFF2CC", // Pastel Yellow
-                "#CCFFCC", // Pastel Green
-                "#CCE5FF", // Pastel Blue
-                "#FFCCFF"  // Pastel Purple
-        };
-
-        // Convert hexadecimal values to color integers and add them to the list
-        for (String hex : hexValues) {
-            int color = Color.parseColor(hex);
-            colors.add(color);
-        }
-
-        return colors;
-    }
-
-    public int getRandomColor() {
+    public ColorsEnum getRandomColor() {
         Random random = new Random();
         return colors.get(random.nextInt(colors.size()));
     }

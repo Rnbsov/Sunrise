@@ -8,15 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
+import com.example.sunrise.constants.ColorsEnum;
 
 import java.util.List;
 
 public class ColorsAdapter extends RecyclerView.Adapter<ColorsAdapter.ColorViewHolder> {
 
-    private final List<Integer> colors;
+    private final List<ColorsEnum> colors;
     private final OnColorClickListener listener;
 
-    public ColorsAdapter(List<Integer> colors, OnColorClickListener listener) {
+    public ColorsAdapter(List<ColorsEnum> colors, OnColorClickListener listener) {
         this.colors = colors;
         this.listener = listener;
     }
@@ -30,10 +31,10 @@ public class ColorsAdapter extends RecyclerView.Adapter<ColorsAdapter.ColorViewH
 
     @Override
     public void onBindViewHolder(@NonNull ColorViewHolder holder, int position) {
-        final int color = colors.get(position);
+        ColorsEnum color = colors.get(position);
         View colorView = holder.getColorView();
 
-        colorView.setBackgroundColor(color);
+        colorView.setBackgroundColor(color.getColor());
 
         holder.itemView.setOnClickListener(v -> listener.onColorClick(color));
     }
@@ -44,7 +45,7 @@ public class ColorsAdapter extends RecyclerView.Adapter<ColorsAdapter.ColorViewH
     }
 
     public interface OnColorClickListener {
-        void onColorClick(int color);
+        void onColorClick(ColorsEnum color);
     }
 
     public static class ColorViewHolder extends RecyclerView.ViewHolder {
