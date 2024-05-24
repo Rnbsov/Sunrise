@@ -11,7 +11,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@android:color/darker_gray"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
         app:shapeAppearanceOverlay="@style/RoundedSquareOverlay"
         app:srcCompat="@drawable/palette_24px" />
 
