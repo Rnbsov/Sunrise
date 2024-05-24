@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.IconsAdapter;
+import com.example.sunrise.constants.Icon;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Arrays;
@@ -67,22 +68,5 @@ public class IconPickerDialog {
         Random random = new Random();
         Icon randomIcon = icons.get(random.nextInt(icons.size()));
         return randomIcon;
-    }
-
-    public enum Icon {
-        LABEL(R.drawable.label_24px),
-        PALETTE(R.drawable.palette_24px),
-        FLOWER(R.drawable.flower_24px),
-        DIAMOND(R.drawable.diamond_24px);
-
-        private final int resId;
-
-        Icon(int resId) {
-            this.resId = resId;
-        }
-
-        public int getResId() {
-            return resId;
-        }
     }
 }

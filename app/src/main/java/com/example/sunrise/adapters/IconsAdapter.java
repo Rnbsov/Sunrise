@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
-import com.example.sunrise.utils.IconPickerDialog;
+import com.example.sunrise.constants.Icon;
 
 import java.util.List;
 
 public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.IconViewHolder> {
 
-    private final List<IconPickerDialog.Icon> icons;
+    private final List<Icon> icons;
     private final OnIconClickListener listener;
 
-    public IconsAdapter(List<IconPickerDialog.Icon> icons, OnIconClickListener listener) {
+    public IconsAdapter(List<Icon> icons, OnIconClickListener listener) {
         this.icons = icons;
         this.listener = listener;
     }
@@ -32,7 +32,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.IconViewHold
 
     @Override
     public void onBindViewHolder(@NonNull IconViewHolder holder, int position) {
-        final IconPickerDialog.Icon icon = icons.get(position);
+        final Icon icon = icons.get(position);
 
         // Setting icon to imageView
         holder.iconView.setImageResource(icon.getResId());
@@ -46,7 +46,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.IconViewHold
     }
 
     public interface OnIconClickListener {
-        void onIconClick(IconPickerDialog.Icon icon);
+        void onIconClick(Icon icon);
     }
 
     public static class IconViewHolder extends RecyclerView.ViewHolder {

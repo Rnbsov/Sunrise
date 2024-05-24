@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
+import com.example.sunrise.constants.Icon;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.utils.ColorUtils;
-import com.example.sunrise.utils.IconPickerDialog;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
@@ -100,7 +100,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int color = category.getColor();
             // get icon name, and then retrieve enum of this icon
             String iconName = category.getIcon();
-            IconPickerDialog.Icon icon = IconPickerDialog.Icon.valueOf(iconName);
+            Icon icon = Icon.valueOf(iconName);
 
             String categoryTitle = category.getTitle();
 

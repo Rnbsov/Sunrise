@@ -12,6 +12,7 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.R;
+import com.example.sunrise.constants.Icon;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.CategoryService;
@@ -42,7 +43,7 @@ public class CategoryCreationHelper {
     private TextInputLayout titleInputLayout;
     private TextInputEditText editTitle;
     private Chip defaultTagChip;
-    private IconPickerDialog.Icon selectedIcon = null; // Initialized to null to indicate no icon selected initially
+    private Icon selectedIcon = null; // Initialized to null to indicate no icon selected initially
     private String selectedTagId;
     private int selectedColor = -1; // Initialized to -1 to indicate no color selected initially ( sentinel value )
     private ColorPickerDialog colorPickerDialog;
@@ -100,7 +101,7 @@ public class CategoryCreationHelper {
         colorPickerDialog.dismiss();
     }
 
-    private void onIconSelected(IconPickerDialog.Icon icon) {
+    private void onIconSelected(Icon icon) {
         selectedIcon = icon; // Save selected icon as class property
         setIcon.setImageResource(icon.getResId());
     }
@@ -173,7 +174,7 @@ public class CategoryCreationHelper {
 
         // If selected color and icon is not set, get a random color and icon
         int categoryColor = selectedColor != -1 ? selectedColor : colorPickerDialog.getRandomColor();
-        IconPickerDialog.Icon categoryIcon = selectedIcon != null ? selectedIcon : iconPickerDialog.getRandomIcon();
+        Icon categoryIcon = selectedIcon != null ? selectedIcon : iconPickerDialog.getRandomIcon();
 
         Category category = new Category(title, categoryColor, categoryIcon.name(), selectedTagId, userId);
 
