@@ -3,7 +3,7 @@ package com.example.sunrise.models;
 public class Category {
     private String title;
     private int color;
-    private int iconResourceId;
+    private String icon;
     private String defaultTagId;
     private String categoryId;
     private String createdByUserId;
@@ -14,10 +14,10 @@ public class Category {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Category(String title, int color, int iconResourceId, String defaultTagId, String createdByUserId) {
+    public Category(String title, int color, String icon, String defaultTagId, String createdByUserId) {
         this.title = title;
         this.color = color;
-        this.iconResourceId = iconResourceId;
+        this.icon = icon;
         this.defaultTagId = defaultTagId;
         this.createdByUserId = createdByUserId;
         this.createdAt = System.currentTimeMillis();
@@ -40,12 +40,12 @@ public class Category {
         this.color = color;
     }
 
-    public int getIconResourceId() {
-        return iconResourceId;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setIconResourceId(int iconResourceId) {
-        this.iconResourceId = iconResourceId;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public String getCategoryId() {
