@@ -2,7 +2,6 @@ package com.example.sunrise.fragments;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.TagsAdapter;
+import com.example.sunrise.constants.ColorsEnum;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.utils.ColorPickerDialog;
@@ -46,7 +46,7 @@ public class TagsFragment extends Fragment {
     private BottomSheetDialog bottomSheetDialog;
     private Button createBtn;
     private ColorPickerDialog colorPickerDialog;
-    private int selectedColor = Color.TRANSPARENT;
+    private ColorsEnum selectedColor = ColorsEnum.TRANSPARENT; // Set transparent as default ( sentinel value )
 
     public TagsFragment() {
         // Required empty public constructor
@@ -150,16 +150,16 @@ public class TagsFragment extends Fragment {
         colorPickerDialog.show();
     }
 
-    private void onColorSelected(int color) {
+    private void onColorSelected(ColorsEnum color) {
         // Handle color selection here
         // Creating color state list, cause there is no way around it
-        ColorStateList colorStateList = ColorStateList.valueOf(color);
+        ColorStateList colorStateList = ColorStateList.valueOf(color.getColor());
 
         // Setting selected color for icon
         colorChip.setChipIconTint(colorStateList);
 
         // Setting selected color for text
-        colorChip.setTextColor(color);
+        colorChip.setTextColor(color.getColor());
 
         selectedColor = color; // Save the selected color as class property
 
@@ -177,15 +177,10 @@ public class TagsFragment extends Fragment {
             return;
         }
 
-        int color;
-        if (selectedColor == Color.TRANSPARENT) {
-            // If the user didn't choose any color, select a random color
-            color = colorPickerDialog.getRandomColor();
-        } else {
-            color = selectedColor; // Use the selected color
-        }
+        // Determine the color to use
+        ColorsEnum color = determineSelectedColor();
 
-        Tag tag = new Tag(tagName, color, userId);
+        Tag tag = new Tag(tagName, color.getColor(), userId);
 
         // Initialize TaskService to interact with Firebase database
         TagService tagService = new TagService();
@@ -195,5 +190,18 @@ public class TagsFragment extends Fragment {
 
         // Dismiss the bottom sheet dialog after task creation
         bottomSheetDialog.dismiss();
+    }
+
+    /**
+     * Determines the color to be used for the new tag.
+     * <p>
+     * If the user has not selected a color (i.e., the selected color is transparent),
+     * this method will return a random color from the color picker dialog.
+     * Otherwise, it will return the color that the user has selected.
+     *
+     * @return The color to be used for the new tag.
+     */
+    private ColorsEnum determineSelectedColor() {
+        return selectedColor == ColorsEnum.TRANSPARENT ? colorPickerDialog.getRandomColor() : selectedColor;
     }
 }

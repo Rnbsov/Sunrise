@@ -12,6 +12,7 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.R;
+import com.example.sunrise.constants.ColorsEnum;
 import com.example.sunrise.constants.Icon;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
@@ -43,9 +44,9 @@ public class CategoryCreationHelper {
     private TextInputLayout titleInputLayout;
     private TextInputEditText editTitle;
     private Chip defaultTagChip;
-    private Icon selectedIcon = null; // Initialized to null to indicate no icon selected initially
+    private Icon selectedIcon = null; // Initialized to null to indicate no icon selected initially ( sentinel value )
     private String selectedTagId;
-    private int selectedColor = -1; // Initialized to -1 to indicate no color selected initially ( sentinel value )
+    private ColorsEnum selectedColor = null; // Initialized to null to indicate no color selected initially ( sentinel value )
     private ColorPickerDialog colorPickerDialog;
     private IconPickerDialog iconPickerDialog;
 
@@ -88,14 +89,14 @@ public class CategoryCreationHelper {
         iconPickerDialog.show();
     }
 
-    private void onColorSelected(int color) {
+    private void onColorSelected(ColorsEnum color) {
         selectedColor = color; // Save the selected color as class property
 
         // Adjust the brightness of the selected color to make it slightly darker
-        int darkerColor = ColorUtils.darkenColor(color, 0.6f);
+        int darkerColor = ColorUtils.darkenColor(color.getColor(), 0.6f);
         setIcon.setBackgroundColor(darkerColor); // Set background color for imageView
 
-        setIcon.setImageTintList(ColorStateList.valueOf(color)); // Set color for imageView icon
+        setIcon.setImageTintList(ColorStateList.valueOf(color.getColor())); // Set color for imageView icon
 
         // Dismiss the AlertDialog after color selection
         colorPickerDialog.dismiss();
@@ -173,10 +174,10 @@ public class CategoryCreationHelper {
         }
 
         // If selected color and icon is not set, get a random color and icon
-        int categoryColor = selectedColor != -1 ? selectedColor : colorPickerDialog.getRandomColor();
+        ColorsEnum categoryColor = selectedColor != null ? selectedColor : colorPickerDialog.getRandomColor();
         Icon categoryIcon = selectedIcon != null ? selectedIcon : iconPickerDialog.getRandomIcon();
 
-        Category category = new Category(title, categoryColor, categoryIcon.name(), selectedTagId, userId);
+        Category category = new Category(title, categoryColor.getColor(), categoryIcon.name(), selectedTagId, userId);
 
         // Save the newly created task to Firebase database
         categoryService.saveCategory(category);
