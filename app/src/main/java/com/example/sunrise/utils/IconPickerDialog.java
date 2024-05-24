@@ -19,7 +19,7 @@ public class IconPickerDialog {
     private final OnIconSelectedListener iconSelectedListener;
 
     public interface OnIconSelectedListener {
-        void onIconSelected(int iconResId);
+        void onIconSelected(Icon icon);
     }
 
     public IconPickerDialog(Context context, OnIconSelectedListener listener) {
@@ -50,9 +50,9 @@ public class IconPickerDialog {
         }
     }
 
-    private void onIconSelected(int iconResId) {
+    private void onIconSelected(Icon icon) {
         if (iconSelectedListener != null) {
-            iconSelectedListener.onIconSelected(iconResId);
+            iconSelectedListener.onIconSelected(icon);
         }
         dismiss();
     }
@@ -72,7 +72,8 @@ public class IconPickerDialog {
     public enum Icon {
         LABEL(R.drawable.label_24px),
         PALETTE(R.drawable.palette_24px),
-        FLOWER(R.drawable.flower_24px);
+        FLOWER(R.drawable.flower_24px),
+        DIAMOND(R.drawable.diamond_24px);
 
         private final int resId;
 

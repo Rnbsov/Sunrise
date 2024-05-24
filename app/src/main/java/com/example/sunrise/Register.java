@@ -22,6 +22,7 @@ import com.example.sunrise.models.UserSettings;
 import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.UserSettingsService;
+import com.example.sunrise.utils.IconPickerDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -133,7 +134,7 @@ public class Register extends AppCompatActivity {
         UserSettingsService userSettingsService = new UserSettingsService();
 
         // Create a default category
-        Category defaultCategory = new Category("Personal", -13057, 2131165345, defaultTagId, user.getUid());
+        Category defaultCategory = new Category("Personal", -13057, IconPickerDialog.Icon.FLOWER.toString(), defaultTagId, user.getUid());
 
         // Save the default category to Firebase
         categoryService.saveCategory(defaultCategory, new OnCompleteListener<Void>() {

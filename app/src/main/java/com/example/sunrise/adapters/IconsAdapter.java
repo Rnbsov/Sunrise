@@ -9,15 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
+import com.example.sunrise.utils.IconPickerDialog;
 
 import java.util.List;
 
 public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.IconViewHolder> {
 
-    private final List<Integer> icons;
+    private final List<IconPickerDialog.Icon> icons;
     private final OnIconClickListener listener;
 
-    public IconsAdapter(List<Integer> icons, OnIconClickListener listener) {
+    public IconsAdapter(List<IconPickerDialog.Icon> icons, OnIconClickListener listener) {
         this.icons = icons;
         this.listener = listener;
     }
@@ -31,12 +32,12 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.IconViewHold
 
     @Override
     public void onBindViewHolder(@NonNull IconViewHolder holder, int position) {
-        final int iconResId = icons.get(position);
+        final IconPickerDialog.Icon icon = icons.get(position);
 
         // Setting icon to imageView
-        holder.iconView.setImageResource(iconResId);
+        holder.iconView.setImageResource(icon.getResId());
 
-        holder.itemView.setOnClickListener(v -> listener.onIconClick(iconResId));
+        holder.itemView.setOnClickListener(v -> listener.onIconClick(icon));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.IconViewHold
     }
 
     public interface OnIconClickListener {
-        void onIconClick(int iconResId);
+        void onIconClick(IconPickerDialog.Icon icon);
     }
 
     public static class IconViewHolder extends RecyclerView.ViewHolder {

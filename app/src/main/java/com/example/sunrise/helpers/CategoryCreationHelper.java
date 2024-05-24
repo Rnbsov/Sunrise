@@ -42,7 +42,7 @@ public class CategoryCreationHelper {
     private TextInputLayout titleInputLayout;
     private TextInputEditText editTitle;
     private Chip defaultTagChip;
-    private int selectedIconId = -1; // Initialized to -1 to indicate no icon selected initially ( sentinel value )
+    private IconPickerDialog.Icon selectedIcon = null; // Initialized to null to indicate no icon selected initially
     private String selectedTagId;
     private int selectedColor = -1; // Initialized to -1 to indicate no color selected initially ( sentinel value )
     private ColorPickerDialog colorPickerDialog;
@@ -100,9 +100,9 @@ public class CategoryCreationHelper {
         colorPickerDialog.dismiss();
     }
 
-    private void onIconSelected(int iconResId) {
-        selectedIconId = iconResId; // Save selected icon as class property
-        setIcon.setImageResource(iconResId);
+    private void onIconSelected(IconPickerDialog.Icon icon) {
+        selectedIcon = icon; // Save selected icon as class property
+        setIcon.setImageResource(icon.getResId());
     }
 
     private void showTagsPopupMenu(View v) {
@@ -173,9 +173,9 @@ public class CategoryCreationHelper {
 
         // If selected color and icon is not set, get a random color and icon
         int categoryColor = selectedColor != -1 ? selectedColor : colorPickerDialog.getRandomColor();
-        int categoryIcon = selectedIconId != -1 ? selectedIconId : iconPickerDialog.getRandomIcon();
+        IconPickerDialog.Icon categoryIcon = selectedIcon != null ? selectedIcon : iconPickerDialog.getRandomIcon();
 
-        Category category = new Category(title, categoryColor, categoryIcon, selectedTagId, userId);
+        Category category = new Category(title, categoryColor, categoryIcon.name(), selectedTagId, userId);
 
         // Save the newly created task to Firebase database
         categoryService.saveCategory(category);

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunrise.R;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.utils.ColorUtils;
+import com.example.sunrise.utils.IconPickerDialog;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
@@ -86,29 +87,32 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        private ShapeableImageView icon;
+        private ShapeableImageView iconImageView;
         private TextView title;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            icon = itemView.findViewById(R.id.categoryIcon);
+            iconImageView = itemView.findViewById(R.id.categoryIcon);
             title = itemView.findViewById(R.id.title);
         }
 
         public void bind(Category category) {
             int color = category.getColor();
-            int iconResId = category.getIconResourceId();
+            // get icon name, and then retrieve enum of this icon
+            String iconName = category.getIcon();
+            IconPickerDialog.Icon icon = IconPickerDialog.Icon.valueOf(iconName);
+
             String categoryTitle = category.getTitle();
 
             // Set icon
-            icon.setImageResource(iconResId);
+            iconImageView.setImageResource(icon.getResId());
 
             // Set icon background
-            icon.setBackgroundColor(ColorUtils.darkenColor(color, 0.6f));
+            iconImageView.setBackgroundColor(ColorUtils.darkenColor(color, 0.6f));
 
             // Set icon color
             ColorStateList colorStateList = ColorStateList.valueOf(color);
-            icon.setImageTintList(colorStateList);
+            iconImageView.setImageTintList(colorStateList);
 
             // Set category title
             title.setText(categoryTitle);
