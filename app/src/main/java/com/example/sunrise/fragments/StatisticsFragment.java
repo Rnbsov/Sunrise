@@ -1,5 +1,6 @@
 package com.example.sunrise.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,9 +17,12 @@ import com.example.sunrise.models.Task;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.TaskService;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,6 +55,9 @@ public class StatisticsFragment extends Fragment {
 
         // Find pieChart view
         pieChart = view.findViewById(R.id.pieChart);
+
+        // Style the pie chart
+        stylePieChart(pieChart);
 
         // Initialize services
         taskService = new TaskService();
@@ -173,9 +180,68 @@ public class StatisticsFragment extends Fragment {
         // Create a PieData object with the data set
         PieData pieData = new PieData(dataSet);
 
+        // Some pieData styling
+        stylePieData(pieData);
+
         // Set this data to the pie chart
         pieChart.setData(pieData);
 
         pieChart.invalidate(); // refresh the pie chart
+    }
+
+    /**
+     * Styles the PieData object.
+     *
+     * @param pieData the PieData object to style
+     */
+    private void stylePieData(PieData pieData) {
+        // Set value formatter to display percentages with a percent sign
+        pieData.setValueFormatter(new PercentFormatter(pieChart));
+
+        // Set the text size for the percentage values
+        pieData.setValueTextSize(10.0f);
+    }
+
+    /**
+     * Styles the PieChart object.
+     *
+     * @param pieChart the PieChart object to style
+     */
+    private void stylePieChart(PieChart pieChart) {
+        // Enable percent values
+        pieChart.setUsePercentValues(true);
+
+        // Set extra offsets for the chart
+        pieChart.setExtraOffsets(5, 10, 5, 5);
+
+        // Enable and style the hole in the center of the chart
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleColor(Color.WHITE);
+
+        // Set the transparent circle color and alpha
+        pieChart.setTransparentCircleColor(Color.WHITE);
+        pieChart.setTransparentCircleAlpha(110);
+
+        // Set the hole radius and transparent circle radius
+        pieChart.setHoleRadius(45f);
+        pieChart.setTransparentCircleRadius(55f);
+
+        // Enable highlighting per tap
+        pieChart.setHighlightPerTapEnabled(true);
+
+        // Set the entry label text size
+        pieChart.setEntryLabelTextSize(16f);
+
+        // Hide the description
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+
+        // Hide the legend
+        pieChart.getLegend().setEnabled(false);
+
+        // Set the center text and its size
+        pieChart.setCenterText("🍇 Tags 🍃 ");
+        pieChart.setCenterTextSize(18f);
     }
 }
