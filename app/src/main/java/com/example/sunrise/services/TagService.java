@@ -128,4 +128,37 @@ public class TagService {
     public interface TagColorsListener {
         void onTagColorsRetrieved(List<Integer> tagColors);
     }
+
+    /**
+     * Method to retrieve tag titles for a list of tag IDs
+     */
+    public void retrieveTagTitlesByTagIds(List<String> tagIds, TagTitlesListener listener) {
+        Map<String, String> tagTitlesMap = new HashMap<>();
+
+        for (String tagId : tagIds) {
+            DatabaseReference tagRef = tagsRef.child(tagId);
+            tagRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String title = dataSnapshot.child("title").getValue(String.class);
+                        tagTitlesMap.put(tagId, title);
+
+                        if (tagTitlesMap.size() == tagIds.size()) {
+                            listener.onTagTitlesRetrieved(tagTitlesMap);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("TagService", "Failed to retrieve titles by ids");
+                }
+            });
+        }
+    }
+
+    public interface TagTitlesListener {
+        void onTagTitlesRetrieved(Map<String, String> tagTitles);
+    }
 }
