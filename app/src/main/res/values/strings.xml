@@ -68,4 +68,7 @@
     <string name="route_icon">Route icon</string>
     <string name="by_rnbsov">by Rnbsov</string>
 
+    <!-- Statistics fragment -->
+    <string name="tags_usage_distribution">Tags usage distribution</string>
+
 </resources>
