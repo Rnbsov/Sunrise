@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceService {
@@ -46,6 +47,46 @@ public class WorkspaceService {
 
         // Update the workspace at the specified location in Firebase
         workspaceRef.setValue(workspace);
+    }
+
+    /**
+     * Method to retrieve workspaces by their IDs
+     *
+     * @param workspaceIds List of workspace IDs to retrieve
+     * @param listener     Custom interface for receiving workspace data
+     */
+    public void retrieveWorkspacesByIds(List<String> workspaceIds, WorkspacesListener listener) {
+        List<Workspace> workspaces = new ArrayList<>();
+
+        for (String workspaceId : workspaceIds) {
+            DatabaseReference workspaceRef = workspacesRef.child(workspaceId);
+            workspaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Workspace workspace = dataSnapshot.getValue(Workspace.class);
+                        workspaces.add(workspace);
+
+                        // Check if all workspaces have been retrieved
+                        if (workspaces.size() == workspaceIds.size()) {
+                            listener.onWorkspacesRetrieved(workspaces);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle error if query is cancelled
+                    listener.onCancelled(error);
+                }
+            });
+        }
+    }
+
+    public interface WorkspacesListener {
+        void onWorkspacesRetrieved(List<Workspace> workspaces);
+
+        void onCancelled(DatabaseError databaseError);
     }
 
     /**

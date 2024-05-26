@@ -10,6 +10,10 @@ public class Workspace {
     private long createdAt;
     private long updatedAt;
 
+    public Workspace() {
+        // Default constructor required for calls to DataSnapshot.getValue(Workspace.class)
+    }
+
     public Workspace(String title, List<String> workspaceAdminIds, List<String> memberIds) {
         this.title = title;
         this.workspaceAdminIds = workspaceAdminIds;
