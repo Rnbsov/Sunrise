@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fab;
+    private NavController navController; // Store a reference to NavController
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         assert navHostFragment != null : "navHostFragment should not be null";
 
-        NavController navController = navHostFragment.getNavController();
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.page_my_day, R.id.page_statistics, R.id.page_categories, R.id.page_profile).build();
+        navController = navHostFragment.getNavController(); // Initialize NavController
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.page_my_day, R.id.page_statistics, R.id.page_categories, R.id.page_profile).build();
 
         // Set up Toolbar with NavController
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up BottomNavigationView with NavController
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        // Set destination listener, to hide fab and bottom navigation bar when navigation anywhere except main pages
+        // Set destination listener, to hide fab and bottom navigation bar when navigating anywhere except main pages
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int destinationId = destination.getId();
             if (destinationId == R.id.page_my_day || destinationId == R.id.page_statistics || destinationId == R.id.page_categories || destinationId == R.id.page_profile) {
@@ -80,16 +82,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Makes it possible to ask user whether they really want to exit the app
+     * Sets up the back pressed behavior to show an exit confirmation dialog at the root level.
      */
     private void setupOnBackPressed() {
         // Register the OnBackPressedCallback
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                showExitConfirmationDialog();
+                // Check if the current destination is one of the root destinations
+                if (isAtRootDestination()) {
+                    showExitConfirmationDialog();
+                } else {
+                    // Otherwise, let the NavController handle the back press (navigate up the stack)
+                    navController.navigateUp();
+                }
             }
         });
+    }
+
+    /**
+     * Checks if the current destination is one of the root destinations.
+     *
+     * @return True if the current destination is a root destination, false otherwise.
+     */
+    private boolean isAtRootDestination() {
+        int currentDestinationId = navController.getCurrentDestination().getId();
+        return currentDestinationId == R.id.page_my_day ||
+                currentDestinationId == R.id.page_statistics ||
+                currentDestinationId == R.id.page_categories ||
+                currentDestinationId == R.id.page_profile;
     }
 
     /**
