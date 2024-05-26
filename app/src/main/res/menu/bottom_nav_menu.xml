@@ -9,6 +9,10 @@
         android:icon="@drawable/insert_chart_24px"
         android:title="@string/bottom_nav_statistics" />
     <item
+        android:id="@+id/page_projects"
+        android:icon="@drawable/groups_24px"
+        android:title="Projects" />
+    <item
         android:id="@+id/page_categories"
         android:icon="@drawable/category_24px"
         android:title="@string/bottom_nav_categories" />

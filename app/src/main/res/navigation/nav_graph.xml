@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
-        android:id="@+id/projectsFragment"
+        android:id="@+id/page_projects"
         android:name="com.example.sunrise.fragments.ProjectsFragment"
         android:label="Projects"
         tools:layout="@layout/fragment_projects" />
