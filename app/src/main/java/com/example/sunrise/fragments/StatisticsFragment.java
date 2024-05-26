@@ -2,15 +2,14 @@ package com.example.sunrise.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.sunrise.R;
 import com.example.sunrise.models.Task;
@@ -18,7 +17,6 @@ import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.TaskService;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -27,14 +25,21 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer;
+import com.patrykandpatrick.vico.core.cartesian.data.LineCartesianLayerModel;
+import com.patrykandpatrick.vico.views.cartesian.CartesianChartView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlinx.coroutines.Dispatchers;
+
 public class StatisticsFragment extends Fragment {
 
+    private CartesianChartView completedTasksChart;
     private PieChart pieChart;
     private TaskService taskService;
     private TagService tagService;
@@ -53,18 +58,85 @@ public class StatisticsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Initialize services
+        taskService = new TaskService();
+        tagService = new TagService();
+
+        // Find completed tasks chart view
+        completedTasksChart = view.findViewById(R.id.completed_tasks_chart);
+
+        // Setup completed tasks chart
+        setupCompletedTasksChart();
+
         // Find pieChart view
         pieChart = view.findViewById(R.id.pieChart);
 
         // Style the pie chart
         stylePieChart(pieChart);
 
-        // Initialize services
-        taskService = new TaskService();
-        tagService = new TagService();
-
         // Fetch tasks and populate the pie chart
         fetchTasksAndSetupPieChart();
+    }
+
+    /**
+     * Sets up the completed tasks chart.
+     */
+    private void setupCompletedTasksChart() {
+        // Create and set empty model producer
+        CartesianChartModelProducer modelProducer = CartesianChartModelProducer.Companion.build(Dispatchers.getDefault(), transaction -> null);
+        completedTasksChart.setModelProducer(modelProducer);
+
+        // Retrieve completed tasks for the current month
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
+        calendar.set(Calendar.DAY_OF_MONTH, 1); // Set the day to the first day of the month
+
+        taskService.getCompletedTasks(new TaskService.CompletedTasksListener() {
+            @Override
+            public void onCompletedTasksLoaded(List<Task> completedTasks) {
+                // Filter completed tasks for the current month
+                Map<Integer, Integer> taskCountByDay = new HashMap<>();
+                for (Task task : completedTasks) {
+                    Calendar taskDate = Calendar.getInstance();
+                    taskDate.setTimeInMillis(task.getCompletedAt());
+                    if (taskDate.get(Calendar.MONTH) == currentMonth && taskDate.get(Calendar.YEAR) == currentYear) {
+                        int dayOfMonth = taskDate.get(Calendar.DAY_OF_MONTH);
+                        taskCountByDay.put(dayOfMonth, taskCountByDay.getOrDefault(dayOfMonth, 0) + 1);
+                    }
+                }
+
+                // Create entries for the chart
+                List<Integer> entries = new ArrayList<>();
+                for (int i = 1; i <= calendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+                    entries.add(taskCountByDay.getOrDefault(i, 0));
+                }
+
+                CartesianChartModelProducer modelProducer = completedTasksChart.getModelProducer();
+                modelProducer.tryRunTransaction(transaction -> {
+                    // Update the existing data with new entries
+                    LineCartesianLayerModel.Partial lineLayerPartial = LineCartesianLayerModel.Companion.partial(lineSeries -> {
+                        // Create x axis
+                        List<Integer> xValues = new ArrayList<>();
+                        for (int i = 1; i <= entries.size(); i++) {
+                            xValues.add(i);
+                        }
+
+                        // Set x axis and y axis to chart data
+                        lineSeries.series(xValues, entries);
+                        return null;
+                    });
+                    transaction.add(lineLayerPartial);
+                    return null;
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("StatisticsFragment", databaseError.getMessage());
+            }
+        });
     }
 
     /**
