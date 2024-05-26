@@ -10,8 +10,7 @@ public class Workspace {
     private long createdAt;
     private long updatedAt;
 
-    public Workspace(String workspaceId, String title, List<String> workspaceAdminIds, List<String> memberIds) {
-        this.workspaceId = workspaceId;
+    public Workspace(String title, List<String> workspaceAdminIds, List<String> memberIds) {
         this.title = title;
         this.workspaceAdminIds = workspaceAdminIds;
         this.memberIds = memberIds;

@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class WorkspaceCreationHelper {
@@ -57,10 +58,13 @@ public class WorkspaceCreationHelper {
         }
 
         // Create a new Workspace object
-        Workspace workspace = new Workspace(title);
-        workspace.setWorkspaceAdminIds(new ArrayList<>());
-        workspace.getMemberIds().add(userId); // Add current user as member of the workspace
-        workspace.getWorkspaceAdminIds().add(userId); // Add current user as an admin
+        List<String> membersIds = new ArrayList<>();
+        List<String> adminIds = new ArrayList<>();
+
+        membersIds.add(userId); // Add current user as member of the workspace
+        adminIds.add(userId); // Add current user as an admin
+
+        Workspace workspace = new Workspace(title, membersIds, adminIds);
 
         // Save the newly created workspace to Firebase database
         workspaceService.createWorkspace(workspace);
