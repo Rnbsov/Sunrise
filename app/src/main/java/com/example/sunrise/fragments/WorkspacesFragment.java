@@ -76,7 +76,7 @@ public class WorkspacesFragment extends Fragment {
         bundle.putString("workspaceTitle", workspace.getTitle());
 
         NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.action_page_categories_to_categoryFragment, bundle);
+        navController.navigate(R.id.action_page_workspaces_to_workspaceFragment, bundle);
     }
 
     private void onWorkspaceAddButtonClick(View v) {

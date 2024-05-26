@@ -21,7 +21,11 @@
         android:id="@+id/page_workspaces"
         android:name="com.example.sunrise.fragments.WorkspacesFragment"
         android:label="Workspaces"
-        tools:layout="@layout/fragment_workspaces" />
+        tools:layout="@layout/fragment_workspaces" >
+        <action
+            android:id="@+id/action_page_workspaces_to_workspaceFragment"
+            app:destination="@id/workspaceFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/page_categories"
@@ -79,4 +83,10 @@
         android:name="com.example.sunrise.fragments.AboutFragment"
         android:label="About"
         tools:layout="@layout/fragment_about" />
+
+    <fragment
+        android:id="@+id/workspaceFragment"
+        android:name="com.example.sunrise.fragments.WorkspaceFragment"
+        android:label="fragment_workspace"
+        tools:layout="@layout/fragment_workspace" />
 </navigation>
