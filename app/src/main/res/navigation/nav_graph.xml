@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
+        android:id="@+id/projectsFragment"
+        android:name="com.example.sunrise.fragments.ProjectsFragment"
+        android:label="Projects"
+        tools:layout="@layout/fragment_projects" />
+
+    <fragment
         android:id="@+id/page_categories"
         android:name="com.example.sunrise.fragments.CategoriesFragment"
         android:label="@string/bottom_nav_categories"
@@ -73,5 +79,4 @@
         android:name="com.example.sunrise.fragments.AboutFragment"
         android:label="About"
         tools:layout="@layout/fragment_about" />
-
 </navigation>
