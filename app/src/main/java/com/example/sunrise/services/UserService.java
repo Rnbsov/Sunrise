@@ -36,9 +36,6 @@ public class UserService {
         // Generate a reference to a new child location under "Users" with a client-side auto-generated key
         DatabaseReference newUserRef = usersRef.push();
 
-        String userId = newUserRef.getKey(); // Retrieve the unique ID
-        user.setUserId(userId); // Save this unique ID to the user object
-
         newUserRef.setValue(user); // Save the tag to Firebase database
 
         // Save the user to Firebase database
