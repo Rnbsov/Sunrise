@@ -5,6 +5,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,10 +26,6 @@ public class UserService {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         usersRef = database.getReference("Users");
     }
-
-    /**
-     * Method to save the tag to Firebase database
-     */
 
     /**
      * Method to create a new user in Firebase database
@@ -100,5 +98,40 @@ public class UserService {
 
     public interface UsersRetrievedListener {
         void onUsersRetrieved(Map<String, User> usersMap);
+    }
+
+    /**
+     * Method to retrieve the current user's details
+     */
+    public void getCurrentUser(CurrentUserListener listener) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+            System.out.println(userId);
+            DatabaseReference userRef = usersRef.child(userId);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        User user = dataSnapshot.getValue(User.class);
+                        listener.onCurrentUserRetrieved(user);
+                    } else {
+                        listener.onCurrentUserRetrieved(null);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    listener.onCancelled(error);
+                }
+            });
+        } else {
+            listener.onCurrentUserRetrieved(null);
+        }
+    }
+
+    public interface CurrentUserListener {
+        void onCurrentUserRetrieved(User user);
+        void onCancelled(DatabaseError databaseError);
     }
 }
