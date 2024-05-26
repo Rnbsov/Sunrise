@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chart_color">#a485e0</color>
+
+    <style name="ChartLineStyle">
+        <item name="color">@color/chart_color</item>
+    </style>
+
+    <style name="ChartCompletedTasksStyle">
+        <item name="line1Spec">@style/ChartLineStyle</item>
+    </style>
+</resources>
