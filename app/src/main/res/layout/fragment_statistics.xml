@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         app:chartZoomEnabled="true"
         app:layers="line"
+        app:lineLayerStyle="@style/ChartCompletedTasksStyle"
         app:showBottomAxis="true"
         app:showStartAxis="true" />
 
