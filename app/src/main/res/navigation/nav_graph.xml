@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
-        android:id="@+id/page_projects"
-        android:name="com.example.sunrise.fragments.ProjectsFragment"
-        android:label="Projects"
-        tools:layout="@layout/fragment_projects" />
+        android:id="@+id/page_workspaces"
+        android:name="com.example.sunrise.fragments.WorkspacesFragment"
+        android:label="Workspaces"
+        tools:layout="@layout/fragment_workspaces" />
 
     <fragment
         android:id="@+id/page_categories"

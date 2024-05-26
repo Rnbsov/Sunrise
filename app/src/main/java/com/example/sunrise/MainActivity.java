@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         navController = navHostFragment.getNavController(); // Initialize NavController
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.page_my_day, R.id.page_statistics, R.id.page_projects, R.id.page_categories, R.id.page_profile).build();
+                R.id.page_my_day, R.id.page_statistics, R.id.page_workspaces, R.id.page_categories, R.id.page_profile).build();
 
         // Set up Toolbar with NavController
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         int currentDestinationId = navController.getCurrentDestination().getId();
         return currentDestinationId == R.id.page_my_day ||
                 currentDestinationId == R.id.page_statistics ||
-                currentDestinationId == R.id.page_projects ||
+                currentDestinationId == R.id.page_workspaces ||
                 currentDestinationId == R.id.page_categories ||
                 currentDestinationId == R.id.page_profile;
     }
