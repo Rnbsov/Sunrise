@@ -1,6 +1,7 @@
 package com.example.sunrise.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.WorkspaceAdapter;
 import com.example.sunrise.helpers.WorkspaceCreationHelper;
+import com.example.sunrise.models.User;
 import com.example.sunrise.models.Workspace;
+import com.example.sunrise.services.UserService;
+import com.example.sunrise.services.WorkspaceService;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,7 @@ public class WorkspacesFragment extends Fragment {
     private RecyclerView workspacesRecyclerView;
     private WorkspaceAdapter workspaceAdapter;
     private WorkspaceCreationHelper workspaceCreationHelper;
+    private WorkspaceService workspaceService;
 
     public WorkspacesFragment() {
         // Required empty public constructor
@@ -43,11 +49,17 @@ public class WorkspacesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize CategoryCreationHelper
+        // Initialize WorkspacesService
+        workspaceService = new WorkspaceService();
+
+        // Initialize WorkspaceCreationHelper
         workspaceCreationHelper = new WorkspaceCreationHelper(requireContext());
 
         // Setup Workspaces RecyclerView
         setupWorkspacesRecyclerView(view);
+
+        // Fetch user participating workspaces
+        fetchWorkspacesFromDatabase();
     }
 
     private void setupWorkspacesRecyclerView(View view) {
@@ -63,14 +75,59 @@ public class WorkspacesFragment extends Fragment {
         workspacesRecyclerView.setAdapter(workspaceAdapter);
     }
 
+    private void fetchWorkspacesFromDatabase() {
+        // Get workspace IDs from the current user's workspaceIds field
+        getCurrentUserWorkspaceIds(workspaceIds -> {
+            // Use WorkspaceService to retrieve workspaces by their IDs
+            workspaceService.retrieveWorkspacesByIds(workspaceIds, new WorkspaceService.WorkspacesListener() {
+                @Override
+                public void onWorkspacesRetrieved(List<Workspace> workspaces) {
+                    // Update the RecyclerView with the fetched workspaces
+                    workspaceAdapter.setWorkspaces(workspaces);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("WorkspacesFragment", "Failed to fetch workspaces: " + databaseError.getMessage());
+                    Toast.makeText(requireContext(), "Failed to fetch workspaces: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    private void getCurrentUserWorkspaceIds(WorkspaceIdsListener listener) {
+        UserService userService = new UserService();
+
+        userService.getCurrentUser(new UserService.CurrentUserListener() {
+            @Override
+            public void onCurrentUserRetrieved(User user) {
+                if (user != null && user.getWorkspaceIds() != null) {
+                    listener.onWorkspaceIdsRetrieved(user.getWorkspaceIds());
+                } else {
+                    listener.onWorkspaceIdsRetrieved(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("WorkspacesFragment", "Failed to get current user workspaces list: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Interface for retrieving workspace IDs
+     */
+    public interface WorkspaceIdsListener {
+        void onWorkspaceIdsRetrieved(List<String> workspaceIds);
+    }
+
     /**
      * Handle workspace item click
      *
      * @param workspace clicked workspace object
      */
     private void onWorkspaceClick(Workspace workspace) {
-        Toast.makeText(requireContext(), "Clicked: " + workspace.getTitle(), Toast.LENGTH_SHORT).show();
-
         Bundle bundle = new Bundle();
         bundle.putString("workspaceId", workspace.getWorkspaceId());
         bundle.putString("workspaceTitle", workspace.getTitle());
