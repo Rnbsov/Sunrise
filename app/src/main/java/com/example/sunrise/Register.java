@@ -19,9 +19,11 @@ import com.example.sunrise.constants.Icon;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
 import com.example.sunrise.models.User;
+import com.example.sunrise.models.UserSettings;
 import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.UserService;
+import com.example.sunrise.services.UserSettingsService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -136,7 +138,7 @@ public class Register extends AppCompatActivity {
     }
 
     /**
-     * Method to create a default category and save it to Firebase
+     * Method to create a default category and save it to UserSettings
      */
     private void createDefaultCategory(FirebaseUser user) {
         CategoryService categoryService = new CategoryService();
@@ -146,6 +148,7 @@ public class Register extends AppCompatActivity {
 
         categoryService.saveCategory(defaultCategory, task -> {
             if (task.isSuccessful()) {
+                saveDefaultCategoryToUserSettings(defaultCategory, user.getUid());
                 Log.d(TAG, "Default category created successfully.");
             } else {
                 Log.e(TAG, "Failed to save default category: " + task.getException());
@@ -169,5 +172,19 @@ public class Register extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveDefaultCategoryToUserSettings(Category defaultCategory, String userId) {
+        // Initialize UserSettings service
+        UserSettingsService userSettingsService = new UserSettingsService();
+
+        // Retrieve the category Id after saving
+        String defaultCategoryId = defaultCategory.getCategoryId();
+
+        // Create a UserSettings object with the default category Id
+        UserSettings userSettings = new UserSettings(userId, defaultCategoryId);
+
+        // Save the UserSettings object
+        userSettingsService.createUserSettings(userSettings);
     }
 }
