@@ -1,34 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:paddingVertical="10dp"
     tools:context=".fragments.StatisticsFragment">
 
-    <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
-        android:id="@+id/completed_tasks_chart"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:chartZoomEnabled="true"
-        app:layers="line"
-        app:lineLayerStyle="@style/ChartCompletedTasksStyle"
-        app:showBottomAxis="true"
-        app:showStartAxis="true" />
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/tags_usage_distribution"
-        android:textColor="@color/design_default_color_on_primary"
-        android:textSize="25sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Completed Tasks this month"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="25sp" />
+
+        <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+            android:id="@+id/completed_tasks_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:chartZoomEnabled="true"
+            app:layers="line"
+            app:lineLayerStyle="@style/ChartCompletedTasksStyle"
+            app:showBottomAxis="true"
+            app:showStartAxis="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:text="@string/tags_usage_distribution"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="25sp" />
 
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChart"
-        android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="400dp" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
