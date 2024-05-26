@@ -71,4 +71,8 @@
     <!-- Statistics fragment -->
     <string name="tags_usage_distribution">Tags usage distribution</string>
 
+    <!-- Workspaces fragment -->
+    <string name="team_work_makes_perfect">Team work makes perfect!</string>
+    <string name="enter_invite_code">Enter invite code...</string>
+
 </resources>
