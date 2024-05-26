@@ -1,7 +1,6 @@
 package com.example.sunrise;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,17 +18,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sunrise.constants.Icon;
 import com.example.sunrise.models.Category;
 import com.example.sunrise.models.Tag;
-import com.example.sunrise.models.UserSettings;
+import com.example.sunrise.models.User;
 import com.example.sunrise.services.CategoryService;
 import com.example.sunrise.services.TagService;
-import com.example.sunrise.services.UserSettingsService;
+import com.example.sunrise.services.UserService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class Register extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
@@ -38,6 +36,7 @@ public class Register extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String defaultTagId;
     private static final String TAG = "RegisterActivity";
+    private UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +51,7 @@ public class Register extends AppCompatActivity {
 
         // Initialize Firebase Auth object
         mAuth = FirebaseAuth.getInstance();
+        userService = new UserService(); // Initialize UserService
 
         // Getting views
         editTextEmail = findViewById(R.id.email);
@@ -93,10 +93,9 @@ public class Register extends AppCompatActivity {
 
                                 // Get newly created user and fill it with default data
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                createDefaultUserProfile(user);
 
-                                // Create default category and save to UserSettings
-                                createDefaultCategory(user);
+                                // Create default tag, category and user
+                                createDefaultTag(user);
 
                                 // Send user to MainActivity
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -114,6 +113,12 @@ public class Register extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creates a default tag for the user and saves it to Firebase.
+     * Once the tag is saved successfully, it proceeds to create the default category and user profile.
+     *
+     * @param user The FirebaseUser object representing the newly registered user.
+     */
     private void createDefaultTag(FirebaseUser user) {
         TagService tagService = new TagService();
 
@@ -123,63 +128,43 @@ public class Register extends AppCompatActivity {
         tagService.saveTag(defaultTag, task -> {
             // after tag saved to firebase save it as class property
             defaultTagId = defaultTag.getTagId();
+
+            // Create default category and user profile
+            createDefaultCategory(user);
+            createUserProfile(user);
         });
     }
 
     /**
-     * this method creates default category and saves it in UserSettings
+     * Method to create a default category and save it to Firebase
      */
     private void createDefaultCategory(FirebaseUser user) {
         CategoryService categoryService = new CategoryService();
-        UserSettingsService userSettingsService = new UserSettingsService();
 
         // Create a default category
         Category defaultCategory = new Category("Personal", -13057, Icon.FLOWER.toString(), defaultTagId, user.getUid());
 
-        // Save the default category to Firebase
-        categoryService.saveCategory(defaultCategory, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    // Retrieve the category Id after saving
-                    String defaultCategoryId = defaultCategory.getCategoryId();
-
-                    // Create a UserSettings object with the default category Id
-                    UserSettings userSettings = new UserSettings(user.getUid(), defaultCategoryId);
-
-                    // Save the UserSettings object
-                    userSettingsService.createUserSettings(userSettings);
-                } else {
-                    Log.e(TAG, "Failed to save default category: " + task.getException());
-                    showToast("Failed to create account. Please try again later.");
-                }
+        categoryService.saveCategory(defaultCategory, task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "Default category created successfully.");
+            } else {
+                Log.e(TAG, "Failed to save default category: " + task.getException());
+                showToast("Failed to create account. Please try again later.");
             }
         });
     }
 
     /**
-     * Sets default profile information for a newly registered user in the app.
-     * This method sets a default display name and avatar for the user.
-     *
-     * @param user The FirebaseUser object representing the newly registered user.
+     * Method to create a default user profile using UserService
      */
-    private void createDefaultUserProfile(FirebaseUser user) {
-        // Create a UserProfileChangeRequest to set default display name and avatar
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName("Stranger")
-                .setPhotoUri(Uri.parse("https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b"))
-                .build();
+    private void createUserProfile(FirebaseUser user) {
+        User newUser = new User();
+        // Set user profile data
+        // For example:
+        newUser.setUserId(user.getUid());
+        newUser.setProfilePhotoUri("https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b");
 
-        // Update the user's profile with the default information
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User profile updated.");
-                        }
-                    }
-                });
+        userService.createUser(newUser);
     }
 
     private void showToast(String message) {
