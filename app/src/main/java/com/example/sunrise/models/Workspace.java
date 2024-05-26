@@ -10,7 +10,6 @@ public class Workspace {
     private long createdAt;
     private long updatedAt;
 
-    // Updated constructor with all fields
     public Workspace(String workspaceId, String title, List<String> workspaceAdminIds, List<String> memberIds) {
         this.workspaceId = workspaceId;
         this.title = title;
@@ -19,13 +18,6 @@ public class Workspace {
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
     }
-
-    // Constructor with only title (for simplicity)
-    public Workspace(String title) {
-        this.title = title;
-    }
-
-    // Getters and Setters
 
     public String getWorkspaceId() {
         return workspaceId;
