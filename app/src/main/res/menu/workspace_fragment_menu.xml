@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/invite_codes"
+        android:title="Invite Codes"
+        android:icon="@drawable/vpn_key_24px"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+    <item
+        android:id="@+id/members_list"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/groups_24px"
+        android:title="Members List" />
+    <item
+        android:id="@+id/edit_workspace"
+        android:title="Edit Workspace"
+        android:icon="@drawable/edit_24px"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+</menu>
