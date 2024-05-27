@@ -14,7 +14,13 @@ public class User {
     public User() {
     }
 
-    // Constructor with parameters
+    public User(String userId, String profilePhotoUri) {
+        this.userId = userId;
+        this.profilePhotoUri = profilePhotoUri;
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
+    }
+
     public User(String userId, List<String> workspaceIds, String profilePhotoUri, String nickname) {
         this.userId = userId;
         this.workspaceIds = workspaceIds;

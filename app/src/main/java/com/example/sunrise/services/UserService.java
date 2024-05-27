@@ -31,11 +31,6 @@ public class UserService {
      * Method to create a new user in Firebase database
      */
     public void createUser(User user) {
-        // Generate a reference to a new child location under "Users" with a client-side auto-generated key
-        DatabaseReference newUserRef = usersRef.push();
-
-        newUserRef.setValue(user); // Save the tag to Firebase database
-
         // Save the user to Firebase database
         usersRef.child(user.getUserId()).setValue(user);
     }
@@ -107,7 +102,7 @@ public class UserService {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();
-            System.out.println(userId);
+
             DatabaseReference userRef = usersRef.child(userId);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

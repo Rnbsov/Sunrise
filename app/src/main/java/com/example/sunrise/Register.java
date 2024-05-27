@@ -98,11 +98,6 @@ public class Register extends AppCompatActivity {
 
                                 // Create default tag, category and user
                                 createDefaultTag(user);
-
-                                // Send user to MainActivity
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
-                                finish();
                             } else {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
@@ -128,12 +123,16 @@ public class Register extends AppCompatActivity {
         Tag defaultTag = new Tag("personal", -13108, user.getUid());
 
         tagService.saveTag(defaultTag, task -> {
-            // after tag saved to firebase save it as class property
-            defaultTagId = defaultTag.getTagId();
+            if (task.isSuccessful()) {
+                // after tag saved to firebase save it as class property
+                defaultTagId = defaultTag.getTagId();
 
-            // Create default category and user profile
-            createDefaultCategory(user);
-            createUserProfile(user);
+                // Create default category and user profile
+                createDefaultCategory(user);
+                createUserProfile(user);
+            } else {
+                Log.e(TAG, "Failed to save default tag: " + task.getException());
+            }
         });
     }
 
@@ -161,11 +160,10 @@ public class Register extends AppCompatActivity {
      * Method to create a default user profile using UserService
      */
     private void createUserProfile(FirebaseUser user) {
-        User newUser = new User();
+        String defaultProfilePhoto = "https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b";
+
         // Set user profile data
-        // For example:
-        newUser.setUserId(user.getUid());
-        newUser.setProfilePhotoUri("https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b");
+        User newUser = new User(user.getUid(), defaultProfilePhoto);
 
         userService.createUser(newUser);
     }
@@ -185,6 +183,23 @@ public class Register extends AppCompatActivity {
         UserSettings userSettings = new UserSettings(userId, defaultCategoryId);
 
         // Save the UserSettings object
-        userSettingsService.createUserSettings(userSettings);
+        userSettingsService.createUserSettings(userSettings, task -> {
+            if (task.isSuccessful()) {
+                // All tasks are complete, proceed to MainActivity
+                proceedToMainActivity();
+            } else {
+                Log.e(TAG, "Failed to save user settings: " + task.getException());
+                showToast("Failed to create account. Please try again later.");
+            }
+        });
+    }
+
+    /**
+     * Method to proceed to MainActivity after all necessary setup tasks are completed.
+     */
+    private void proceedToMainActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
