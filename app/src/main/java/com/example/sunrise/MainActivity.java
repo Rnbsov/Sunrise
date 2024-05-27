@@ -29,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setupFabButton();
         setupNavigation();
         setupOnBackPressed();
-
-        // Enable disk persistence, so app can be used offline
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     private void setupNavigation() {
