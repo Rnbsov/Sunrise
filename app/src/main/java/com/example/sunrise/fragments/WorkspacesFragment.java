@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.example.sunrise.models.User;
 import com.example.sunrise.models.Workspace;
 import com.example.sunrise.services.UserService;
 import com.example.sunrise.services.WorkspaceService;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class WorkspacesFragment extends Fragment {
 
         // Setup Workspaces RecyclerView
         setupWorkspacesRecyclerView(view);
+        setupJoinButton(view); // Setup join workspace button
 
         // Fetch user participating workspaces
         fetchWorkspacesFromDatabase();
@@ -73,6 +76,20 @@ public class WorkspacesFragment extends Fragment {
 
         // Set adapter to RecyclerView
         workspacesRecyclerView.setAdapter(workspaceAdapter);
+    }
+
+    private void setupJoinButton(View view) {
+        TextInputEditText workspaceInviteCodeInput = view.findViewById(R.id.workspace_invite_code_input);
+        Button joinBtn = view.findViewById(R.id.join_btn);
+
+        joinBtn.setOnClickListener(v -> {
+            String inviteCode = workspaceInviteCodeInput.getText().toString().trim();
+            if (!inviteCode.isEmpty()) {
+                joinWorkspace(inviteCode);
+            } else {
+                Toast.makeText(requireContext(), "Invite code not exist or expired", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fetchWorkspacesFromDatabase() {
@@ -138,5 +155,24 @@ public class WorkspacesFragment extends Fragment {
 
     private void onWorkspaceAddButtonClick(View v) {
         workspaceCreationHelper.showWorkspaceCreationDialog((ViewGroup) requireView());
+    }
+
+    private void joinWorkspace(String inviteCode) {
+        UserService userService = new UserService();
+        userService.getCurrentUser(new UserService.CurrentUserListener() {
+            @Override
+            public void onCurrentUserRetrieved(User user) {
+                if (user != null) {
+                    workspaceService.joinWorkspace(inviteCode, user.getUserId());
+                } else {
+                    Log.e("WorkspacesFragment", "Current user is null");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("WorkspacesFragment", "Failed to get current user: " + databaseError.getMessage());
+            }
+        });
     }
 }
