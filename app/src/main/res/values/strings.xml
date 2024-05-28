@@ -75,4 +75,11 @@
     <string name="team_work_makes_perfect">Team work makes perfect!</string>
     <string name="enter_invite_code">Enter invite code...</string>
 
+
+    <!-- Workspaces task -->
+    <string name="status_not_started">Not started</string>
+    <string name="status_in_process">In process</string>
+    <string name="status_done">Done</string>
+    <string name="status">Status</string>
+
 </resources>

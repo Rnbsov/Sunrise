@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/status_not_started"
+        android:icon="@drawable/atr_24px"
+        android:title="@string/status_not_started" />
+    <item
+        android:id="@+id/status_in_process"
+        android:icon="@drawable/atr_24px"
+        android:title="@string/status_in_process" />
+    <item
+        android:id="@+id/status_done"
+        android:icon="@drawable/atr_24px"
+        android:title="@string/status_done" />
+</menu>
