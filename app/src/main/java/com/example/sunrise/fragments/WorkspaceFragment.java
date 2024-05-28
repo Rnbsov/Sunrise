@@ -1,15 +1,6 @@
 package com.example.sunrise.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,11 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+
 import com.example.sunrise.R;
+import com.example.sunrise.helpers.WorkspaceTaskCreationHelper;
 import com.example.sunrise.models.User;
 import com.example.sunrise.models.Workspace;
 import com.example.sunrise.services.UserService;
 import com.example.sunrise.services.WorkspaceService;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.List;
@@ -34,7 +35,6 @@ public class WorkspaceFragment extends Fragment {
     private String workspaceId;
     private String workspaceTitle;
     private List<String> workspaceAdminIds;
-
 
     public WorkspaceFragment() {
         // Required empty public constructor
@@ -62,6 +62,9 @@ public class WorkspaceFragment extends Fragment {
 
         // Setup menu options
         setupMenu();
+
+        // Setup fab
+        setupExtendedFabButton(view);
     }
 
     /**
@@ -142,5 +145,20 @@ public class WorkspaceFragment extends Fragment {
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    /**
+     * When the FAB is clicked, it opens a dialog for creating a new workspace task.
+     *
+     * @param view The root view of the fragment.
+     */
+    private void setupExtendedFabButton(View view) {
+        ExtendedFloatingActionButton extendedFab = view.findViewById(R.id.extendedFab);
+
+        extendedFab.setOnClickListener(v -> {
+            // Instantiate WorkspaceTaskCreationHelper and show task creation dialog
+            WorkspaceTaskCreationHelper taskCreationHelper = new WorkspaceTaskCreationHelper(requireContext(), workspaceId);
+            taskCreationHelper.showWorkspaceTaskCreationDialog(view);
+        });
     }
 }
