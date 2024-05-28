@@ -13,9 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UserService {
 
@@ -63,36 +62,35 @@ public class UserService {
     }
 
     /**
-     * Method to retrieve users by their IDs
+     * Method to get users by their IDs
      */
-    public void retrieveUsersByIds(List<String> userIds, UsersRetrievedListener listener) {
-        Map<String, User> usersMap = new HashMap<>();
+    public void getUsersByIds(List<String> userIds, UsersListener listener) {
+        List<User> users = new ArrayList<>();
 
         for (String userId : userIds) {
-            DatabaseReference userRef = usersRef.child(userId);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        User user = dataSnapshot.getValue(User.class);
-                        usersMap.put(userId, user);
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        users.add(user);
+                    }
 
-                        if (usersMap.size() == userIds.size()) {
-                            listener.onUsersRetrieved(usersMap);
-                        }
+                    if (users.size() == userIds.size()) {
+                        listener.onUsersRetrieved(users);
                     }
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("UserService", "Failed to retrieve users by IDs", error.toException());
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("UserService", "Failed to retrieve users by IDs", databaseError.toException());
                 }
             });
         }
     }
 
-    public interface UsersRetrievedListener {
-        void onUsersRetrieved(Map<String, User> usersMap);
+    public interface UsersListener {
+        void onUsersRetrieved(List<User> users);
     }
 
     /**
