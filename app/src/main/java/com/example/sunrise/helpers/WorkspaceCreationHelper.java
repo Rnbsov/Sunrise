@@ -64,7 +64,7 @@ public class WorkspaceCreationHelper {
         membersIds.add(userId); // Add current user as member of the workspace
         adminIds.add(userId); // Add current user as an admin
 
-        Workspace workspace = new Workspace(title, membersIds, adminIds);
+        Workspace workspace = new Workspace(title, userId, membersIds, adminIds);
 
         // Save the newly created workspace to Firebase database
         workspaceService.createWorkspace(workspace);

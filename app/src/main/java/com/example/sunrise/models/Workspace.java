@@ -7,6 +7,7 @@ public class Workspace {
     private String title;
     private List<String> workspaceAdminIds;
     private List<String> memberIds;
+    private String creatorId;
     private long createdAt;
     private long updatedAt;
 
@@ -14,8 +15,9 @@ public class Workspace {
         // Default constructor required for calls to DataSnapshot.getValue(Workspace.class)
     }
 
-    public Workspace(String title, List<String> workspaceAdminIds, List<String> memberIds) {
+    public Workspace(String title, String creatorId, List<String> workspaceAdminIds, List<String> memberIds) {
         this.title = title;
+        this.creatorId = creatorId;
         this.workspaceAdminIds = workspaceAdminIds;
         this.memberIds = memberIds;
         this.createdAt = System.currentTimeMillis();
@@ -68,5 +70,13 @@ public class Workspace {
 
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 }
