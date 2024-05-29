@@ -45,6 +45,7 @@ public class WorkspaceFragment extends Fragment {
     private String workspaceId;
     private String workspaceTitle;
     private List<String> workspaceAdminIds;
+    private String creatorId;
     private WorkspaceTaskAdapter workspaceTasksAdapter;
     private WorkspaceTaskService workspaceTaskService;
 
@@ -69,7 +70,7 @@ public class WorkspaceFragment extends Fragment {
         // Set action bar title to workspace title
         setActionBarTitle();
 
-        // Fetch workspace details to get admin IDs
+        // Fetch workspace details to get admin IDs and creator ID
         fetchWorkspaceDetails();
 
         // Setup menu options
@@ -109,6 +110,7 @@ public class WorkspaceFragment extends Fragment {
             @Override
             public void onWorkspaceRetrieved(Workspace workspace) {
                 if (workspace != null) {
+                    creatorId = workspace.getCreatorId();
                     workspaceAdminIds = workspace.getWorkspaceAdminIds();
                 } else {
                     Log.e("WorkspaceFragment", "Workspace not found");
@@ -177,16 +179,13 @@ public class WorkspaceFragment extends Fragment {
         membersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // Create adapter
-        MembersAdapter membersAdapter = new MembersAdapter(new ArrayList<>());
+        MembersAdapter membersAdapter = new MembersAdapter(new ArrayList<>(), creatorId, workspaceAdminIds);
         membersRecyclerView.setAdapter(membersAdapter);
 
         // Fetch workspace members
         WorkspaceService workspaceService = new WorkspaceService();
         workspaceService.getWorkspaceMembers(workspaceId, users -> {
             // Update data in the adapter
-            for(User u : users) {
-                System.out.print(u.getUserId());
-            }
             membersAdapter.setMembers(users);
         });
 
