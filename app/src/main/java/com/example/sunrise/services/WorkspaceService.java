@@ -313,4 +313,37 @@ public class WorkspaceService {
         });
     }
 
+    /**
+     * Fetches invite codes associated with a workspace ID.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param listener    Callback to handle the retrieved invite codes.
+     */
+    public void fetchInviteCodesForWorkspace(String workspaceId, InviteCodesListener listener) {
+        List<String> inviteCodes = new ArrayList<>();
+
+        inviteCodesRef.orderByValue().equalTo(workspaceId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String inviteCode = snapshot.getKey();
+                    inviteCodes.add(inviteCode);
+                }
+
+                // Pass retrieved invite codes to callback
+                listener.onInviteCodesRetrieved(inviteCodes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("InviteCode", "Failed to fetch invite codes: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    public interface InviteCodesListener {
+        void onInviteCodesRetrieved(List<String> inviteCodes);
+
+    }
+
 }
