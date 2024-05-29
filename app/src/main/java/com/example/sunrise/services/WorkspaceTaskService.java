@@ -49,7 +49,7 @@ public class WorkspaceTaskService {
     /**
      * Method to retrieve all workspace tasks by workspace ID
      */
-    public void getTasksByWorkspaceId(String workspaceId, ValueEventListener listener) {
+    public void getWorkspaceTasks(String workspaceId, ValueEventListener listener) {
         // Create a query to filter tasks by workspaceId
         Query query = workspaceTasksRef.orderByChild("workspaceId").equalTo(workspaceId);
 
