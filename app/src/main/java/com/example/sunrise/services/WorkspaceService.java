@@ -30,16 +30,27 @@ public class WorkspaceService {
     }
 
     /**
-     * Method to create a workspace in Firebase database
+     * Creates a new workspace in the Firebase database.
+     *
+     * @param workspace The workspace object to be created.
+     * @param userId    The ID of the user creating the workspace.
      */
-    public void createWorkspace(Workspace workspace) {
+    public void createWorkspace(Workspace workspace, String userId) {
         // Generate a reference to a new child location under "workspaces" with a client-side auto-generated key
         DatabaseReference newWorkspaceRef = workspacesRef.push();
 
         String workspaceId = newWorkspaceRef.getKey(); // Retrieve the unique ID
         workspace.setWorkspaceId(workspaceId); // Save this unique ID to the workspace object
 
-        newWorkspaceRef.setValue(workspace); // Save the workspace to Firebase database
+        newWorkspaceRef.setValue(workspace) // Save the workspace to Firebase database
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Add workspace ID to the user's workspace list
+                        updateUserWorkspaceIds(workspaceId, userId);
+                    } else {
+                        Log.e("WorkspaceService", "Failed to create workspace");
+                    }
+                });
     }
 
     /**
@@ -54,6 +65,33 @@ public class WorkspaceService {
 
         // Update the workspace at the specified location in Firebase
         workspaceNewRef.setValue(workspace);
+    }
+
+    /**
+     * Adds the workspace ID to the user's workspace list.
+     *
+     * @param workspaceId The ID of the workspace to be added.
+     * @param userId      The ID of the user to whom the workspace ID should be added.
+     */
+    private void updateUserWorkspaceIds(String workspaceId, String userId) {
+        UserService userService = new UserService();
+        userService.getUserById(userId, user -> {
+            if (user != null) {
+                List<String> workspaceIds = user.getWorkspaceIds();
+                if (workspaceIds == null) {
+                    workspaceIds = new ArrayList<>();
+                }
+                // Check if workspaceId already exists in the list
+                if (!workspaceIds.contains(workspaceId)) {
+                    workspaceIds.add(workspaceId);
+                    user.setWorkspaceIds(workspaceIds);
+                    // Update user in Firebase
+                    userService.updateUser(user);
+                } else {
+                    Log.d("WorkspaceService", "Workspace ID already exists for the user");
+                }
+            }
+        });
     }
 
     /**

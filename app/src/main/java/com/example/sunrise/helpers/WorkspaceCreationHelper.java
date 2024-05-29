@@ -67,7 +67,7 @@ public class WorkspaceCreationHelper {
         Workspace workspace = new Workspace(title, userId, membersIds, adminIds);
 
         // Save the newly created workspace to Firebase database
-        workspaceService.createWorkspace(workspace);
+        workspaceService.createWorkspace(workspace, userId);
 
         // Dismiss the bottom sheet dialog after workspace creation
         createWorkspaceBottomSheetDialog.dismiss();
