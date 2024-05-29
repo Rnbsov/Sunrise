@@ -94,6 +94,31 @@ public class UserService {
     }
 
     /**
+     * Method to retrieve the username by user ID
+     */
+    public void getUsername(String userId, UserNameListener listener) {
+        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    listener.onUserNameFetched(user.getNickname());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("UserService", "Failed to find username", databaseError.toException());
+            }
+        });
+    }
+
+    public interface UserNameListener {
+        void onUserNameFetched(String userName);
+    }
+
+
+    /**
      * Method to retrieve the current user's details
      */
     public void getCurrentUser(CurrentUserListener listener) {
