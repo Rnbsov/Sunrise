@@ -98,29 +98,33 @@ public class WorkspaceService {
 
     /**
      * Method to retrieve workspace members by workspace ID
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param listener    Callback to handle the retrieved users.
      */
-    public void getWorkspaceMembers(String workspaceId, final WorkspaceMembersListener listener) {
-        DatabaseReference workspaceRef = workspacesRef.child(workspaceId);
-
-        workspaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getWorkspaceMembers(String workspaceId, WorkspaceMembersListener listener) {
+        workspacesRef.child(workspaceId).child("memberIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Workspace workspace = dataSnapshot.getValue(Workspace.class);
-                if (workspace != null) {
-                    listener.onWorkspaceMembersLoaded(workspace.getMemberIds());
+                List<String> memberIds = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    memberIds.add(snapshot.getValue(String.class));
                 }
+
+                // Get the user objects for the member IDs
+                UserService userService = new UserService();
+                userService.getUsersByIds(memberIds, users -> listener.onWorkspaceMembersRetrieved(users));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                listener.onCancelled(databaseError);
+                Log.e("WorkspaceService", "Failed to retrieve workspace members: " + databaseError.getMessage());
             }
         });
     }
 
     public interface WorkspaceMembersListener {
-        void onWorkspaceMembersLoaded(List<String> memberIds);
-        void onCancelled(DatabaseError databaseError);
+        void onWorkspaceMembersRetrieved(List<User> users);
     }
 
     public void getWorkspaceById(String workspaceId, WorkspaceRetrievedListener listener) {
