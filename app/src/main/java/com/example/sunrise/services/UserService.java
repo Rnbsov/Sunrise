@@ -152,4 +152,29 @@ public class UserService {
         void onCurrentUserRetrieved(User user);
         void onCancelled(DatabaseError databaseError);
     }
+
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param userId   The ID of the user to retrieve.
+     * @param listener The listener to handle the retrieved user.
+     */
+    public void getUserById(String userId, UserRetrievedListener listener) {
+        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                listener.onUserRetrieved(user);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("UserService", "Failed to find user", databaseError.toException());
+            }
+        });
+    }
+
+    public interface UserRetrievedListener {
+        void onUserRetrieved(User user);
+    }
 }
