@@ -1,41 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
     android:padding="10dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/user_avatar"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/sample_avatar"
-        app:shapeAppearance="@style/roundedImageView" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/user_nickname"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/roundedImageView"
+            tools:src="@drawable/sample_avatar" />
+
+        <TextView
+            android:id="@+id/user_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:fontFamily="monospace"
+            android:textSize="15sp"
+            tools:text="John Wick" />
+
+        <ImageView
+            android:id="@+id/member_role"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/display_a_role_of_the_member"
+            android:visibility="gone"
+            tools:src="@drawable/shield_person_24px"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:id="@+id/member_actions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
-        android:fontFamily="monospace"
-        tools:text="John Wick"
-        android:textSize="15sp" />
-
-    <ImageView
-        android:layout_marginStart="10dp"
-        android:id="@+id/member_role"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:contentDescription="@string/shows_a_list_of_actions_admin_can_use_on_user"
+        android:src="@drawable/more_vert_24px"
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:src="@drawable/shield_person_24px"
-        android:contentDescription="@string/display_a_role_of_the_member" />
+        tools:visibility="visible" />
 
 </LinearLayout>
