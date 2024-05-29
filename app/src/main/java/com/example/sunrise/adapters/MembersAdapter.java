@@ -1,10 +1,15 @@
 package com.example.sunrise.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,11 +26,13 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
     private final List<User> localDataSet;
     private final String creatorId;
     private final List<String> adminIds;
+    private final Context context;
 
-    public MembersAdapter(List<User> dataSet, String creatorId, List<String> adminIds) {
+    public MembersAdapter(List<User> dataSet, String creatorId, List<String> adminIds, Context context) {
         this.localDataSet = dataSet;
         this.creatorId = creatorId;
         this.adminIds = adminIds;
+        this.context = context;
     }
 
     @NonNull
@@ -55,6 +62,35 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
             memberRoleImageView.setImageResource(R.drawable.shield_person_24px);
             memberRoleImageView.setVisibility(View.VISIBLE);
         }
+
+        // Show the member actions if the current user is an admin
+        if (adminIds.contains(member.getUserId())) {
+            holder.getMemberActions().setVisibility(View.VISIBLE);
+            holder.getMemberActions().setOnClickListener(v -> showPopupMenu(v, member));
+        }
+    }
+
+    private void showPopupMenu(View view, User member) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.member_actions_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(item -> onMenuItemClick(item, member));
+        popupMenu.show();
+    }
+
+    private boolean onMenuItemClick(MenuItem item, User member) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_promote) {
+            Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_mute) {
+            Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_kick) {
+            Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -72,12 +108,14 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
         private final ShapeableImageView avatarImageView;
         private final TextView nicknameTextView;
         private final ImageView memberRoleImageView;
+        private final ImageView memberActions;
 
         public MemberViewHolder(@NonNull View itemView) {
             super(itemView);
             avatarImageView = itemView.findViewById(R.id.user_avatar);
             nicknameTextView = itemView.findViewById(R.id.user_nickname);
             memberRoleImageView = itemView.findViewById(R.id.member_role);
+            memberActions = itemView.findViewById(R.id.member_actions);
         }
 
         public ShapeableImageView getAvatarImageView() {
@@ -90,6 +128,10 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
 
         public ImageView getMemberRoleImageView() {
             return memberRoleImageView;
+        }
+
+        public ImageView getMemberActions() {
+            return memberActions;
         }
     }
 }

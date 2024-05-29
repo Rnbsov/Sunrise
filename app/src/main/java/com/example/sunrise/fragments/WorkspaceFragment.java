@@ -179,7 +179,7 @@ public class WorkspaceFragment extends Fragment {
         membersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // Create adapter
-        MembersAdapter membersAdapter = new MembersAdapter(new ArrayList<>(), creatorId, workspaceAdminIds);
+        MembersAdapter membersAdapter = new MembersAdapter(new ArrayList<>(), creatorId, workspaceAdminIds, requireContext());
         membersRecyclerView.setAdapter(membersAdapter);
 
         // Fetch workspace members
