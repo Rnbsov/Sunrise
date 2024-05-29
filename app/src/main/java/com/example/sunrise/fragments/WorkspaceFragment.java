@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
+import com.example.sunrise.adapters.MembersAdapter;
 import com.example.sunrise.adapters.WorkspaceTaskAdapter;
 import com.example.sunrise.helpers.WorkspaceTaskCreationHelper;
 import com.example.sunrise.models.User;
@@ -29,6 +30,7 @@ import com.example.sunrise.models.WorkspaceTask;
 import com.example.sunrise.services.UserService;
 import com.example.sunrise.services.WorkspaceService;
 import com.example.sunrise.services.WorkspaceTaskService;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -149,7 +151,7 @@ public class WorkspaceFragment extends Fragment {
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int itemId = menuItem.getItemId();
                 if (itemId == R.id.members_list) {
-                    Toast.makeText(requireActivity(), "Members List selected", Toast.LENGTH_SHORT).show();
+                    openMembersBottomSheet();
                     return true;
                 } else if (itemId == R.id.edit_workspace) {
                     Toast.makeText(requireActivity(), "Edit Workspace selected", Toast.LENGTH_SHORT).show();
@@ -161,6 +163,37 @@ public class WorkspaceFragment extends Fragment {
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    /**
+     * Opens the bottom sheet to display workspace members.
+     */
+    private void openMembersBottomSheet() {
+        // Inflate the bottom sheet layout
+        View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.members_list_bottom_sheet, null);
+
+        // Initialize RecyclerView
+        RecyclerView membersRecyclerView = bottomSheetView.findViewById(R.id.members_recycler_view);
+        membersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        // Create adapter
+        MembersAdapter membersAdapter = new MembersAdapter(new ArrayList<>());
+        membersRecyclerView.setAdapter(membersAdapter);
+
+        // Fetch workspace members
+        WorkspaceService workspaceService = new WorkspaceService();
+        workspaceService.getWorkspaceMembers(workspaceId, users -> {
+            // Update data in the adapter
+            for(User u : users) {
+                System.out.print(u.getUserId());
+            }
+            membersAdapter.setMembers(users);
+        });
+
+        // Create and show the bottom sheet dialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
     }
 
     /**
@@ -197,26 +230,26 @@ public class WorkspaceFragment extends Fragment {
     }
 
     private void fetchWorkspaceTasksFromDatabase() {
-         workspaceTaskService.getWorkspaceTasks(workspaceId, new ValueEventListener() {
-             @Override
-             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                 List<WorkspaceTask> workspaceTasks = new ArrayList<>();
-                 for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
-                     WorkspaceTask workspaceTask = taskSnapshot.getValue(WorkspaceTask.class);
-                     if (workspaceTask != null) {
-                         workspaceTasks.add(workspaceTask);
-                     }
-                 }
+        workspaceTaskService.getWorkspaceTasks(workspaceId, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<WorkspaceTask> workspaceTasks = new ArrayList<>();
+                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                    WorkspaceTask workspaceTask = taskSnapshot.getValue(WorkspaceTask.class);
+                    if (workspaceTask != null) {
+                        workspaceTasks.add(workspaceTask);
+                    }
+                }
 
-                 // Update data in the adapter
-                 workspaceTasksAdapter.updateData(workspaceTasks);
-             }
+                // Update data in the adapter
+                workspaceTasksAdapter.updateData(workspaceTasks);
+            }
 
-             @Override
-             public void onCancelled(@NonNull DatabaseError databaseError) {
-                 Log.e("WorkspaceFragment", "Error fetching workspace tasks", databaseError.toException());
-             }
-         });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("WorkspaceFragment", "Error fetching workspace tasks", databaseError.toException());
+            }
+        });
     }
 
     /**
