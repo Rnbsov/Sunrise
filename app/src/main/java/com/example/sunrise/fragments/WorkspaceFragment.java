@@ -17,16 +17,24 @@ import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
+import com.example.sunrise.adapters.WorkspaceTaskAdapter;
 import com.example.sunrise.helpers.WorkspaceTaskCreationHelper;
 import com.example.sunrise.models.User;
 import com.example.sunrise.models.Workspace;
+import com.example.sunrise.models.WorkspaceTask;
 import com.example.sunrise.services.UserService;
 import com.example.sunrise.services.WorkspaceService;
+import com.example.sunrise.services.WorkspaceTaskService;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +43,8 @@ public class WorkspaceFragment extends Fragment {
     private String workspaceId;
     private String workspaceTitle;
     private List<String> workspaceAdminIds;
+    private WorkspaceTaskAdapter workspaceTasksAdapter;
+    private WorkspaceTaskService workspaceTaskService;
 
     public WorkspaceFragment() {
         // Required empty public constructor
@@ -65,6 +75,12 @@ public class WorkspaceFragment extends Fragment {
 
         // Setup fab
         setupExtendedFabButton(view);
+
+        // Initialize WorkspaceTaskService
+        workspaceTaskService = new WorkspaceTaskService();
+
+        // Setup RecyclerView
+        setupRecyclerView(view);
     }
 
     /**
@@ -160,5 +176,55 @@ public class WorkspaceFragment extends Fragment {
             WorkspaceTaskCreationHelper taskCreationHelper = new WorkspaceTaskCreationHelper(requireContext(), workspaceId);
             taskCreationHelper.showWorkspaceTaskCreationDialog(view);
         });
+    }
+
+    /**
+     * Sets up the RecyclerView to display workspace tasks.
+     *
+     * @param view The root view of the fragment.
+     */
+    private void setupRecyclerView(View view) {
+        // Initialize RecyclerView and adapter
+        RecyclerView workspaceTasksRecyclerView = view.findViewById(R.id.workspace_tasks_recycler_view);
+        workspaceTasksRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        workspaceTasksAdapter = new WorkspaceTaskAdapter(new ArrayList<>(), this::onWorkspaceTaskClick);
+
+        // Set adapter to RecyclerView
+        workspaceTasksRecyclerView.setAdapter(workspaceTasksAdapter);
+
+        // Fetch workspace tasks
+        fetchWorkspaceTasksFromDatabase();
+    }
+
+    private void fetchWorkspaceTasksFromDatabase() {
+         workspaceTaskService.getWorkspaceTasks(workspaceId, new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                 List<WorkspaceTask> workspaceTasks = new ArrayList<>();
+                 for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                     WorkspaceTask workspaceTask = taskSnapshot.getValue(WorkspaceTask.class);
+                     if (workspaceTask != null) {
+                         workspaceTasks.add(workspaceTask);
+                     }
+                 }
+
+                 // Update data in the adapter
+                 workspaceTasksAdapter.updateData(workspaceTasks);
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+                 Log.e("WorkspaceFragment", "Error fetching workspace tasks", databaseError.toException());
+             }
+         });
+    }
+
+    /**
+     * Handles workspace task item click.
+     *
+     * @param workspaceTask Clicked workspace task.
+     */
+    private void onWorkspaceTaskClick(WorkspaceTask workspaceTask) {
+        Toast.makeText(requireContext(), "task clicked", Toast.LENGTH_SHORT).show();
     }
 }
