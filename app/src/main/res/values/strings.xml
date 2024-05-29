@@ -86,5 +86,6 @@
     <string name="promote_to_admin">Promote to Admin</string>
     <string name="mute">Mute</string>
     <string name="kick">Kick</string>
+    <string name="generate_invite_code">Generate invite code</string>
 
 </resources>
