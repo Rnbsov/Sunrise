@@ -83,5 +83,8 @@
     <string name="status">Status</string>
     <string name="display_a_role_of_the_member">Display a role of the member</string>
     <string name="shows_a_list_of_actions_admin_can_use_on_user">Shows a list of actions admin can use on user</string>
+    <string name="promote_to_admin">Promote to Admin</string>
+    <string name="mute">Mute</string>
+    <string name="kick">Kick</string>
 
 </resources>
