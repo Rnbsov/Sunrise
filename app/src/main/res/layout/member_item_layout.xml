@@ -16,9 +16,7 @@
         android:layout_height="25dp"
         android:scaleType="centerCrop"
         tools:src="@drawable/sample_avatar"
-        app:shapeAppearance="@style/roundedImageView">
-
-    </com.google.android.material.imageview.ShapeableImageView>
+        app:shapeAppearance="@style/roundedImageView" />
 
     <TextView
         android:id="@+id/user_nickname"
@@ -29,5 +27,15 @@
         android:fontFamily="monospace"
         tools:text="John Wick"
         android:textSize="15sp" />
+
+    <ImageView
+        android:layout_marginStart="10dp"
+        android:id="@+id/member_role"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:src="@drawable/shield_person_24px"
+        android:contentDescription="@string/display_a_role_of_the_member" />
 
 </LinearLayout>

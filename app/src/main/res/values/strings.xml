@@ -81,5 +81,6 @@
     <string name="status_in_process">In process</string>
     <string name="status_done">Done</string>
     <string name="status">Status</string>
+    <string name="display_a_role_of_the_member">Display a role of the member</string>
 
 </resources>
