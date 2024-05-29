@@ -87,5 +87,6 @@
     <string name="mute">Mute</string>
     <string name="kick">Kick</string>
     <string name="generate_invite_code">Generate invite code</string>
+    <string name="an_icon_to_copy_the_code">An icon to copy the code</string>
 
 </resources>
