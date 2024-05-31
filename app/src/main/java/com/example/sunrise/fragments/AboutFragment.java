@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sunrise.BuildConfig;
 import com.example.sunrise.R;
@@ -46,6 +50,9 @@ public class AboutFragment extends Fragment {
 
         // Setup navigation routes
         setupNavigationRoutes(view);
+
+        // Set up icon animation
+        setupIconAnimation(view);
     }
 
     /**
@@ -116,5 +123,23 @@ public class AboutFragment extends Fragment {
     private void openUrl(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
+    }
+
+    /**
+     * Sets up the click listener and animation for the app icon ImageView.
+     * When user clicking it, this should play a fun animation.
+     * @param view The root view of the fragment layout.
+     */
+    private void setupIconAnimation(View view) {
+        ImageView appIcon = view.findViewById(R.id.app_icon);
+
+        // Load the animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.rotation);
+
+        // Set the click listener to start the animation
+        appIcon.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "An easter egg found! 😸", Toast.LENGTH_SHORT).show();
+            appIcon.startAnimation(rotateAnimation);
+        });
     }
 }
