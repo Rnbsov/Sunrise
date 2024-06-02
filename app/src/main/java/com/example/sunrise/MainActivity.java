@@ -1,10 +1,16 @@
 package com.example.sunrise;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,10 +31,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Enable edge-to-edge
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        setupFabButton();
-        setupNavigation();
-        setupOnBackPressed();
+        // Adjust the insets for the main activity
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            return insets;
+        });
+
+        // Set status bar color
+        getWindow().setStatusBarColor(Color.parseColor("#311945"));
+
+        setupFabButton(); // Initialize and set up the fab
+        setupNavigation(); // Setup navigation logic
+        setupOnBackPressed(); // Set up the behavior for when the back button is pressed
 
         // Enable disk persistence, so app can be used offline
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
