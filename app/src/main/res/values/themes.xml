@@ -35,5 +35,8 @@
         <item name="cornerSize">8dp</item>
     </style>
 
+    <style name="Splash" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.Sunrise</item>
+    </style>
 
 </resources>

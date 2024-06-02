@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Splash" parent="Theme.SplashScreen">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_icon</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/by_rnbsov</item>
+        <item name="android:windowSplashScreenBackground">@color/black</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.Sunrise</item>
+    </style>
+</resources>
