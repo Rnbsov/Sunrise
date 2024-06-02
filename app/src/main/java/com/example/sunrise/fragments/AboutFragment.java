@@ -138,7 +138,7 @@ public class AboutFragment extends Fragment {
 
         // Set the click listener to start the animation
         appIcon.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "An easter egg found! 😸", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "An easter egg found! 😺", Toast.LENGTH_SHORT).show();
             appIcon.startAnimation(rotateAnimation);
         });
     }
