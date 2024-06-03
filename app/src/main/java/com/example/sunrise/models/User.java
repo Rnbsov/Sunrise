@@ -14,8 +14,9 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String profilePhotoUri) {
+    public User(String userId, String nickname, String profilePhotoUri) {
         this.userId = userId;
+        this.nickname = nickname;
         this.profilePhotoUri = profilePhotoUri;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially

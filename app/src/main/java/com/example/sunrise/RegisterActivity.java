@@ -32,7 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
+    TextInputEditText editTextEmail, editTextPassword, editTextNickname;
     Button registerBtn;
     TextView loginScreenLink;
     private FirebaseAuth mAuth;
@@ -56,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         userService = new UserService(); // Initialize UserService
 
         // Getting views
+        editTextNickname = findViewById(R.id.user_nickname);
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         registerBtn = findViewById(R.id.register_btn);
@@ -68,10 +69,17 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         registerBtn.setOnClickListener(v -> {
-            String email, password;
+            String email, password, nickname;
 
+            nickname = String.valueOf(editTextNickname.getText());
             email = String.valueOf(editTextEmail.getText());
             password = String.valueOf(editTextPassword.getText());
+
+            // Validation
+            if (TextUtils.isEmpty(nickname)) {
+                Toast.makeText(this, "Enter nickname", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
@@ -83,6 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
+            // User creation logic
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -97,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
 
                                 // Create default tag, category and user
-                                createDefaultTag(user);
+                                createDefaultTag(user, nickname);
                             } else {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
@@ -116,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
      *
      * @param user The FirebaseUser object representing the newly registered user.
      */
-    private void createDefaultTag(FirebaseUser user) {
+    private void createDefaultTag(FirebaseUser user, String nickname) {
         TagService tagService = new TagService();
 
         // Create a default tag
@@ -129,7 +138,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Create default category and user profile
                 createDefaultCategory(user);
-                createUserProfile(user);
+                createUserProfile(user, nickname);
             } else {
                 Log.e(TAG, "Failed to save default tag: " + task.getException());
             }
@@ -159,11 +168,11 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * Method to create a default user profile using UserService
      */
-    private void createUserProfile(FirebaseUser user) {
+    private void createUserProfile(FirebaseUser user, String nickname) {
         String defaultProfilePhoto = "https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b";
 
         // Set user profile data
-        User newUser = new User(user.getUid(), defaultProfilePhoto);
+        User newUser = new User(user.getUid(), nickname, defaultProfilePhoto);
 
         userService.createUser(newUser);
     }
