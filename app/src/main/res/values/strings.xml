@@ -71,4 +71,22 @@
     <!-- Statistics fragment -->
     <string name="tags_usage_distribution">Tags usage distribution</string>
 
+    <!-- Workspaces fragment -->
+    <string name="team_work_makes_perfect">Team work makes perfect!</string>
+    <string name="enter_invite_code">Enter invite code...</string>
+
+
+    <!-- Workspaces task -->
+    <string name="status_not_started">Not started</string>
+    <string name="status_in_process">In process</string>
+    <string name="status_done">Done</string>
+    <string name="status">Status</string>
+    <string name="display_a_role_of_the_member">Display a role of the member</string>
+    <string name="shows_a_list_of_actions_admin_can_use_on_user">Shows a list of actions admin can use on user</string>
+    <string name="promote_to_admin">Promote to Admin</string>
+    <string name="mute">Mute</string>
+    <string name="kick">Kick</string>
+    <string name="generate_invite_code">Generate invite code</string>
+    <string name="an_icon_to_copy_the_code">An icon to copy the code</string>
+
 </resources>

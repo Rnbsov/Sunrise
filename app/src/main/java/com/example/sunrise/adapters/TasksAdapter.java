@@ -1,6 +1,7 @@
 package com.example.sunrise.adapters;
 
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,10 +93,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         private final ShapeableImageView firstTagDot;
         private final ShapeableImageView secondTagDot;
         private final ShapeableImageView thirdTagDot;
-
+        private final OnTaskCheckedChangeListener onCheckboxClick;
+        private final List<Task> localDataSet;
 
         public TaskViewHolder(List<Task> localDataSet, View itemView, OnTaskCheckedChangeListener onCheckboxClick, OnItemClickedListener onItemClickedListener) {
             super(itemView);
+            this.localDataSet = localDataSet;
+            this.onCheckboxClick = onCheckboxClick;
 
             title = itemView.findViewById(R.id.title);
             completeCheckbox = itemView.findViewById(R.id.checkbox);
@@ -109,7 +113,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             // Setting on complete checkbox click listener
             completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && onItemClickedListener != null) {
+                if (position != RecyclerView.NO_POSITION && onCheckboxClick != null) {
                     Task updatedTask = localDataSet.get(position);
                     onCheckboxClick.onCompleted(updatedTask, title, isChecked);
                 }
@@ -127,7 +131,28 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         public void bind(Task task) {
             title.setText(task.getTitle());
+
+            // Temporarily remove the listener to avoid triggering it during setChecked calling
+            completeCheckbox.setOnCheckedChangeListener(null);
             completeCheckbox.setChecked(task.isCompleted());
+
+            // Reattach the listener
+            completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    Task updatedTask = localDataSet.get(position);
+                    onCheckboxClick.onCompleted(updatedTask, title, isChecked);
+                }
+            });
+
+            // Apply strikethrough style if the task is completed
+            if (task.isCompleted()) {
+                title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                // If task is not completed, it shouldn't be applied strikethrough style
+                title.setPaintFlags(title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
+
             priority.setText(task.getPriority());
 
             List<String> tagsIds = task.getTags();

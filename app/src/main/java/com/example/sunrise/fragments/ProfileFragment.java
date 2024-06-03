@@ -40,6 +40,7 @@ import android.Manifest;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.NavigationAdapter;
 import com.example.sunrise.navigation.ProfileNavigationRoutes;
+import com.example.sunrise.services.UserService;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -366,6 +367,7 @@ public class ProfileFragment extends Fragment {
      * @param uri The URI of the updated profile picture.
      */
     private void updateProfilePicture(Uri uri) {
+        UserService userService = new UserService();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -375,6 +377,10 @@ public class ProfileFragment extends Fragment {
         currentUser.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        // After it was successfully saved in firebase cloud and auth,
+                        // save this profile picture to User real-time db object
+                        userService.updateProfilePictureUri(currentUser.getUid(), uri.toString());
+
                         Toast.makeText(requireContext(), "Profile picture updated successfully.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(requireContext(), "Failed to update profile picture.", Toast.LENGTH_SHORT).show();
