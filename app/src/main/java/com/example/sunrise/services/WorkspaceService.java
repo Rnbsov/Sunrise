@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -319,31 +320,11 @@ public class WorkspaceService {
      * @param workspaceId The ID of the workspace.
      * @param listener    Callback to handle the retrieved invite codes.
      */
-    public void fetchInviteCodesForWorkspace(String workspaceId, InviteCodesListener listener) {
-        List<String> inviteCodes = new ArrayList<>();
+    public void fetchInviteCodesForWorkspace(String workspaceId, ValueEventListener listener) {
+        // Create query to fetch workspace associated invite codes
+        Query workspaceInviteCodesQuery = inviteCodesRef.orderByValue().equalTo(workspaceId);
 
-        inviteCodesRef.orderByValue().equalTo(workspaceId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String inviteCode = snapshot.getKey();
-                    inviteCodes.add(inviteCode);
-                }
-
-                // Pass retrieved invite codes to callback
-                listener.onInviteCodesRetrieved(inviteCodes);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("InviteCode", "Failed to fetch invite codes: " + databaseError.getMessage());
-            }
-        });
+        // Set listener to this query
+        workspaceInviteCodesQuery.addValueEventListener(listener);
     }
-
-    public interface InviteCodesListener {
-        void onInviteCodesRetrieved(List<String> inviteCodes);
-
-    }
-
 }
