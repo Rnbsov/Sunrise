@@ -32,6 +32,9 @@
             android:id="@+id/copy_invite_code"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:layout_gravity="center_vertical"
             android:src="@drawable/content_copy_24px"
             android:contentDescription="@string/an_icon_to_copy_the_code" />
