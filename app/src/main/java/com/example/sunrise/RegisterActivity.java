@@ -31,7 +31,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Register extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button registerBtn;
     TextView loginScreenLink;
@@ -62,7 +62,7 @@ public class Register extends AppCompatActivity {
         loginScreenLink = findViewById(R.id.login_now);
 
         loginScreenLink.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), Login.class);
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
         });
@@ -90,7 +90,7 @@ public class Register extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success
                                 Log.d(TAG, "createUserWithEmail:success");
-                                Toast.makeText(Register.this, "Account created!",
+                                Toast.makeText(RegisterActivity.this, "Account created!",
                                         Toast.LENGTH_SHORT).show();
 
                                 // Get newly created user and fill it with default data

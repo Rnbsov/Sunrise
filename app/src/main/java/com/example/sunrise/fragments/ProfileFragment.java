@@ -35,7 +35,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sunrise.Login;
+import com.example.sunrise.LoginActivity;
 import android.Manifest;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.NavigationAdapter;
@@ -215,7 +215,7 @@ public class ProfileFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
 
         // Send user to Login activity
-        Intent intent = new Intent(getContext(), Login.class);
+        Intent intent = new Intent(getContext(), LoginActivity.class);
         startActivity(intent);
 
         // Finish the parent of fragments which is MainActivity
