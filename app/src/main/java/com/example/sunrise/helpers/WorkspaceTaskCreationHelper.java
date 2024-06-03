@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -32,7 +33,7 @@ public class WorkspaceTaskCreationHelper {
     private Chip priorityChip;
     private Chip statusChip;
     private Chip assignChip;
-    private String assignedUserId;
+    private String assignedUserId = null;
 
     public WorkspaceTaskCreationHelper(Context context, String workspaceId) {
         this.context = context;
@@ -102,6 +103,13 @@ public class WorkspaceTaskCreationHelper {
         String title = Objects.requireNonNull(editTitle.getText()).toString().trim();
         String priority = priorityChip.getText().toString();
         String status = statusChip.getText().toString();
+
+        // Check if the assignedUserId is null
+        if (assignedUserId == null) {
+            // If so show a toast message to user
+            Toast.makeText(context, "Please assign the task to a user", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Check if the title is empty and show an error if it is
         if (title.isEmpty()) {
