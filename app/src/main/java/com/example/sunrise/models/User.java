@@ -7,6 +7,7 @@ public class User {
     private List<String> workspaceIds;
     private String profilePhotoUri;
     private String nickname;
+    private String email;
     private long createdAt;
     private long updatedAt;
 
@@ -14,9 +15,10 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String nickname, String profilePhotoUri) {
+    public User(String userId, String nickname, String email, String profilePhotoUri) {
         this.userId = userId;
         this.nickname = nickname;
+        this.email = email;
         this.profilePhotoUri = profilePhotoUri;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis(); // Set updatedAt to the same value as createdAt initially
@@ -81,5 +83,13 @@ public class User {
 
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

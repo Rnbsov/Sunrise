@@ -172,7 +172,7 @@ public class RegisterActivity extends AppCompatActivity {
         String defaultProfilePhoto = "https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b";
 
         // Set user profile data
-        User newUser = new User(user.getUid(), nickname, defaultProfilePhoto);
+        User newUser = new User(user.getUid(), nickname, user.getEmail(), defaultProfilePhoto);
 
         userService.createUser(newUser);
     }
