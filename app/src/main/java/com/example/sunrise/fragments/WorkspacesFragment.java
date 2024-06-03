@@ -86,6 +86,7 @@ public class WorkspacesFragment extends Fragment {
             String inviteCode = workspaceInviteCodeInput.getText().toString().trim();
             if (!inviteCode.isEmpty()) {
                 joinWorkspace(inviteCode);
+                fetchWorkspacesFromDatabase();
             } else {
                 Toast.makeText(requireContext(), "Invite code not exist or expired", Toast.LENGTH_SHORT).show();
             }
