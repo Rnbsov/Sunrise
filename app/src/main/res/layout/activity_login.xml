@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:text="@string/login"
+        android:text="@string/login_welcome_message"
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -44,12 +44,18 @@
             android:hint="@string/password" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.sanojpunchihewa.glowbutton.GlowButton
         android:id="@+id/login_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/login"
         android:layout_marginTop="20dp"
-        android:text="@string/login" />
+        app:buttonColor="#E30B5C"
+        app:unpressedGlowSize="15dp"
+        app:pressedGlowSize="20dp"
+        app:glowColor="#E30B5C"
+        app:cornerRadius="20dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"/>
 
     <TextView
         android:id="@+id/register_now"
