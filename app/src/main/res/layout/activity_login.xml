@@ -16,7 +16,7 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/login_welcome_message"
-        android:textSize="25sp"
+        android:textSize="32sp"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -28,19 +28,22 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:inputType="textEmailAddress"
             android:hint="@string/email" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:inputType="textPassword"
             android:hint="@string/password" />
     </com.google.android.material.textfield.TextInputLayout>
 
