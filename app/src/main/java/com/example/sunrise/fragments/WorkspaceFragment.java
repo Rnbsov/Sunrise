@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
+import com.example.sunrise.adapters.InviteCodeAdapter;
 import com.example.sunrise.adapters.MembersAdapter;
 import com.example.sunrise.adapters.WorkspaceTaskAdapter;
 import com.example.sunrise.helpers.WorkspaceTaskCreationHelper;
@@ -48,6 +49,7 @@ public class WorkspaceFragment extends Fragment {
     private String creatorId;
     private WorkspaceTaskAdapter workspaceTasksAdapter;
     private WorkspaceTaskService workspaceTaskService;
+    private WorkspaceService workspaceService;
 
     public WorkspaceFragment() {
         // Required empty public constructor
@@ -79,8 +81,10 @@ public class WorkspaceFragment extends Fragment {
         // Setup fab
         setupExtendedFabButton(view);
 
-        // Initialize WorkspaceTaskService
+        // Initialize services to interact with Firebase
         workspaceTaskService = new WorkspaceTaskService();
+        workspaceService = new WorkspaceService();
+
 
         // Setup RecyclerView
         setupRecyclerView(view);
@@ -159,7 +163,7 @@ public class WorkspaceFragment extends Fragment {
                     Toast.makeText(requireActivity(), "Edit Workspace selected", Toast.LENGTH_SHORT).show();
                     return true;
                 } else if (itemId == R.id.invite_codes) {
-                    Toast.makeText(requireActivity(), "Invite Codes selected", Toast.LENGTH_SHORT).show();
+                    openInviteCodesBottomSheet();
                     return true;
                 }
                 return false;
@@ -193,6 +197,69 @@ public class WorkspaceFragment extends Fragment {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
+    }
+
+    /**
+     * Opens the bottom sheet to display workspace invite codes.
+     */
+    private void openInviteCodesBottomSheet() {
+        // Inflate the bottom sheet layout
+        View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.invite_codes_list_bottom_sheet, null);
+
+        // Initialize RecyclerView
+        RecyclerView inviteCodesRecyclerView = bottomSheetView.findViewById(R.id.invite_codes_recycler_view);
+        inviteCodesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        // Create adapter
+        InviteCodeAdapter inviteCodeAdapter = new InviteCodeAdapter(new ArrayList<>(), requireContext());
+        inviteCodesRecyclerView.setAdapter(inviteCodeAdapter);
+
+        // Fetch and display invite codes for the workspace
+        fetchAndDisplayInviteCodes(inviteCodeAdapter);
+
+        // Set click listener for generate button
+        bottomSheetView.findViewById(R.id.generate_btn).setOnClickListener(v -> {
+            // Generate a new invite code
+            workspaceService.createInviteCode(workspaceId);
+        });
+
+        // Create and show the bottom sheet dialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
+    /**
+     * Fetches and displays the invite codes for the workspace.
+     *
+     * This method fetches the invite codes associated with the workspace ID
+     * and updates the RecyclerView adapter to display them.
+     *
+     * @param inviteCodeAdapter The adapter used to display the invite codes in the RecyclerView.
+     */
+    private void fetchAndDisplayInviteCodes(InviteCodeAdapter inviteCodeAdapter) {
+        // Create ValueEventListener for fetching invite codes
+        ValueEventListener inviteCodesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> inviteCodes = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String inviteCode = snapshot.getKey();
+                    inviteCodes.add(inviteCode);
+                }
+
+                // Update data in the adapter
+                inviteCodeAdapter.setInviteCodes(inviteCodes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("WorkspaceFragment", "Failed to fetch invite codes: " + databaseError.getMessage());
+            }
+        };
+
+        // Fetch and display invite codes for the workspace
+        workspaceService.fetchInviteCodesForWorkspace(workspaceId, inviteCodesListener);
     }
 
     /**
