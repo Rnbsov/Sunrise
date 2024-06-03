@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunrise.R;
 import com.example.sunrise.models.User;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -64,7 +66,8 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
         }
 
         // Show the member actions if the current user is an admin
-        if (adminIds.contains(member.getUserId())) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (adminIds.contains(currentUser.getUid())) {
             holder.getMemberActions().setVisibility(View.VISIBLE);
             holder.getMemberActions().setOnClickListener(v -> showPopupMenu(v, member));
         }
