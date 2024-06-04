@@ -146,7 +146,7 @@ public class TaskCreationHelper {
     }
 
     private void createTask(View view) {
-        String title = Objects.requireNonNull(editTitle.getText()).toString();
+        String title = Objects.requireNonNull(editTitle.getText()).toString().trim();
         String priority = TaskUtils.getPriorityValue(priorityChip.getText().toString(), context.getString(R.string.priority), context.getString((R.string.priority_regular)));
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 

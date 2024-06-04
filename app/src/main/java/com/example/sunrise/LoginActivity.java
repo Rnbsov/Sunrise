@@ -23,7 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPassword;
     Button loginBtn;
@@ -64,7 +64,7 @@ public class Login extends AppCompatActivity {
         registerScreenLink = findViewById(R.id.register_now);
 
         registerScreenLink.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), Register.class);
+            Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);
             finish();
         });
@@ -72,8 +72,8 @@ public class Login extends AppCompatActivity {
         loginBtn.setOnClickListener(v -> {
             String email, password;
 
-            email = String.valueOf(editTextEmail.getText());
-            password = String.valueOf(editTextPassword.getText());
+            email = String.valueOf(editTextEmail.getText()).trim();
+            password = String.valueOf(editTextPassword.getText()).trim();
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
@@ -92,7 +92,7 @@ public class Login extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success
                                 Log.d(TAG, "signInWithEmail:success");
-                                Toast.makeText(Login.this, "Login success",
+                                Toast.makeText(LoginActivity.this, "Login success",
                                         Toast.LENGTH_SHORT).show();
 
                                 // Send user to MainActivity

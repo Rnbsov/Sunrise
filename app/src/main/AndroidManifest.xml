@@ -27,11 +27,11 @@
         android:theme="@style/Splash"
         tools:targetApi="31">
         <activity
-            android:name=".Register"
+            android:name=".RegisterActivity"
             android:theme="@style/Theme.Sunrise"
             android:exported="false" />
         <activity
-            android:name=".Login"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
