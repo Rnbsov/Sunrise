@@ -410,7 +410,7 @@ public class ProfileFragment extends Fragment {
         Button updateButton = bottomSheetView.findViewById(R.id.update_btn);
 
         updateButton.setOnClickListener(v -> {
-            String newNickname = nicknameEditText.getText().toString();
+            String newNickname = nicknameEditText.getText().toString().trim();
             if (!newNickname.isEmpty()) {
                 updateNickname(newNickname);
                 bottomSheetDialog.dismiss();

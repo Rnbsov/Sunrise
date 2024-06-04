@@ -73,9 +73,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(v -> {
             String email, password, nickname;
 
-            nickname = String.valueOf(editTextNickname.getText());
-            email = String.valueOf(editTextEmail.getText());
-            password = String.valueOf(editTextPassword.getText());
+            nickname = String.valueOf(editTextNickname.getText()).trim();
+            email = String.valueOf(editTextEmail.getText()).trim();
+            password = String.valueOf(editTextPassword.getText()).trim();
 
             // Validation
             if (TextUtils.isEmpty(nickname)) {

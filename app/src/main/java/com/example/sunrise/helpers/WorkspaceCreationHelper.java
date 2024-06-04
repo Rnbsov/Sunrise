@@ -48,7 +48,7 @@ public class WorkspaceCreationHelper {
     }
 
     private void createWorkspace() {
-        String title = Objects.requireNonNull(editTitle.getText()).toString();
+        String title = Objects.requireNonNull(editTitle.getText()).toString().trim();
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         // Some checks before creating workspace

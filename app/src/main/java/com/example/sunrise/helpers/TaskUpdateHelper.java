@@ -85,7 +85,7 @@ public class TaskUpdateHelper {
     }
 
     private void saveTask(Task task) {
-        String title = Objects.requireNonNull(editTitle.getText()).toString();
+        String title = Objects.requireNonNull(editTitle.getText()).toString().trim();
         String priority = TaskUtils.getPriorityValue(priorityChip.getText().toString(), context.getString(R.string.priority), context.getString((R.string.priority_regular)));
 
         // Some checks before updating task

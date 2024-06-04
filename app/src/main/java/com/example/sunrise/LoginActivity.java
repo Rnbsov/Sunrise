@@ -70,8 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(v -> {
             String email, password;
 
-            email = String.valueOf(editTextEmail.getText());
-            password = String.valueOf(editTextPassword.getText());
+            email = String.valueOf(editTextEmail.getText()).trim();
+            password = String.valueOf(editTextPassword.getText()).trim();
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
