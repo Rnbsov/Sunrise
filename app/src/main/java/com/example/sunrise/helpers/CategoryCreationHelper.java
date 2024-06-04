@@ -164,7 +164,7 @@ public class CategoryCreationHelper {
     }
 
     private void createCategory() {
-        String title = Objects.requireNonNull(editTitle.getText()).toString();
+        String title = Objects.requireNonNull(editTitle.getText()).toString().trim();
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         // Some checks before creating category

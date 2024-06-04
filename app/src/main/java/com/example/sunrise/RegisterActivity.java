@@ -1,6 +1,7 @@
 package com.example.sunrise;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,9 +31,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class Register extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
+public class RegisterActivity extends AppCompatActivity {
+    TextInputEditText editTextEmail, editTextPassword, editTextNickname;
     Button registerBtn;
     TextView loginScreenLink;
     private FirebaseAuth mAuth;
@@ -56,22 +58,30 @@ public class Register extends AppCompatActivity {
         userService = new UserService(); // Initialize UserService
 
         // Getting views
+        editTextNickname = findViewById(R.id.user_nickname);
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         registerBtn = findViewById(R.id.register_btn);
         loginScreenLink = findViewById(R.id.login_now);
 
         loginScreenLink.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), Login.class);
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
         });
 
         registerBtn.setOnClickListener(v -> {
-            String email, password;
+            String email, password, nickname;
 
-            email = String.valueOf(editTextEmail.getText());
-            password = String.valueOf(editTextPassword.getText());
+            nickname = String.valueOf(editTextNickname.getText()).trim();
+            email = String.valueOf(editTextEmail.getText()).trim();
+            password = String.valueOf(editTextPassword.getText()).trim();
+
+            // Validation
+            if (TextUtils.isEmpty(nickname)) {
+                Toast.makeText(this, "Enter nickname", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
@@ -83,6 +93,7 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
+            // User creation logic
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -90,14 +101,14 @@ public class Register extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success
                                 Log.d(TAG, "createUserWithEmail:success");
-                                Toast.makeText(Register.this, "Account created!",
+                                Toast.makeText(RegisterActivity.this, "Account created!",
                                         Toast.LENGTH_SHORT).show();
 
                                 // Get newly created user and fill it with default data
                                 FirebaseUser user = mAuth.getCurrentUser();
 
                                 // Create default tag, category and user
-                                createDefaultTag(user);
+                                createDefaultTag(user, nickname);
                             } else {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
@@ -116,7 +127,7 @@ public class Register extends AppCompatActivity {
      *
      * @param user The FirebaseUser object representing the newly registered user.
      */
-    private void createDefaultTag(FirebaseUser user) {
+    private void createDefaultTag(FirebaseUser user, String nickname) {
         TagService tagService = new TagService();
 
         // Create a default tag
@@ -129,7 +140,7 @@ public class Register extends AppCompatActivity {
 
                 // Create default category and user profile
                 createDefaultCategory(user);
-                createUserProfile(user);
+                createUserProfile(user, nickname);
             } else {
                 Log.e(TAG, "Failed to save default tag: " + task.getException());
             }
@@ -159,13 +170,29 @@ public class Register extends AppCompatActivity {
     /**
      * Method to create a default user profile using UserService
      */
-    private void createUserProfile(FirebaseUser user) {
+    private void createUserProfile(FirebaseUser user, String nickname) {
         String defaultProfilePhoto = "https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b";
 
-        // Set user profile data
-        User newUser = new User(user.getUid(), defaultProfilePhoto);
+        // Update properties in Firebase auth
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(nickname)
+                .setPhotoUri(Uri.parse(defaultProfilePhoto))
+                .build();
 
-        userService.createUser(newUser);
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Save user profile data in my own database
+                        User newUser = new User(user.getUid(), nickname, user.getEmail(), defaultProfilePhoto);
+                        userService.createUser(newUser);
+
+                        // Proceed to MainActivity after profile update
+                        proceedToMainActivity();
+                    } else {
+                        Log.e(TAG, "Failed to update user profile: " + task.getException());
+                        showToast("Failed to create account. Please try again later.");
+                    }
+                });
     }
 
     private void showToast(String message) {

@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context=".Register">
+    tools:context=".RegisterActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,8 +16,20 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/register"
-        android:textSize="25sp"
+        android:textSize="32sp"
         android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/user_nickname"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/nickname" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -28,28 +40,36 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:inputType="textEmailAddress"
             android:hint="@string/email" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:inputType="textPassword"
             android:hint="@string/password" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.sanojpunchihewa.glowbutton.GlowButton
         android:id="@+id/register_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/register"
         android:layout_marginTop="20dp"
-        android:text="@string/register" />
+        app:buttonColor="#E30B5C"
+        app:unpressedGlowSize="15dp"
+        app:pressedGlowSize="20dp"
+        app:glowColor="#E30B5C"
+        app:cornerRadius="20dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"/>
 
     <TextView
         android:id="@+id/login_now"
