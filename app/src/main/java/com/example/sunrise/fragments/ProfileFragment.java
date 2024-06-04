@@ -409,6 +409,11 @@ public class ProfileFragment extends Fragment {
         EditText nicknameEditText = bottomSheetView.findViewById(R.id.Nickname);
         Button updateButton = bottomSheetView.findViewById(R.id.update_btn);
 
+        // Set current nickname to edit nickname editfield
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String currentDisplayName = currentUser.getDisplayName();
+        nicknameEditText.setText(currentDisplayName);
+
         updateButton.setOnClickListener(v -> {
             String newNickname = nicknameEditText.getText().toString().trim();
             if (!newNickname.isEmpty()) {
