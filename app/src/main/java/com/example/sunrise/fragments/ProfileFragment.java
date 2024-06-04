@@ -17,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +41,10 @@ import com.example.sunrise.LoginActivity;
 import android.Manifest;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.NavigationAdapter;
+import com.example.sunrise.models.User;
 import com.example.sunrise.navigation.ProfileNavigationRoutes;
 import com.example.sunrise.services.UserService;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,6 +67,7 @@ public class ProfileFragment extends Fragment {
     private TextView usernameTextView;
     private TextView userEmailTextView;
     private FirebaseAuth mAuth;
+    private final UserService userService = new UserService();
 
     private ActivityResultLauncher<Intent> takePictureLauncher;
     private ActivityResultLauncher<String> pickImageLauncher;
@@ -107,6 +112,9 @@ public class ProfileFragment extends Fragment {
 
         // Set profile picture click listener
         profilePicture.setOnClickListener(v -> onAvatarClicked());
+
+        // Set username click listener to show the update nickname dialog
+        usernameTextView.setOnClickListener(v -> showUpdateNicknameBottomSheet());
     }
 
     /**
@@ -367,7 +375,6 @@ public class ProfileFragment extends Fragment {
      * @param uri The URI of the updated profile picture.
      */
     private void updateProfilePicture(Uri uri) {
-        UserService userService = new UserService();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -384,6 +391,62 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(requireContext(), "Profile picture updated successfully.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(requireContext(), "Failed to update profile picture.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /**
+     * Shows a bottom sheet to update the nickname.
+     */
+    private void showUpdateNicknameBottomSheet() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = LayoutInflater.from(getContext()).inflate(
+                R.layout.edit_name_bottom_sheet,
+                (ViewGroup) getView(),
+                false
+        );
+
+        EditText nicknameEditText = bottomSheetView.findViewById(R.id.Nickname);
+        Button updateButton = bottomSheetView.findViewById(R.id.update_btn);
+
+        updateButton.setOnClickListener(v -> {
+            String newNickname = nicknameEditText.getText().toString();
+            if (!newNickname.isEmpty()) {
+                updateNickname(newNickname);
+                bottomSheetDialog.dismiss();
+            } else {
+                Toast.makeText(getContext(), "Nickname cannot be empty", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
+    /**
+     * Updates the user's nickname in Firebase Auth.
+     *
+     * @param newNickname the new nickname to be updated
+     */
+    private void updateNickname(String newNickname) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(newNickname)
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Nickname updated successfully
+                        usernameTextView.setText(newNickname);
+                        Toast.makeText(requireContext(), "Nickname updated successfully.", Toast.LENGTH_SHORT).show();
+
+                        // Update user in the database
+                        User updatedUser = new User(user.getUid(), newNickname, user.getEmail(), user.getPhotoUrl().toString());
+                        userService.updateUser(updatedUser);
+                    } else {
+                        // Handle the error
+                        Toast.makeText(requireContext(), "Failed to update nickname.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

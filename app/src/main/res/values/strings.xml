@@ -69,6 +69,7 @@
     <string name="sign_out_success_message">Sign out success</string>
     <string name="route_icon">Route icon</string>
     <string name="by_rnbsov">by Rnbsov</string>
+    <string name="update">Update</string>
 
     <!-- Statistics fragment -->
     <string name="tags_usage_distribution">Tags usage distribution</string>
