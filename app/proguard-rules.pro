@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Add this global rule for Firebase realtime db
+-keepattributes Signature
+
+# Preserve Firebase data classes
+-keepclassmembers class com.example.sunrise.models.** {
+  *;
+}
+
+# Some excluding
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.OpenSSLProvider
