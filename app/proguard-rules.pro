@@ -27,3 +27,7 @@
 -keepclassmembers class com.example.sunrise.models.** {
   *;
 }
+
+# Some excluding
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.OpenSSLProvider
