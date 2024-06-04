@@ -1,6 +1,7 @@
 package com.example.sunrise;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +31,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword, editTextNickname;
@@ -171,10 +173,26 @@ public class RegisterActivity extends AppCompatActivity {
     private void createUserProfile(FirebaseUser user, String nickname) {
         String defaultProfilePhoto = "https://firebasestorage.googleapis.com/v0/b/sunrise-1a7c7.appspot.com/o/default_funny_avater.png?alt=media&token=20c96f68-3551-4db7-80d4-86a79370729b";
 
-        // Set user profile data
-        User newUser = new User(user.getUid(), nickname, user.getEmail(), defaultProfilePhoto);
+        // Update properties in Firebase auth
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(nickname)
+                .setPhotoUri(Uri.parse(defaultProfilePhoto))
+                .build();
 
-        userService.createUser(newUser);
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Save user profile data in my own database
+                        User newUser = new User(user.getUid(), nickname, user.getEmail(), defaultProfilePhoto);
+                        userService.createUser(newUser);
+
+                        // Proceed to MainActivity after profile update
+                        proceedToMainActivity();
+                    } else {
+                        Log.e(TAG, "Failed to update user profile: " + task.getException());
+                        showToast("Failed to create account. Please try again later.");
+                    }
+                });
     }
 
     private void showToast(String message) {
