@@ -15,8 +15,8 @@ android {
         applicationId "com.example.sunrise"
         minSdk 27
         targetSdk 33
-        versionCode 368
-        versionName "2.3.0 β"
+        versionCode 377
+        versionName "2.4.0 β"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -57,6 +57,10 @@ dependencies {
     // Chart libs
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation("com.patrykandpatrick.vico:views:2.0.0-alpha.20")
+
+    // Splash api
+    implementation "androidx.core:core-splashscreen:1.0.1"
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

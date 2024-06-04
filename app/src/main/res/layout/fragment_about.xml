@@ -6,6 +6,15 @@
     android:orientation="vertical"
     tools:context=".fragments.AboutFragment">
 
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="20dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/icon" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,17 +41,17 @@
 
     <TextView
         android:id="@+id/version"
-        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:textColor="@color/material_on_surface_emphasis_medium" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/navigation_recycler_view"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:overScrollMode="never"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:overScrollMode="never" />
 
 </LinearLayout>
