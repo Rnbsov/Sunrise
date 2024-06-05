@@ -57,7 +57,7 @@ public class MyDayFragment extends Fragment {
         TaskUpdateHelper taskUpdateHelper = new TaskUpdateHelper(requireContext());
 
         // Initialize adapter
-        adapter = new TasksAdapter(new ArrayList<>(), taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
+        adapter = new TasksAdapter(new ArrayList<>(), false, taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
         tasksList.setAdapter(adapter);
 
         // Initialize TaskService

@@ -68,7 +68,7 @@ public class CompletedTasksFragment extends Fragment {
         TaskUpdateHelper taskUpdateHelper = new TaskUpdateHelper(requireContext());
 
         // Create TaskAdapter and set it to recycler view
-        taskAdapter = new TasksAdapter(new ArrayList<>(), taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
+        taskAdapter = new TasksAdapter(new ArrayList<>(), false, taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
         tasksRecyclerView.setAdapter(taskAdapter);
     }
 
