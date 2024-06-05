@@ -56,6 +56,22 @@ public class MyDayFragment extends Fragment {
         emptyMyDayLayout = fragment.findViewById(R.id.empty_my_day);
         tasksList = fragment.findViewById(R.id.tasks_list);
 
+        // Setup RecyclerView
+        setupRecyclerView();
+
+        // Initialize Services
+        taskService = new TaskService();
+        myDayService = new MyDayService();
+
+        // Fetch tasks
+        fetchTasksFromDatabase();
+    }
+
+    /**
+     * Initializes the RecyclerView, TaskListenerHelper, and TasksAdapter,
+     * and sets up the RecyclerView with the adapter.
+     */
+    private void setupRecyclerView() {
         // Creating and setting linear layout manager to recyclerView
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         tasksList.setLayoutManager(layoutManager);
@@ -66,13 +82,6 @@ public class MyDayFragment extends Fragment {
         // Initialize adapter
         adapter = new TasksAdapter(new ArrayList<>(), false, taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
         tasksList.setAdapter(adapter);
-
-        // Initialize Services
-        taskService = new TaskService();
-        myDayService = new MyDayService();
-
-        // Fetch tasks
-        fetchTasksFromDatabase();
     }
 
     private void fetchTasksFromDatabase() {
