@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">Sunrise</string>
+
+    <!-- Exit dialog -->
+    <string name="dialog_exit_title">Выйти</string>
+    <string name="dialog_exit_message">Are you sure you want to exit?</string>
+    <string name="dialog_exit_positive">Yes</string>
+    <string name="dialog_exit_negative">No</string>
+
+    <string name="bottom_nav_my_day">My day</string>
+    <string name="bottom_nav_statistics">Stats</string>
+    <string name="bottom_nav_categories">Categories</string>
+    <string name="bottom_nav_profile">Profile</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="fab_description">create new task</string>
+
+    <!-- Authentication -->
+    <string name="login">Login</string>
+    <string name="login_welcome_message">Welcome back ;)</string>
+    <string name="nickname">Nickname</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="click_to_login">Click to Login</string>
+    <string name="click_to_register">Click to register</string>
+    <string name="sign_out">Sign out</string>
+    <string name="authentication_failed">Authentication failed</string>
+
+    <!-- Create Task -->
+    <string name="title">Title</string>
+    <string name="new_task">New Task</string>
+    <string name="priority">Priority</string>
+    <string name="create">Create</string>
+    <string name="priority_high">High</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_regular">Regular</string>
+
+    <!-- Categories -->
+    <string name="tags">Tags</string>
+    <string name="completed_tile_label">Completed Tasks</string>
+    <string name="completed">Completed</string>
+    <string name="trash">Trash</string>
+    <string name="scheduled">Scheduled</string>
+    <string name="create_new_tag">Create new tag</string>
+    <string name="button_to_create_new_tag">button to create new tag</string>
+    <string name="color">Color</string>
+    <string name="colors">Colors</string>
+    <string name="default_tag">Default tag</string>
+    <string name="create_new_category">Create new category</string>
+    <string name="create_category">Create category</string>
+    <string name="icons">Icons</string>
+    <string name="edit_category_button">Edit category button</string>
+    <string name="edit_category">Edit category</string>
+    <string name="delete">Delete</string>
+    <string name="category">Category</string>
+    <string name="save">Save</string>
+
+    <!-- Profile fragment -->
+    <string name="logout">Logout</string>
+    <string name="dialog_title_sign_out">Sign Out</string>
+    <string name="dialog_message_sign_out">Are you sure you want to sign out?</string>
+    <string name="button_sign_out">Sign Out</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="sign_out_success_message">Sign out success</string>
+    <string name="route_icon">Route icon</string>
+    <string name="by_rnbsov">by Rnbsov</string>
+    <string name="update">Update</string>
+
+    <!-- Statistics fragment -->
+    <string name="tags_usage_distribution">Tags usage distribution</string>
+
+    <!-- Workspaces fragment -->
+    <string name="team_work_makes_perfect">Team work makes perfect!</string>
+    <string name="enter_invite_code">Enter invite code...</string>
+
+
+    <!-- Workspaces task -->
+    <string name="status_not_started">Not started</string>
+    <string name="status_in_process">In process</string>
+    <string name="status_done">Done</string>
+    <string name="status">Status</string>
+    <string name="display_a_role_of_the_member">Display a role of the member</string>
+    <string name="shows_a_list_of_actions_admin_can_use_on_user">Shows a list of actions admin can use on user</string>
+    <string name="promote_to_admin">Promote to Admin</string>
+    <string name="mute">Mute</string>
+    <string name="kick">Kick</string>
+    <string name="generate_invite_code">Generate invite code</string>
+    <string name="an_icon_to_copy_the_code">An icon to copy the code</string>
+
+    <!-- Settings -->
+    <string name="pref_language_title">Language</string>
+    <string name="pref_language_summary">Select your preferred language</string>
+
+</resources>
