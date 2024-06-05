@@ -1,10 +1,15 @@
 package com.example.sunrise;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -15,7 +20,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -25,10 +29,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Enable edge-to-edge
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        setupFabButton();
-        setupNavigation();
-        setupOnBackPressed();
+        // Adjust the insets for the main activity
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            return insets;
+        });
+
+        // Set status bar color
+        getWindow().setStatusBarColor(Color.parseColor("#311945"));
+
+        setupFabButton(); // Initialize and set up the fab
+        setupNavigation(); // Setup navigation logic
+        setupOnBackPressed(); // Set up the behavior for when the back button is pressed
     }
 
     private void setupNavigation() {
@@ -51,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set destination listener, to hide fab and bottom navigation bar when navigating anywhere except main pages
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (isAtRootDestination()) {
+            int destinationId = destination.getId();
+            if (destinationId == R.id.page_my_day || destinationId == R.id.page_statistics || destinationId == R.id.page_categories || destinationId == R.id.page_profile) {
                 showBottomNavBarAndFab();
             } else {
                 hideBottomNavBarAndFab();
@@ -105,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         int currentDestinationId = navController.getCurrentDestination().getId();
         return currentDestinationId == R.id.page_my_day ||
                 currentDestinationId == R.id.page_statistics ||
-                currentDestinationId == R.id.page_workspaces ||
                 currentDestinationId == R.id.page_categories ||
                 currentDestinationId == R.id.page_profile;
     }
