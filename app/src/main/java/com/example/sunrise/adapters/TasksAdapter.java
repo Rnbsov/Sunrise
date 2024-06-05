@@ -14,17 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunrise.R;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.MyDayService;
 import com.example.sunrise.services.TagService;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
     private final List<Task> localDataSet;
+    private static boolean showMyDayCheckbox;
     private final OnTaskCheckedChangeListener onCheckedChangeListener;
     private final OnItemClickedListener onItemClickedListener;
+    private static MyDayService myDayService;
 
     /**
      * Initialize the dataset of the Adapter
@@ -32,10 +37,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public TasksAdapter(List<Task> dataSet, OnTaskCheckedChangeListener onCheckedChangeListener, OnItemClickedListener onItemClickedListener) {
+    public TasksAdapter(List<Task> dataSet, boolean showMyDayCheckbox, OnTaskCheckedChangeListener onCheckedChangeListener, OnItemClickedListener onItemClickedListener) {
         this.localDataSet = dataSet;
+        this.showMyDayCheckbox = showMyDayCheckbox;
         this.onCheckedChangeListener = onCheckedChangeListener;
         this.onItemClickedListener = onItemClickedListener;
+
+        // Initialize MyDayService
+        myDayService = new MyDayService();
     }
 
     // Create new views (invoked by the layout manager)
@@ -89,6 +98,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
         private final CheckBox completeCheckbox;
+        private final CheckBox myDayCheckbox;
         private final Chip priority;
         private final ShapeableImageView firstTagDot;
         private final ShapeableImageView secondTagDot;
@@ -103,6 +113,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
             title = itemView.findViewById(R.id.title);
             completeCheckbox = itemView.findViewById(R.id.checkbox);
+            myDayCheckbox = itemView.findViewById(R.id.my_day_checkbox);
             priority = itemView.findViewById(R.id.priorityChip);
 
             // finding imageViews for color dots of tags
@@ -110,12 +121,30 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             secondTagDot = itemView.findViewById(R.id.tag_2);
             thirdTagDot = itemView.findViewById(R.id.tag_3);
 
+            // Set the visibility of myDayCheckbox based on the boolean value
+            myDayCheckbox.setVisibility(showMyDayCheckbox ? View.VISIBLE : View.GONE);
+
             // Setting on complete checkbox click listener
             completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                // Checking if was clicked by user, or checked programmatically
+                if(!buttonView.isPressed()) return;
+
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && onCheckboxClick != null) {
                     Task updatedTask = localDataSet.get(position);
                     onCheckboxClick.onCompleted(updatedTask, title, isChecked);
+                }
+            });
+
+            // Setting on myDayCheckbox click listener
+            myDayCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                // Checking if was clicked by user, or checked programmatically
+                if(!buttonView.isPressed()) return;
+
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    Task updatedTask = localDataSet.get(position);
+                    updateMyDayCheckbox(updatedTask, isChecked);
                 }
             });
 
@@ -132,18 +161,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         public void bind(Task task) {
             title.setText(task.getTitle());
 
-            // Temporarily remove the listener to avoid triggering it during setChecked calling
-            completeCheckbox.setOnCheckedChangeListener(null);
+            // Tick checkboxes
             completeCheckbox.setChecked(task.isCompleted());
-
-            // Reattach the listener
-            completeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    Task updatedTask = localDataSet.get(position);
-                    onCheckboxClick.onCompleted(updatedTask, title, isChecked);
-                }
-            });
+            checkMyDayTasks(task.getTaskId());
 
             // Apply strikethrough style if the task is completed
             if (task.isCompleted()) {
@@ -158,6 +178,25 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             List<String> tagsIds = task.getTags();
 
             setupTagDots(tagsIds);
+        }
+
+        /**
+         * Method to update MyDay when the checkbox state changes
+         *
+         * @param task
+         * @param isChecked
+         */
+        private void updateMyDayCheckbox(Task task, boolean isChecked) {
+            String taskId = task.getTaskId();
+            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+            if (isChecked) {
+                // Add task to MyDay
+                myDayService.addTask(userId, taskId);
+            } else {
+                // Remove task from MyDay
+                myDayService.removeTask(userId, taskId);
+            }
         }
 
         private void setupTagDots(List<String> tagsIds) {
@@ -194,6 +233,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                             break;
                     }
                 }
+            });
+        }
+
+        /**
+         * Updates the state of the MyDay checkbox based on whether the task is in the My Day list.
+         *
+         * @param taskId The ID of the task to check for in the My Day list.
+         */
+        private void checkMyDayTasks(String taskId) {
+            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+            myDayService.getMyDayTaskIds(userId, myDayTaskIds -> {
+                myDayCheckbox.setChecked(myDayTaskIds != null && myDayTaskIds.contains(taskId));
             });
         }
     }
