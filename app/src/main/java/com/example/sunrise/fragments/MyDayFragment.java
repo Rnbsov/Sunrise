@@ -77,10 +77,6 @@ public class MyDayFragment extends Fragment {
                     taskList.add(task);
                 }
 
-                Log.d("Firebase listener", "Firebase listener");
-                for (Task task : taskList) {
-                    System.out.println(task);
-                }
                 // Sort tasks based on completion status
                 sortTasksByCompletion(taskList);
 
