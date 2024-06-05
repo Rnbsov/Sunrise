@@ -2,6 +2,7 @@ package com.example.sunrise;
 
 import android.app.Application;
 
+import com.example.sunrise.utils.LanguageManager;
 import com.google.android.material.color.DynamicColors;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -13,6 +14,7 @@ public class SunriseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Set theme
         if (true) {
             DynamicColors.applyToActivitiesIfAvailable(this);
 
@@ -20,6 +22,7 @@ public class SunriseApplication extends Application {
         } else {
             setTheme(R.style.Theme_Sunrise);
         }
+
         /* Enable disk persistence, so app can be used offline  */
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }

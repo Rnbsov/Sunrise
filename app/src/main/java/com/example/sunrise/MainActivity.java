@@ -1,5 +1,7 @@
 package com.example.sunrise;
 
+import static com.example.sunrise.utils.LanguageManager.applyLanguage;
+
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.sunrise.helpers.TaskCreationHelper;
+import com.example.sunrise.utils.LanguageManager;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setupTheme(); // Choose either dynamic or custom
 
+        // Set app language
+        LanguageManager.applyLanguage(this);
+
         // Enable edge-to-edge
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setupFabButton(); // Initialize and set up the fab
         setupNavigation(); // Setup navigation logic
         setupOnBackPressed(); // Set up the behavior for when the back button is pressed
+
     }
 
     private void setupNavigation() {

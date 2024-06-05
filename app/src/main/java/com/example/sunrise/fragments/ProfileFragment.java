@@ -147,9 +147,7 @@ public class ProfileFragment extends Fragment {
         NavigationAdapter<ProfileNavigationRoutes> adapter = new NavigationAdapter<>(navigationItems, item -> {
             switch (item) {
                 case Feedback -> handleFeedbackClick();
-                case Settings -> {
-                    Toast.makeText(requireContext(), "Settings click", Toast.LENGTH_LONG).show();
-                }
+                case Settings -> navigateToSettings();
                 case About -> navigateToAboutFragment();
             }
         });
@@ -169,6 +167,14 @@ public class ProfileFragment extends Fragment {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(requireContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Method to navigate to Settings
+     */
+    private void navigateToSettings() {
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_page_profile_to_settingsFragment);
     }
 
     /**
