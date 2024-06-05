@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.sunrise.models.MyDay;
-import com.example.sunrise.models.Workspace;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -108,4 +107,26 @@ public class MyDayService {
         });
     }
 
+    public void clearMyDayTasks(String userId) {
+        DatabaseReference userMyDayRef = myDayRef.child(userId);
+        userMyDayRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    MyDay myDay = dataSnapshot.getValue(MyDay.class);
+
+                    // Clear the taskIds list
+                    myDay.setMyDayTaskIds(new ArrayList<>());
+
+                    // Update MyDay in Firebase
+                    updateMyDay(myDay);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("MyDayService", "Failed to clear tasks from my day: " + databaseError.getMessage());
+            }
+        });
+    }
 }
