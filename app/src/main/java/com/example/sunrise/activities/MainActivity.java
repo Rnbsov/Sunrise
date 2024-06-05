@@ -14,14 +14,21 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
-import com.example.sunrise.R;
 import com.example.sunrise.helpers.TaskCreationHelper;
 import com.example.sunrise.utils.LanguageManager;
+import com.example.sunrise.workers.ClearMyDayWorker;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -49,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setupFabButton(); // Initialize and set up the fab
         setupNavigation(); // Setup navigation logic
         setupOnBackPressed(); // Set up the behavior for when the back button is pressed
-
+        scheduleMyDayClearing(); // Schedules clearing MyDay everyday
     }
 
     private void setupNavigation() {
@@ -166,5 +173,38 @@ public class MainActivity extends AppCompatActivity {
         getTheme().resolveAttribute(resId, typedValue, true);
         int color = typedValue.data;
         getWindow().setStatusBarColor(color);
+    }
+
+    /**
+     * Schedule the clearing of tasks in MyDay.
+     *  This method sets up a periodic task using WorkManager to run every day at 9 am.
+     *  If the device is not connected to a network, the task will not be executed.
+     *  The initial delay is calculated to ensure that the task starts running from the next day at 9 am,
+     *  even if the method is called later in the current day.
+     */
+    private void scheduleMyDayClearing() {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // Set the worker to run every day at 9 am
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        long initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
+        if (initialDelay < 0) {
+            // If the time is already passed, add one day
+            initialDelay += 24 * 60 * 60 * 1000;
+        }
+
+        PeriodicWorkRequest.Builder builder = new PeriodicWorkRequest.Builder(
+                ClearMyDayWorker.class, 1, TimeUnit.DAYS)
+                .setConstraints(constraints)
+                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS);
+
+        PeriodicWorkRequest workRequest = builder.build();
+        WorkManager.getInstance(this).enqueue(workRequest);
     }
 }

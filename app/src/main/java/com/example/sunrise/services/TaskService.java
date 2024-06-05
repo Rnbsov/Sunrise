@@ -121,4 +121,44 @@ public class TaskService {
         void onCompletedTasksLoaded(List<Task> completedTasks);
         void onCancelled(DatabaseError databaseError);
     }
+
+    /**
+     * Method to retrieve tasks by their IDs
+     *
+     * @param taskIds  List of task IDs to retrieve
+     * @param listener Custom interface for receiving task data
+     */
+    public void getTasksByIds(List<String> taskIds, TasksListener listener) {
+        List<Task> tasks = new ArrayList<>();
+
+        for (String taskId : taskIds) {
+            DatabaseReference taskRef = tasksRef.child(taskId);
+            taskRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Task task = dataSnapshot.getValue(Task.class);
+                        tasks.add(task);
+
+                        // Check if all tasks have been retrieved
+                        if (tasks.size() == taskIds.size()) {
+                            listener.onTasksRetrieved(tasks);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle error if query is cancelled
+                    listener.onCancelled(databaseError);
+                }
+            });
+        }
+    }
+
+    public interface TasksListener {
+        void onTasksRetrieved(List<Task> tasks);
+        void onCancelled(DatabaseError databaseError);
+    }
+
 }
