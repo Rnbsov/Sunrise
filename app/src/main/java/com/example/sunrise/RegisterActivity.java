@@ -22,6 +22,7 @@ import com.example.sunrise.models.Tag;
 import com.example.sunrise.models.User;
 import com.example.sunrise.models.UserSettings;
 import com.example.sunrise.services.CategoryService;
+import com.example.sunrise.services.MyDayService;
 import com.example.sunrise.services.TagService;
 import com.example.sunrise.services.UserService;
 import com.example.sunrise.services.UserSettingsService;
@@ -139,12 +140,22 @@ public class RegisterActivity extends AppCompatActivity {
                 defaultTagId = defaultTag.getTagId();
 
                 // Create default category and user profile
+                createMyDay(user.getUid());
                 createDefaultCategory(user);
                 createUserProfile(user, nickname);
             } else {
                 Log.e(TAG, "Failed to save default tag: " + task.getException());
             }
         });
+    }
+
+    /**
+     * method to create MyDay Object for user
+     */
+    private void createMyDay(String userId) {
+        MyDayService myDayService = new MyDayService();
+
+        myDayService.createMyDay(userId);
     }
 
     /**
