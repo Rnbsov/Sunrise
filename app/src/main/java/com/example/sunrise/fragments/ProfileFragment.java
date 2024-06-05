@@ -37,7 +37,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sunrise.LoginActivity;
+import com.example.sunrise.activities.LoginActivity;
 import android.Manifest;
 import com.example.sunrise.R;
 import com.example.sunrise.adapters.NavigationAdapter;

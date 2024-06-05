@@ -1,6 +1,4 @@
-package com.example.sunrise;
-
-import static com.example.sunrise.utils.LanguageManager.applyLanguage;
+package com.example.sunrise.activities;
 
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -17,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.sunrise.R;
 import com.example.sunrise.helpers.TaskCreationHelper;
 import com.example.sunrise.utils.LanguageManager;
 import com.google.android.material.appbar.MaterialToolbar;
