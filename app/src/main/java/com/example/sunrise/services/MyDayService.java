@@ -135,7 +135,7 @@ public class MyDayService {
      * @param userId The user ID
      * @param listener Callback to handle the loaded task IDs
      */
-    public void getMyDayTaskIds(String userId, OnMyDayTasksReceivedListener<List<String>> listener) {
+    public void getMyDayTaskIds(String userId, OnMyDayTasksReceivedListener listener) {
         DatabaseReference userMyDayRef = myDayRef.child(userId);
         userMyDayRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -159,7 +159,7 @@ public class MyDayService {
     }
 
     // Interface to handle data loaded callback
-    public interface OnMyDayTasksReceivedListener<T> {
-        void onMyDayTasksReceived(T data);
+    public interface OnMyDayTasksReceivedListener {
+        void onMyDayTasksReceived(List<String> taskIds);
     }
 }

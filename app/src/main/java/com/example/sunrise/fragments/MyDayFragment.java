@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,19 +17,24 @@ import com.example.sunrise.R;
 import com.example.sunrise.adapters.TasksAdapter;
 import com.example.sunrise.helpers.TaskUpdateHelper;
 import com.example.sunrise.models.Task;
+import com.example.sunrise.services.MyDayService;
 import com.example.sunrise.services.TaskService;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MyDayFragment extends Fragment {
     private View fragment;
     private RecyclerView tasksList;
+    private LinearLayout emptyMyDayLayout;
     private TasksAdapter adapter;
     private TaskService taskService;
+    private MyDayService myDayService;
 
     public MyDayFragment() {
         // Required empty public constructor
@@ -47,6 +53,7 @@ public class MyDayFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        emptyMyDayLayout = fragment.findViewById(R.id.empty_my_day);
         tasksList = fragment.findViewById(R.id.tasks_list);
 
         // Creating and setting linear layout manager to recyclerView
@@ -60,39 +67,44 @@ public class MyDayFragment extends Fragment {
         adapter = new TasksAdapter(new ArrayList<>(), false, taskUpdateHelper::onCheckboxClickedListener, taskUpdateHelper::onTaskClickListener);
         tasksList.setAdapter(adapter);
 
-        // Initialize TaskService
+        // Initialize Services
         taskService = new TaskService();
+        myDayService = new MyDayService();
 
         // Fetch tasks
         fetchTasksFromDatabase();
     }
 
     private void fetchTasksFromDatabase() {
-        ValueEventListener tasksListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Task> taskList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Task task = snapshot.getValue(Task.class);
-                    taskList.add(task);
-                }
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-                // Sort tasks based on completion status
-                sortTasksByCompletion(taskList);
+        myDayService.getMyDayTaskIds(userId, taskIds -> {
+            if (taskIds == null) {
+                // If there are no MyDay tasks, show the "My Day is empty" layout and hide the RecyclerView
+                tasksList.setVisibility(View.GONE);
+                emptyMyDayLayout.setVisibility(View.VISIBLE);
+            } else {
+                taskService.getTasksByIds(taskIds, new TaskService.TasksListener() {
+                    @Override
+                    public void onTasksRetrieved(List<Task> tasks) {
+                        // Sort tasks based on completion status
+                        sortTasksByCompletion(tasks);
 
-                // Update data in the adapter using DiffUtil
-                adapter.updateData(taskList);
+                        // Update data in the adapter using DiffUtil
+                        adapter.updateData(tasks);
+
+                        // Show the RecyclerView and hide the "My Day is empty" TextView
+                        tasksList.setVisibility(View.VISIBLE);
+                        emptyMyDayLayout.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e("MyDayFragment", "Error fetching tasks", databaseError.toException());
+                    }
+                });
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle errors
-                Log.e("MyDayFragment", "Error fetching tasks", databaseError.toException());
-            }
-        };
-
-        // Call getTasks method from TaskService to register the listener
-        taskService.getTasks(tasksListener);
+        });
     }
 
     /**
