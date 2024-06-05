@@ -19,6 +19,7 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.example.sunrise.R;
 import com.example.sunrise.helpers.TaskCreationHelper;
 import com.example.sunrise.utils.LanguageManager;
 import com.example.sunrise.workers.ClearMyDayWorker;
