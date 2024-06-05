@@ -1,95 +1,99 @@
 <resources>
-    <string name="app_name">Sunrise</string>
+    <string name="app_name">Восход</string>
 
     <!-- Exit dialog -->
-    <string name="dialog_exit_title">Exit</string>
-    <string name="dialog_exit_message">Are you sure you want to exit?</string>
-    <string name="dialog_exit_positive">Yes</string>
-    <string name="dialog_exit_negative">No</string>
+    <string name="dialog_exit_title">Выход</string>
+    <string name="dialog_exit_message">Вы уверены, что хотите выйти?</string>
+    <string name="dialog_exit_positive">Да</string>
+    <string name="dialog_exit_negative">Нет</string>
 
-    <string name="bottom_nav_my_day">My day</string>
-    <string name="bottom_nav_statistics">Stats</string>
-    <string name="bottom_nav_categories">Categories</string>
-    <string name="bottom_nav_profile">Profile</string>
+    <string name="bottom_nav_my_day">Мой день</string>
+    <string name="bottom_nav_statistics">Статистика</string>
+    <string name="bottom_nav_categories">Категории</string>
+    <string name="bottom_nav_profile">Профиль</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Привет, я пустой фрагмент</string>
 
-    <string name="fab_description">create new task</string>
+    <string name="fab_description">создать новую задачу</string>
 
     <!-- Authentication -->
-    <string name="login">Login</string>
-    <string name="login_welcome_message">Welcome back ;)</string>
-    <string name="nickname">Nickname</string>
+    <string name="login">Войти</string>
+    <string name="login_welcome_message">С возвращением ;)</string>
+    <string name="nickname">Никнейм</string>
     <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="register">Register</string>
-    <string name="click_to_login">Click to Login</string>
-    <string name="click_to_register">Click to register</string>
-    <string name="sign_out">Sign out</string>
-    <string name="authentication_failed">Authentication failed</string>
+    <string name="password">Пароль</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="click_to_login">Нажмите, чтобы войти</string>
+    <string name="click_to_register">Нажмите, чтобы зарегистрироваться</string>
+    <string name="sign_out">Выйти</string>
+    <string name="authentication_failed">Ошибка аутентификации</string>
 
     <!-- Create Task -->
-    <string name="title">Title</string>
-    <string name="new_task">New Task</string>
-    <string name="priority">Priority</string>
-    <string name="create">Create</string>
-    <string name="priority_high">High</string>
-    <string name="priority_medium">Medium</string>
-    <string name="priority_low">Low</string>
-    <string name="priority_regular">Regular</string>
+    <string name="title">Заголовок</string>
+    <string name="new_task">Новая Задача</string>
+    <string name="priority">Приоритет</string>
+    <string name="create">Создать</string>
+    <string name="priority_high">Высокий</string>
+    <string name="priority_medium">Средний</string>
+    <string name="priority_low">Низкий</string>
+    <string name="priority_regular">Обычный</string>
 
     <!-- Categories -->
-    <string name="tags">Tags</string>
-    <string name="completed_tile_label">Completed Tasks</string>
-    <string name="completed">Completed</string>
-    <string name="trash">Trash</string>
-    <string name="scheduled">Scheduled</string>
-    <string name="create_new_tag">Create new tag</string>
-    <string name="button_to_create_new_tag">button to create new tag</string>
-    <string name="color">Color</string>
-    <string name="colors">Colors</string>
-    <string name="default_tag">Default tag</string>
-    <string name="create_new_category">Create new category</string>
-    <string name="create_category">Create category</string>
-    <string name="icons">Icons</string>
-    <string name="edit_category_button">Edit category button</string>
-    <string name="edit_category">Edit category</string>
-    <string name="delete">Delete</string>
-    <string name="category">Category</string>
-    <string name="save">Save</string>
+    <string name="tags">Теги</string>
+    <string name="completed_tile_label">Завершенные задачи</string>
+    <string name="completed">Завершено</string>
+    <string name="trash">Корзина</string>
+    <string name="scheduled">Запланировано</string>
+    <string name="create_new_tag">Создать новый тег</string>
+    <string name="button_to_create_new_tag">кнопка для создания нового тега</string>
+    <string name="color">Цвет</string>
+    <string name="colors">Цвета</string>
+    <string name="default_tag">Тег по умолчанию</string>
+    <string name="create_new_category">Создать новую категорию</string>
+    <string name="create_category">Создать категорию</string>
+    <string name="icons">Иконки</string>
+    <string name="edit_category_button">Кнопка редактирования категории</string>
+    <string name="edit_category">Редактировать категорию</string>
+    <string name="delete">Удалить</string>
+    <string name="category">Категория</string>
+    <string name="save">Сохранить</string>
 
     <!-- Profile fragment -->
-    <string name="logout">Logout</string>
-    <string name="dialog_title_sign_out">Sign Out</string>
-    <string name="dialog_message_sign_out">Are you sure you want to sign out?</string>
-    <string name="button_sign_out">Sign Out</string>
-    <string name="button_cancel">Cancel</string>
-    <string name="sign_out_success_message">Sign out success</string>
-    <string name="route_icon">Route icon</string>
-    <string name="by_rnbsov">by Rnbsov</string>
-    <string name="update">Update</string>
+    <string name="logout">Выйти</string>
+    <string name="dialog_title_sign_out">Выйти</string>
+    <string name="dialog_message_sign_out">Вы уверены, что хотите выйти?</string>
+    <string name="button_sign_out">Выйти</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="sign_out_success_message">Выход выполнен успешно</string>
+    <string name="route_icon">Иконка маршрута</string>
+    <string name="by_rnbsov">от Rnbsov</string>
+    <string name="update">Обновить</string>
 
     <!-- Statistics fragment -->
-    <string name="tags_usage_distribution">Tags usage distribution</string>
+    <string name="tags_usage_distribution">Распределение использования тегов</string>
 
     <!-- Workspaces fragment -->
-    <string name="team_work_makes_perfect">Team work makes perfect!</string>
-    <string name="enter_invite_code">Enter invite code...</string>
+    <string name="team_work_makes_perfect">Командная работа делает совершенным!</string>
+    <string name="enter_invite_code">Введите код приглашения...</string>
 
 
     <!-- Workspaces task -->
-    <string name="status_not_started">Not started</string>
-    <string name="status_in_process">In process</string>
-    <string name="status_done">Done</string>
-    <string name="status">Status</string>
-    <string name="display_a_role_of_the_member">Display a role of the member</string>
-    <string name="shows_a_list_of_actions_admin_can_use_on_user">Shows a list of actions admin can use on user</string>
-    <string name="promote_to_admin">Promote to Admin</string>
-    <string name="mute">Mute</string>
-    <string name="kick">Kick</string>
-    <string name="generate_invite_code">Generate invite code</string>
-    <string name="an_icon_to_copy_the_code">An icon to copy the code</string>
+    <string name="status_not_started">Не начато</string>
+    <string name="status_in_process">В процессе</string>
+    <string name="status_done">Завершено</string>
+    <string name="status">Статус</string>
+    <string name="display_a_role_of_the_member">Отображение роли участника</string>
+    <string name="shows_a_list_of_actions_admin_can_use_on_user">Показывает список действий, которые администратор может использовать для пользователя</string>
+    <string name="promote_to_admin">Повысить до администратора</string>
+    <string name="mute">Отключить</string>
+    <string name="kick">Выгнать</string>
+    <string name="generate_invite_code">Сгенерировать код приглашения</string>
+    <string name="an_icon_to_copy_the_code">Иконка для копирования кода</string>
+
+    <!-- Settings -->
+    <string name="pref_language_title">Язык</string>
+    <string name="pref_language_summary">Выберите предпочтительный язык</string>
 
 </resources>

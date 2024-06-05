@@ -17,7 +17,7 @@
             android:id="@+id/tags_tile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/material_dynamic_secondary10"
+            android:backgroundTint="?attr/itemBackgrounds"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
@@ -33,14 +33,14 @@
                 android:textStyle="bold"
                 android:typeface="monospace"
                 app:drawableLeftCompat="@drawable/label_24px"
-                app:drawableTint="@color/material_dynamic_primary70" />
+                app:drawableTint="?attr/itemAccentColor" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/completed_tile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/material_dynamic_secondary10"
+            android:backgroundTint="?attr/itemBackgrounds"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
@@ -57,7 +57,7 @@
                 android:textStyle="bold"
                 android:typeface="monospace"
                 app:drawableLeftCompat="@drawable/flag_24px"
-                app:drawableTint="@color/material_dynamic_primary70" />
+                app:drawableTint="?attr/itemAccentColor" />
         </androidx.cardview.widget.CardView>
 
         <androidx.constraintlayout.helper.widget.Flow
@@ -88,7 +88,7 @@
             android:id="@+id/trash_tile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/material_dynamic_secondary10"
+            android:backgroundTint="?attr/itemBackgrounds"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
@@ -105,14 +105,14 @@
                 android:textStyle="bold"
                 android:typeface="monospace"
                 app:drawableLeftCompat="@drawable/delete_sweep_24px"
-                app:drawableTint="@color/material_dynamic_primary70" />
+                app:drawableTint="?attr/itemAccentColor" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/scheduled_tile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/material_dynamic_secondary10"
+            android:backgroundTint="?attr/itemBackgrounds"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
@@ -129,7 +129,7 @@
                 android:textStyle="bold"
                 android:typeface="monospace"
                 app:drawableLeftCompat="@drawable/calendar_clock_24px"
-                app:drawableTint="@color/material_dynamic_primary70" />
+                app:drawableTint="?attr/itemAccentColor" />
         </androidx.cardview.widget.CardView>
 
 
