@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Sunrise" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="itemBackgrounds">@color/black</item>
-
+        <item name="itemBackgrounds">#1f182a</item>
+        <item name="itemAccentColor">#b79cdf</item>
+        <item name="addButtonBackground">#240a4b</item>
+        <item name="appBarColor">#311945</item>
     </style>
 
     <style name="Theme.Sunrise" parent="Base.Theme.Sunrise" />

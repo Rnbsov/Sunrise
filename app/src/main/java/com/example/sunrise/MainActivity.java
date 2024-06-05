@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -30,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupTheme(); // Choose either dynamic or custom
+
         // Enable edge-to-edge
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        setupTheme(); // Choose either dynamic or custom
         setupFabButton(); // Initialize and set up the fab
         setupNavigation(); // Setup navigation logic
         setupOnBackPressed(); // Set up the behavior for when the back button is pressed
@@ -146,19 +146,19 @@ public class MainActivity extends AppCompatActivity {
     private void setupTheme() {
         if (true) {
             // Set status bar color for dynamic theme
-            setStatusBarColor(com.google.android.material.R.attr.colorOnPrimary);
             setTheme(R.style.Theme_Sunrise_Dynamic);
+            setStatusBarColor(com.google.android.material.R.attr.colorOnPrimary);
         } else {
             // Set status bar color
-            setStatusBarColor(R.attr.appBarColor);
             setTheme(R.style.Theme_Sunrise);
+            setStatusBarColor(R.attr.appBarColor);
         }
     }
 
     private void setStatusBarColor(int resId) {
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(resId, typedValue, true);
-        int color = ContextCompat.getColor(this, typedValue.resourceId);
+        int color = typedValue.data;
         getWindow().setStatusBarColor(color);
     }
 }
