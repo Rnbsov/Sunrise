@@ -15,8 +15,8 @@ android {
         applicationId "com.example.sunrise"
         minSdk 27
         targetSdk 33
-        versionCode 388
-        versionName "2.6.0 β"
+        versionCode 399
+        versionName "2.7.0 β"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+
     // Ui
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
@@ -60,8 +61,6 @@ dependencies {
     // Splash api
     implementation "androidx.core:core-splashscreen:1.0.1"
 
-    // WorkManager
-    implementation "androidx.work:work-runtime:2.7.0"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

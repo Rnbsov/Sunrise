@@ -17,7 +17,7 @@
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/route_icon"
         android:src="@drawable/diamond_24px"
-        app:tint="@color/material_dynamic_primary70" />
+        app:tint="?attr/itemAccentColor" />
 
     <TextView
         android:id="@+id/title"

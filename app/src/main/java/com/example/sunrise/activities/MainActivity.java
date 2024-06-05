@@ -1,10 +1,15 @@
-package com.example.sunrise;
+package com.example.sunrise.activities;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -14,7 +19,9 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.example.sunrise.R;
 import com.example.sunrise.helpers.TaskCreationHelper;
+import com.example.sunrise.utils.LanguageManager;
 import com.example.sunrise.workers.ClearMyDayWorker;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,10 +39,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupTheme(); // Choose either dynamic or custom
+
+        // Set app language
+        LanguageManager.applyLanguage(this);
+
+        // Enable edge-to-edge
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        setupFabButton();
-        setupNavigation();
-        setupOnBackPressed();
+        // Adjust the insets for the main activity
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            return insets;
+        });
+
+        setupFabButton(); // Initialize and set up the fab
+        setupNavigation(); // Setup navigation logic
+        setupOnBackPressed(); // Set up the behavior for when the back button is pressed
         scheduleMyDayClearing(); // Schedules clearing MyDay everyday
     }
 
@@ -134,6 +155,25 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(R.string.dialog_exit_negative, null)
                 .show();
+    }
+
+    private void setupTheme() {
+        if (true) {
+            // Set status bar color for dynamic theme
+            setTheme(R.style.Theme_Sunrise_Dynamic);
+            setStatusBarColor(com.google.android.material.R.attr.colorOnPrimary);
+        } else {
+            // Set status bar color
+            setTheme(R.style.Theme_Sunrise);
+            setStatusBarColor(R.attr.appBarColor);
+        }
+    }
+
+    private void setStatusBarColor(int resId) {
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(resId, typedValue, true);
+        int color = typedValue.data;
+        getWindow().setStatusBarColor(color);
     }
 
     /**

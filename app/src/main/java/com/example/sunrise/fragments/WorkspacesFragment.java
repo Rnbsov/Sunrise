@@ -1,6 +1,7 @@
 package com.example.sunrise.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,7 +87,9 @@ public class WorkspacesFragment extends Fragment {
             String inviteCode = workspaceInviteCodeInput.getText().toString().trim();
             if (!inviteCode.isEmpty()) {
                 joinWorkspace(inviteCode);
-                fetchWorkspacesFromDatabase();
+
+                // After three seconds update list
+                new Handler().postDelayed(this::fetchWorkspacesFromDatabase, 3000);
             } else {
                 Toast.makeText(requireContext(), "Invite code not exist or expired", Toast.LENGTH_SHORT).show();
             }
