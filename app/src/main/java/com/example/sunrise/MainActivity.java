@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton fab;
     private NavController navController; // Store a reference to NavController
+    private static final String TAG_MY_DAY_CLEARING = "MyDayClearing";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,16 +158,18 @@ public class MainActivity extends AppCompatActivity {
 
         long initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
         if (initialDelay < 0) {
-            // If the time is already passed, add one day
+            // If the calculated delay is negative, it means the current time is past 9 am
+            // Add 24 hours to delay to schedule for 9 am the next day
             initialDelay += 24 * 60 * 60 * 1000;
         }
 
-        PeriodicWorkRequest.Builder builder = new PeriodicWorkRequest.Builder(
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 ClearMyDayWorker.class, 1, TimeUnit.DAYS)
                 .setConstraints(constraints)
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS);
+                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .build();
 
-        PeriodicWorkRequest workRequest = builder.build();
-        WorkManager.getInstance(this).enqueue(workRequest);
+        // Use enqueueUniquePeriodicWork to ensure only one work request is scheduled
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(TAG_MY_DAY_CLEARING, ExistingPeriodicWorkPolicy.KEEP, workRequest);
     }
 }
