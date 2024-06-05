@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="itemBackgrounds" format="reference|color" />
+    <attr name="itemAccentColor" format="reference|color" />
+    <attr name="appBarColor" format="reference|color" />
+    <attr name="addButtonBackground" format="reference|color" />
+</resources>

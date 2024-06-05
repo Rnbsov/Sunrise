@@ -1,11 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Sunrise" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="itemBackgrounds">@color/black</item>
+
     </style>
 
     <style name="Theme.Sunrise" parent="Base.Theme.Sunrise" />
+
+    <style name="Theme.Sunrise.Dynamic" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="itemBackgrounds">@color/material_dynamic_secondary10</item>
+        <item name="itemAccentColor">@color/material_dynamic_primary70</item>
+        <item name="appBarColor">?attr/colorOnPrimary</item>
+    </style>
 
     <style name="roundedImageView" parent="">
         <item name="cornerFamily">rounded</item>

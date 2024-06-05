@@ -1,7 +1,7 @@
 package com.example.sunrise;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +21,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -41,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Set status bar color
-        getWindow().setStatusBarColor(Color.parseColor("#311945"));
-
+        setupTheme(); // Choose either dynamic or custom
         setupFabButton(); // Initialize and set up the fab
         setupNavigation(); // Setup navigation logic
         setupOnBackPressed(); // Set up the behavior for when the back button is pressed
@@ -144,5 +141,24 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(R.string.dialog_exit_negative, null)
                 .show();
+    }
+
+    private void setupTheme() {
+        if (true) {
+            // Set status bar color for dynamic theme
+            setStatusBarColor(com.google.android.material.R.attr.colorOnPrimary);
+            setTheme(R.style.Theme_Sunrise_Dynamic);
+        } else {
+            // Set status bar color
+            setStatusBarColor(R.attr.appBarColor);
+            setTheme(R.style.Theme_Sunrise);
+        }
+    }
+
+    private void setStatusBarColor(int resId) {
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(resId, typedValue, true);
+        int color = ContextCompat.getColor(this, typedValue.resourceId);
+        getWindow().setStatusBarColor(color);
     }
 }

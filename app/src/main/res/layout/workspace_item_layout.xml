@@ -8,7 +8,7 @@
     android:layout_marginRight="15dp"
     android:layout_marginBottom="15dp"
     android:layout_marginTop="3dp"
-    android:backgroundTint="@color/material_dynamic_secondary10"
+    android:backgroundTint="?attr/itemBackgrounds"
     app:cardCornerRadius="20dp"
     app:cardElevation="8dp">
 

@@ -11,12 +11,12 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@color/material_dynamic_primary10"
+        android:background="?attr/addButtonBackground"
         android:contentDescription="@string/create_new_category"
         android:scaleType="center"
         app:shapeAppearanceOverlay="@style/RoundedSquareOverlay"
         app:srcCompat="@drawable/group_add_24px"
-        app:tint="@color/material_dynamic_primary70" />
+        app:tint="?attr/itemAccentColor" />
 
     <TextView
         android:id="@+id/title"
