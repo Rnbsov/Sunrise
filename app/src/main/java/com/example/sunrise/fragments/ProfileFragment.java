@@ -288,6 +288,7 @@ public class ProfileFragment extends Fragment {
                         Intent data = result.getData();
                         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                         if (bitmap != null) {
+                            Toast.makeText(requireContext(), "Please wait, till image uploaded", Toast.LENGTH_SHORT).show();
                             profilePicture.setImageBitmap(bitmap);
                             saveAvatarToFB(bitmap);
                         }
@@ -309,6 +310,7 @@ public class ProfileFragment extends Fragment {
                             InputStream is = getContext().getContentResolver().openInputStream(result);
                             Bitmap bitmap = BitmapFactory.decodeStream(is);
                             if (bitmap != null) {
+                                Toast.makeText(requireContext(), "Please wait, till image uploaded", Toast.LENGTH_SHORT).show();
                                 profilePicture.setImageBitmap(bitmap);
                                 saveAvatarToFB(bitmap);
                             }
